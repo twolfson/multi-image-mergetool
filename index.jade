@@ -11,24 +11,25 @@ html
         margin: 0;
       }
 
-      .left-half {
+      .half {
         float: left;
         width: 50%;
         height: 100%;
+      }
+
+      .half--left {
         color: white;
         background: navy;
       }
 
-      .right-half {
-        float: left;
-        width: 50%;
-        height: 100%;
+      .half--right {
+        background: black;
         background: linen;
       }
   body
-    .left-half
+    .half.half--left
       if locals.left === 'alt'
         | Left side
       else
         | Left half
-    .right-half Right half
+    .half.half--right Right half
