@@ -6,17 +6,17 @@ var env = process.env.ENV;
 assert(env, '`ENV` environment variable wasn\'t set. Please set it to `normal` or `alt`');
 
 // Define our resize helpers
-// DEV: Despite using a very tall height, we only capture until the body stops
 // DEV: These originally come from a `utils/gemini.js` file
+// DEV: When using Firefox, we can set window size to a high value (e.g. 1600) and it auto-truncates
 var geminiUtils = {
   resizeLarge: function (actions, find) {
-    actions.setWindowSize(1024, 1600);
+    actions.setWindowSize(1024, 600);
   },
   resizeMedium: function (actions, find) {
-    actions.setWindowSize(640, 1600);
+    actions.setWindowSize(640, 600);
   },
   resizeSmall: function (actions, find) {
-    actions.setWindowSize(340, 1600);
+    actions.setWindowSize(340, 600);
   }
 };
 
