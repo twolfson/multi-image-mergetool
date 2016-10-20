@@ -59,6 +59,8 @@ html
           this.overlayEl.style.left = dragX + 'px';
           this.overlayEl.style.top = dragY + 'px';
 
+          // TODO: Figure out why mouse isn't always at top right of overlay...
+          //   Prob can see what `mockdesk` does...
           // TODO: Restrict overlay element to boundaries of original element
         };
 
@@ -67,4 +69,5 @@ html
         void new Overlay(imgEl);
 
         // TODO: Fake drag move...
+        //- https://github.com/twolfson/mockdesk/blob/0.14.2/lib/js/scripts/drag-rectangle.js
       });
