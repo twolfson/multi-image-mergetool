@@ -1,2 +1,6 @@
+# Node.js/npm files
 node_modules/
 npm-debug.log
+
+# Gemini screenshots
+gemini/
