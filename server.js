@@ -2,8 +2,8 @@
 var express = require('express');
 
 // Define our constants
-var LISTEN_PORT = 3000;
-var LISTEN_HOSTNAME = 'localhost';
+exports.LISTEN_PORT = 3000;
+exports.LISTEN_HOSTNAME = 'localhost';
 
 // Define our main funciton
 function main() {
@@ -22,7 +22,7 @@ function main() {
   });
 
   // Listen on our port
-  app.listen(LISTEN_PORT, LISTEN_HOSTNAME);
+  app.listen(exports.LISTEN_PORT, exports.LISTEN_HOSTNAME);
 
 }
 
@@ -32,5 +32,5 @@ if (require.main === module) {
   main();
 
   // Notify user of our server running
-  console.log('Server running at http://' + LISTEN_HOSTNAME + ':' + LISTEN_PORT + '/');
+  console.log('Server running at http://' + exports.LISTEN_HOSTNAME + ':' + exports.LISTEN_PORT + '/');
 }
