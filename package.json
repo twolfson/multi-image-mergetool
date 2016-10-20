@@ -18,6 +18,6 @@
     "express": "~4.14.0",
     "gemini": "~4.12.2",
     "jade": "~1.11.0",
-    "webdriver-manager": "~10.0.1"
+    "webdriver-manager": "~10.2.4"
   }
 }
