@@ -1,0 +1,34 @@
+doctype html
+html
+  head
+    title gist-gemini-fancy
+    style.
+      html, body {
+        height: 100%;
+      }
+
+      body {
+        margin: 0;
+      }
+
+      .left-half {
+        float: left;
+        width: 50%;
+        height: 100%;
+        color: white;
+        background: navy;
+      }
+
+      .right-half {
+        float: left;
+        width: 50%;
+        height: 100%;
+        background: linen;
+      }
+  body
+    .left-half
+      if locals.rephrase_left_half
+        | Left side
+      else
+        | Left half
+    .right-half Right half

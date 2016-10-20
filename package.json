@@ -10,6 +10,7 @@
   "license": "Unlicense",
   "dependencies": {
     "express": "~4.14.0",
-    "gemini": "~4.12.2"
+    "gemini": "~4.12.2",
+    "jade": "~1.11.0"
   }
 }

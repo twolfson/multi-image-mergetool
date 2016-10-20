@@ -10,10 +10,15 @@ function main() {
   // Create our server
   var app = express();
 
+  // Configure our views
+  // http://expressjs.com/en/guide/using-template-engines.html
+  app.set('views', __dirname);
+  app.set('view engine', 'jade');
+
   // Define simple route
   app.get('/', function rootShow (req, res, next) {
     // Pass along query string variables directly as render data
-    res.render('index.html', req.query);
+    res.render('index.jade', req.query);
   });
 
   // Listen on our port
