@@ -4,9 +4,9 @@ var server = require('./server');
 // Define our configuration
 exports.rootUrl = 'http://' + server.LISTEN_HOSTNAME + ':' + server.LISTEN_PORT;
 exports.browsers = {
-  Firefox: {
+  Chrome: {
     desiredCapabilities: {
-      browserName: 'firefox'
+      browserName: 'chrome'
     },
     // Default to large screen as our window size
     windowSize: '1024x1600',
