@@ -30,35 +30,41 @@ html
         // Find our image
         var imgEl = document.querySelector('img');
 
-        // TODO: Define our overlay class
-        // Define class from Unidragger example
-        function Dragger(el) {
-          this.element = el;
+        // Define our overlay class
+        function Overlay(targetEl) {
+          // Bind our overlay to the element
+          this.handles = [targetEl];
+          this.bindHandles();
         }
         // Inherit prototype from Unidragger
-        Dragger.prototype = Object.create(Unidragger.prototype);
-        Dragger.prototype.create = function() {
-          // set drag handles
-          console.log('wat');
-          this.handles = [this.element];
-          this.bindHandles();
+        Overlay.prototype = Object.create(Unidragger.prototype);
+        Overlay.prototype.dragStart = function (evt, pointer) {
+          // If we don't have an overlay element, create one now
+          if (!this.overlayEl) {
+            this.overlayEl = document.createElement('div');
+            this.overlayEl.style.cssText = [
+              'position: absolute',
+              'width: 50px',
+              'height: 50px',
+              'background: #CC9999',
+              'border: 2px solid #CC0000',
+              'opacity: 0.5',
+            ].join(';');
+            document.body.appendChild(this.overlayEl);
+          }
         };
-        Dragger.prototype.dragStart = function( event, pointer ) {
-          console.log('drag start');
-        };
-        Dragger.prototype.dragMove = function( event, pointer, moveVector ) {
+        Overlay.prototype.dragMove = function(evt, pointer, moveVector) {
           var dragX = this.dragStartPoint.x + moveVector.x;
           var dragY = this.dragStartPoint.y + moveVector.y;
-          this.element.style.position = 'absolute';
-          this.element.style.left = dragX + 'px';
-          this.element.style.top = dragY + 'px';
-        };
-        Dragger.prototype.dragEnd = function( event, pointer ) {
-          console.log('drag end');
+          this.overlayEl.style.left = dragX + 'px';
+          this.overlayEl.style.top = dragY + 'px';
+
+          // TODO: Restrict overlay element to boundaries of original element
         };
 
         // Make image draggable
         // TODO: Make overlay which is bound to edges of img
-        var dragger = new Dragger(imgEl);
-        dragger.create();
+        void new Overlay(imgEl);
+
+        // TODO: Fake drag move...
       });
