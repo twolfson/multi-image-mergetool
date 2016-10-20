@@ -7,5 +7,9 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Todd Wolfson <todd@twolfson.com> (http://twolfson.com/)",
-  "license": "Unlicense"
+  "license": "Unlicense",
+  "dependencies": {
+    "express": "~4.14.0",
+    "gemini": "~4.12.2"
+  }
 }
