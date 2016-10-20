@@ -24,6 +24,11 @@ function main() {
   // START: Prototype routes
   // Host gemini images directly
   app.use('/gemini-report', express.static(__dirname + '/gemini-report'));
+
+  // Define our prototype show route
+  app.get('/prototype', function prototypeShow (req, res, next) {
+    res.render('prototype.jade');
+  });
   // END: Prototype routes
 
   // Listen on our port

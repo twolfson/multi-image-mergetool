@@ -1,7 +1,7 @@
 doctype html
 html
   head
-    title gist-gemini-fancy
+    title gist-gemini-fancy prototype
     style.
       html, body {
         height: 100%;
@@ -9,12 +9,56 @@ html
 
       body {
         margin: 0;
+        /* https://github.com/corysimmons/typographic/blob/2.9.3/scss/typographic.scss#L34 */
+        font-family: 'Helvetica Neue', 'Helvetica', 'Arial', 'sans-serif';
       }
   body
+    h1 gist-gemini-fancy prototype
     //- Load an images directly from our report
-    //- img(src="images/root/default-large/Chrome~current.png")
-    img(src="images/root/default-large/Chrome~diff.png")
-    //- img(src="images/root/default-large/Chrome~ref.png")
+    //- img(src="gemini-report/images/root/default-large/Chrome~current.png")
+    img(src="gemini-report/images/root/default-large/Chrome~diff.png")
+    //- img(src="gemini-report/images/root/default-large/Chrome~ref.png")
 
-    //- TODO: Build HTML/CSS overlay selection
-    //- TODO: Can probably use selectly or whatever it's called
+    //- Load in our dependencies for `unidragger`
+    script(src="https://cdn.rawgit.com/metafizzy/ev-emitter/v1.0.3/ev-emitter.js")
+    script(src="https://cdn.rawgit.com/metafizzy/unipointer/v2.1.0/unipointer.js")
+    script(src="https://cdn.rawgit.com/metafizzy/unidragger/v2.1.0/unidragger.js")
+
+    //- Integrate HTML/CSS overlay for selection
+    script.
+      document.addEventListener('DOMContentLoaded', function handleReady () {
+        // Find our image
+        var imgEl = document.querySelector('img');
+
+        // TODO: Define our overlay class
+        // Define class from Unidragger example
+        function Dragger(el) {
+          this.element = el;
+        }
+        // Inherit prototype from Unidragger
+        Dragger.prototype = Object.create(Unidragger.prototype);
+        Dragger.prototype.create = function() {
+          // set drag handles
+          console.log('wat');
+          this.handles = [this.element];
+          this.bindHandles();
+        };
+        Dragger.prototype.dragStart = function( event, pointer ) {
+          console.log('drag start');
+        };
+        Dragger.prototype.dragMove = function( event, pointer, moveVector ) {
+          var dragX = this.dragStartPoint.x + moveVector.x;
+          var dragY = this.dragStartPoint.y + moveVector.y;
+          this.element.style.position = 'absolute';
+          this.element.style.left = dragX + 'px';
+          this.element.style.top = dragY + 'px';
+        };
+        Dragger.prototype.dragEnd = function( event, pointer ) {
+          console.log('drag end');
+        };
+
+        // Make image draggable
+        // TODO: Make overlay which is bound to edges of img
+        var dragger = new Dragger(imgEl);
+        dragger.create();
+      });
