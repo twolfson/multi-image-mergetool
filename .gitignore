@@ -2,5 +2,6 @@
 node_modules/
 npm-debug.log
 
-# Gemini screenshots
+# Gemini screenshots and report
 gemini/
+gemini-report/
