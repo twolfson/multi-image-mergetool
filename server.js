@@ -21,6 +21,11 @@ function main() {
     res.render('index.jade', req.query);
   });
 
+  // START: Prototype routes
+  // Host gemini images directly
+  app.use('/gemini-report', express.static(__dirname + '/gemini-report'));
+  // END: Prototype routes
+
   // Listen on our port
   app.listen(exports.LISTEN_PORT, exports.LISTEN_HOSTNAME);
 
