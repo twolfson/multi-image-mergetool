@@ -1,0 +1,32 @@
+doctype html
+html
+  head
+    title gist-gemini-fancy performance
+    style.
+      /* Perform nice resets */
+      body {
+        height: 100%;
+        margin: 0;
+        /* https://github.com/corysimmons/typographic/blob/2.9.3/scss/typographic.scss#L34 */
+        font-family: 'Helvetica Neue', 'Helvetica', 'Arial', 'sans-serif';
+      }
+  body
+    //- Provide info to the user
+    h1 gist-gemini-fancy performance
+    p
+      | This page is a proof of concept to verify we won't have performance issues with a lot of pages
+
+    //- Load an images directly from our report
+    //- img(src="gemini-report/images/root/default-large/Chrome~current.png")
+    img(src="gemini-report/images/root/default-large/Chrome~diff.png")
+    //- img(src="gemini-report/images/root/default-large/Chrome~ref.png")
+
+    script.
+      document.addEventListener('DOMContentLoaded', function handleReady () {
+        // Find our image
+        var imgEl = document.querySelector('img');
+
+        // TODO: Test out bulk overlay of selection
+        // TODO: Test out bulk updating sections of an image
+        // TODO: Test out bulk testing images
+      });

@@ -28,4 +28,6 @@ ENV=alt npm run gemini-test
 
 # Open our prototype page in your browser
 xdg-open http://localhost:3000/prototype
+# or open our performance page
+xdg-open http://localhost:3000/performance
 ```
