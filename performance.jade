@@ -44,7 +44,7 @@ html
 
     //- Define an output area for images
     p(style="margin-bottom: 0") Results:
-    div#results
+    table#results(style="margin-left: 20px")
 
     script(src="https://cdn.rawgit.com/jed/domo/13c45aba3e94dd2d1bc469ce3339bbc1e3a10314/lib/domo.js")
     script.
@@ -108,19 +108,24 @@ html
             refImgClone.style.height = imgHeight + 'px';
 
             // Generate and append result content
-            var resultGroupEl = D.DIV({
-              style: 'margin-left: 20px'
-            }, [
-              D.DIV('path/to/image/' + i + '/Chrome'),
-              D.TABLE([
-                D.TR([
-                  D.TD('Original:'),
-                  D.TD('Updated:')
+            var resultGroupEl = D.DIV([
+              D.TR([
+                D.TD({colspan: 3}, D.B('path/to/image/' + i + '/Chrome'))
+              ]),
+              D.TR([
+                //- TODO: Move style out of inline and to classes for more performance
+                D.TD({style: 'padding-right: 10px;'}, 'Save update:'),
+                D.TD('Original:'),
+                D.TD('Updated:')
+              ]),
+              D.TR([
+                D.TD({
+                  style: 'vertical-align: top;'
+                }, [
+                  D.INPUT({type: 'checkbox', checked: true})
                 ]),
-                D.TR([
-                  D.TD([refImgClone]),
-                  D.TD([canvasEl])
-                ])
+                D.TD([refImgClone]),
+                D.TD([canvasEl])
               ])
             ]);
             resultsEl.appendChild(resultGroupEl);
