@@ -75,6 +75,7 @@ html
 
           // Find our output targets
           var resultsEl = document.querySelector('#results');
+          var resultsDocFrag = document.createDocumentFragment();
 
           // TODO: Realizing we need to do matching on similar content (i.e. same width image + same diff in selection)
           //   It looks like Gemini's comparison library isn't built for browser
@@ -85,7 +86,6 @@ html
           //     Although, it's likely less efficient since we have to extract image data and compare it
 
           // Iterate over our sets
-          var documentFragment = document.createDocumentFragment();
           Array.prototype.forEach.call(compareSetEls, function forEachCompareSetEl (compareSetEl, i) {
             // Find our source images
             var currentImg = compareSetEl.querySelector('[data-compare-type=current]');
@@ -145,13 +145,15 @@ html
                 D.TD([canvasEl])
               ])
             ]);
-            documentFragment.appendChild(resultGroupEl);
+            resultsDocFrag.appendChild(resultGroupEl);
 
             // TODO: When bulk update is accepted, send overwrite requests to server with new image as "Ref"
             //   and use `?1` trick to refresh images
             //   then re-run comparisons for all current vs ref
             // DEV: We are realizing that Gemini likely does comparisons in Node.js so we should do the same on update
           });
-          resultsEl.appendChild(documentFragment);
+
+          // Append aggregate content to DOM
+          resultsEl.appendChild(resultsDocFrag);
         }
       });
