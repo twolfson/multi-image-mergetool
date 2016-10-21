@@ -27,7 +27,7 @@ html
         td
           img(src="gemini-report/images/root/default-large/Chrome~current.png", height=imgHeight)
         td
-          img(src="gemini-report/images/root/default-large/Chrome~diff.png", height=imgHeight)
+          img#expected-diff-img(src="gemini-report/images/root/default-large/Chrome~diff.png", height=imgHeight)
         td
           img(src="gemini-report/images/root/default-large/Chrome~ref.png", height=imgHeight)
 
@@ -90,9 +90,39 @@ html
               name: 'path/to/image/' + i + '/Chrome'
             };
           });
-          var matchingCompareSets= compareSets.slice();
+
+          // Prepare canvas for images to match against
+          function getSelectionCanvas(img) {
+            // Generate our canvas sized down to the selection
+            // https://github.com/scijs/get-pixels/blob/7c447cd979637b31e47e148f238a1e71611af481/dom-pixels.js#L14-L18
+            var canvasEl = document.createElement('canvas');
+            canvasEl.width = targetArea.width;
+            canvasEl.height = targetArea.height;
+            var context = canvasEl.getContext('2d');
+
+            // Draw a clip for safety (performanc), then our image
+            // DEV: We haven't tested if this improves performance but assume it should
+            // https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/drawImage
+            // https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/rect
+            context.rect(0, 0, targetArea.width, targetArea.height);
+            context.clip();
+            context.drawImage(img, -1 * targetArea.left, -1 * targetArea.top);
+
+            // Return our generated canvas
+            return canvasEl;
+          }
+          var expectedDiffImg = document.querySelector('#expected-diff-img');
+          var expectedDiffCanvas = getSelectionCanvas(expectedDiffImg);
+
+          document.body.appendChild(expectedDiffCanvas);
+
+          // Filter image sets based on matching widths and selection
+          var matchingCompareSets = compareSets.filter(function matchCompareSet (compareSet) {
+            return true;
+          });
 
           // Pass through matching sets to `bulkUpdateSelection`
+          return;
           bulkUpdateSelection(matchingCompareSets);
         }
 
@@ -101,8 +131,8 @@ html
           var resultsEl = document.querySelector('#results');
           var resultsDocFrag = document.createDocumentFragment();
 
-          // Iterate over our sets
-          Array.prototype.forEach.call(compareSets, function forEachCompareSetEl (compareSet) {
+          // Generate and updated ref image for each of our comparisons
+          compareSets.forEach(function generateUpdatedRef (compareSet) {
             // Localize our references
             var currentImg = compareSet.currentImg;
             var refImg = compareSet.refImg;
