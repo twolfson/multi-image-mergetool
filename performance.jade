@@ -110,10 +110,11 @@ html
             // Generate and append result content
             var resultGroupEl = D.DIV([
               D.TR([
+                // TODO: Add collapse support like in `gemini-gui`
                 D.TD({colspan: 3}, D.B('path/to/image/' + i + '/Chrome'))
               ]),
               D.TR([
-                //- TODO: Move style out of inline and to classes for more performance
+                // TODO: Move style out of inline and to classes for more performance
                 D.TD({style: 'padding-right: 10px;'}, 'Save update:'),
                 D.TD('Original:'),
                 D.TD('Updated:')
