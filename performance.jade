@@ -92,7 +92,7 @@ html
           });
 
           // Prepare canvas for images to match against
-          function getSelectionCanvas(img) {
+          function getSelectionImageData(img) {
             // Generate our canvas sized down to the selection
             // https://github.com/scijs/get-pixels/blob/7c447cd979637b31e47e148f238a1e71611af481/dom-pixels.js#L14-L18
             var canvasEl = document.createElement('canvas');
@@ -109,20 +109,53 @@ html
             context.drawImage(img, -1 * targetArea.left, -1 * targetArea.top);
 
             // Return our generated canvas
-            return canvasEl;
+            // https://github.com/scijs/get-pixels/blob/7c447cd979637b31e47e148f238a1e71611af481/dom-pixels.js#L19-L20
+            return context.getImageData(0, 0, targetArea.width, targetArea.height).data;
           }
-          var expectedDiffImg = document.querySelector('#expected-diff-img');
-          var expectedDiffCanvas = getSelectionCanvas(expectedDiffImg);
+          var expectedDiffImg = document.querySelector('#expected-diff-img').cloneNode();
+          // Reset HTML/CSS overrides
+          delete expectedDiffImg.height; delete expectedDiffImg.width;
+          delete expectedDiffImg.style; delete expectedDiffImg.className;
+          var expectedImageData = getSelectionImageData(expectedDiffImg);
 
-          document.body.appendChild(expectedDiffCanvas);
+          // Prepare deep equals helper
+          // DEV: This is bad for security as we short circuit (i.e. not time constant comparison)
+          function deepEquals(aArr, bArr) {
+            if (aArr.length !== bArr.length) {
+              return false;
+            }
+            var i = 0;
+            for (; i < aArr.length; i += 1) {
+              if (aArr[i] !== bArr[i]) {
+                return false;
+              }
+            }
+            return true;
+          }
 
           // Filter image sets based on matching widths and selection
           var matchingCompareSets = compareSets.filter(function matchCompareSet (compareSet) {
+            // If the images are different widths, return false
+            // TODO: Allow this to be a configurable heuristic
+            var actualDiffImg = compareSet.diffImg;
+            if (expectedDiffImg.width !== actualDiffImg.width) {
+              return false;
+            }
+
+            // If the selection is different, return false
+            // DEV: We current do an exact match but could move to other comparison script
+            //   Unfortunately, Gemini's comparison seems to be Node.js only
+            //   and an exact match is "good enough" for now
+            var actualImageData = getSelectionImageData(actualDiffImg);
+            if (!deepEquals(actualImageData, expectedImageData)) {
+              return false;
+            }
+
+            // Otherwise, approve match
             return true;
           });
 
           // Pass through matching sets to `bulkUpdateSelection`
-          return;
           bulkUpdateSelection(matchingCompareSets);
         }
 
