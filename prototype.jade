@@ -36,7 +36,12 @@ html
   body
     //- Provide info to the user
     h1 gist-gemini-fancy prototype
-    p Click and drag over the image to generate an overlay
+    p
+      | Click and drag over the image to generate an overlay
+      br
+      = "Overlay info: "
+      span
+        code#overlay-info null
 
     //- Load an images directly from our report
     //- img(src="gemini-report/images/root/default-large/Chrome~current.png")
@@ -143,13 +148,39 @@ html
           this.overlayEl.style.width = width + 'px';
           this.overlayEl.style.top = top + 'px';
           this.overlayEl.style.height = height + 'px';
+
+          // Emit an update event
+          this.emitEvent('change:overlay', [evt, pointer, {
+            absolute: {
+              left: left,
+              width: width,
+              top: top,
+              height: height
+            },
+            relative: {
+              left: left - this.bounds.left,
+              width: width,
+              top: top - this.bounds.top,
+              height: height
+            }
+          }]);
         };
         Overlay.prototype.dragMove = function(evt, pointer, moveVector) {
           this.update(evt, pointer, moveVector);
         };
 
         // Make image draggable
-        void new Overlay(imgEl);
+        var imgOverlay = new Overlay(imgEl);
+
+        // When our overlay moves, update the coordinates
+        var overlayInfoEl = document.querySelector('#overlay-info');
+        imgOverlay.on('change:overlay', function handleChangeOverlay (evt, pointer, overlayInfo) {
+          var relativeInfo = overlayInfo.relative;
+          overlayInfoEl.textContent = 'left:' + relativeInfo.left + ', ' +
+            'top: ' + relativeInfo.top + ', ' +
+            'width: ' + relativeInfo.width + ', ' +
+            'height: ' + relativeInfo.height;
+        });
 
         // TODO: Fake drag move for easier testing
         // https://github.com/twolfson/mockdesk/blob/0.14.2/lib/js/scripts/drag-rectangle.js
