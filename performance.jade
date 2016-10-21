@@ -78,6 +78,9 @@ html
         // Start our chain of methods
         findSelectionMatches();
         function findSelectionMatches() {
+          // Start our performance check (70ms for 200 1024x1600 images)
+          console.time('findSelectionMatches');
+
           // Find our sets of images to update
           var compareSetEls = document.querySelectorAll('[data-compare-set]');
 
@@ -155,11 +158,17 @@ html
             return true;
           });
 
+          // End our performance check
+          console.timeEnd('findSelectionMatches');
+
           // Pass through matching sets to `bulkUpdateSelection`
           bulkUpdateSelection(matchingCompareSets);
         }
 
         function bulkUpdateSelection(compareSets) {
+          // Start our performance check (620ms total for 100 1024x1600 images, 400ms seems to be first `drawImage`)
+          console.time('bulkUpdateSelection');
+
           // Find our output targets
           var resultsEl = document.querySelector('#results');
           var resultsDocFrag = document.createDocumentFragment();
@@ -189,6 +198,7 @@ html
             //   Extract image from 2nd canvas via `ndarray`
             //   Use web workers
             //   Requesting server do it via `get-pixels` and `save-pixels`
+            // DEV: Slowest part is drawing initial image above
             // https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/rect
             context.rect(targetArea.left, targetArea.top, targetArea.width, targetArea.height);
             context.clip();
@@ -233,5 +243,8 @@ html
 
           // Append aggregate content to DOM
           resultsEl.appendChild(resultsDocFrag);
+
+          // End our performance check
+          console.timeEnd('bulkUpdateSelection');
         }
       });
