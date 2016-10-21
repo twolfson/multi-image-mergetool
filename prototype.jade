@@ -52,13 +52,34 @@ html
             ].join(';');
             document.body.appendChild(this.overlayEl);
           }
+
+          // Update our box position
+          // TODO: Update cursor via CSS
+          this.update(evt, pointer, {x: 0, y: 0});
+        };
+        Overlay.prototype.update = function (evt, pointer, moveVector) {
+          // If the move vector's X dimension is normal
+          if (moveVector.x >= 0) {
+            this.overlayEl.style.left = this.dragStartPoint.x + 'px';
+            this.overlayEl.style.width = moveVector.x + 'px';
+          // Otherwise (inverted), use opposite parameters)
+          } else {
+            // DEV: Technically we are subtracting moveVector as it's a negative value
+            this.overlayEl.style.left = this.dragStartPoint.x + moveVector.x + 'px';
+            this.overlayEl.style.width = (-1 * moveVector.x) + 'px';
+          }
+
+          // Similar behavior for Y dimension
+          if (moveVector.y >= 0) {
+            this.overlayEl.style.top = this.dragStartPoint.y + 'px';
+            this.overlayEl.style.height = moveVector.y + 'px';
+          } else {
+            this.overlayEl.style.top = this.dragStartPoint.y + moveVector.y + 'px';
+            this.overlayEl.style.height = (-1 * moveVector.y) + 'px';
+          }
         };
         Overlay.prototype.dragMove = function(evt, pointer, moveVector) {
-          var dragX = this.dragStartPoint.x + moveVector.x;
-          var dragY = this.dragStartPoint.y + moveVector.y;
-          this.overlayEl.style.left = dragX + 'px';
-          this.overlayEl.style.top = dragY + 'px';
-
+          this.update(evt, pointer, moveVector);
           // TODO: Figure out why mouse isn't always at top right of overlay...
           //   Prob can see what `mockdesk` does...
           // TODO: Restrict overlay element to boundaries of original element
