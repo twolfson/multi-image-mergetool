@@ -35,12 +35,18 @@ html
     //- DEV: In reality, we would probably have something like Gemini's hidden selection
     div(style="display: none")
       - var i = 0;
-      while (i < 100)
+      while (i < 200)
+        //- Create set which has matching selection
         div(data-compare-set=i)
           img(data-compare-type="current", src="gemini-report/images/root/default-large/Chrome~current.png")
           img(data-compare-type="diff", src="gemini-report/images/root/default-large/Chrome~diff.png")
           img(data-compare-type="ref", src="gemini-report/images/root/default-large/Chrome~ref.png")
-        - i += 1
+        //- Create set without matching selection
+        div(data-compare-set=i + 1)
+          img(data-compare-type="current", src="gemini-report/images/root/default-large/Chrome~ref.png")
+          img(data-compare-type="diff", src="gemini-report/images/root/default-large/Chrome~ref.png")
+          img(data-compare-type="ref", src="gemini-report/images/root/default-large/Chrome~ref.png")
+        - i += 2
 
     //- Define an output area for images
     p(style="margin-bottom: 0") Results:
@@ -74,11 +80,15 @@ html
           //   It looks like Gemini's comparison library isn't built for browser
           //     https://github.com/gemini-testing/looks-same
           //   For now, use direct comparison with `get-pixels` and `ndarray`
+          //   Actually, we can prob use a second canvas with negative placement for x/y and same width/neight
+          //     This is more future-proof and dodges loading `ndarray` dependencies
+          //     Although, it's likely less efficient since we have to extract image data and compare it
 
           // Iterate over our sets
           Array.prototype.forEach.call(compareSetEls, function forEachCompareSetEl (compareSetEl, i) {
             // Find our source images
             var currentImg = compareSetEl.querySelector('[data-compare-type=current]');
+            var diffImg = compareSetEl.querySelector('[data-compare-type=diff]');
             var refImg = compareSetEl.querySelector('[data-compare-type=ref]');
 
             // Create a canvas
