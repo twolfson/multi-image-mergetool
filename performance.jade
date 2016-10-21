@@ -46,8 +46,12 @@ html
     p(style="margin-bottom: 0") Results:
     div#results
 
+    script(src="https://cdn.rawgit.com/jed/domo/13c45aba3e94dd2d1bc469ce3339bbc1e3a10314/lib/domo.js")
     script.
       document.addEventListener('DOMContentLoaded', function handleReady () {
+        // Simplifiy domo reference
+        var D = window.domo;
+
         // Find our image
         var imgEl = document.querySelector('img');
 
@@ -103,36 +107,22 @@ html
             var refImgClone = refImg.cloneNode();
             refImgClone.style.height = imgHeight + 'px';
 
-            //  Generate resultcontent
-            var resultGroupEl = document.createElement('div');
-            resultGroupEl.style.marginLeft = '20px';
-            var titleEl = document.createElement('div');
-            titleEl.textContent = 'path/to/image/' + i + '/Chrome';
-            resultGroupEl.appendChild(titleEl);
-
-            // <table><tr><td>Original:</td><td>Updated:</td></tr>
-            var tableEl = document.createElement('table');
-            var titleTrEl = document.createElement('tr');
-            var titleOriginalTdEl = document.createElement('td');
-            titleOriginalTdEl.textContent = 'Original:';
-            titleTrEl.appendChild(titleOriginalTdEl);
-            var titleUpdatedTdEl = document.createElement('td');
-            titleUpdatedTdEl.textContent = 'Updated:';
-            titleTrEl.appendChild(titleUpdatedTdEl);
-            tableEl.appendChild(titleTrEl);
-
-            // <table><tr><td><img=ref></td><td><img=updated-ref></td></tr>
-            var bodyTrEl = document.createElement('tr');
-            var bodyOriginalTdEl = document.createElement('td');
-            bodyOriginalTdEl.appendChild(refImgClone);
-            bodyTrEl.appendChild(bodyOriginalTdEl);
-            var bodyUpdatedTdEl = document.createElement('td');
-            bodyUpdatedTdEl.appendChild(canvasEl);
-            bodyTrEl.appendChild(bodyUpdatedTdEl);
-            tableEl.appendChild(bodyTrEl);
-
-            // Append our result content
-            resultGroupEl.appendChild(tableEl);
+            // Generate and append result content
+            var resultGroupEl = D.DIV({
+              style: 'margin-left: 20px'
+            }, [
+              D.DIV('path/to/image/' + i + '/Chrome'),
+              D.TABLE([
+                D.TR([
+                  D.TD('Original:'),
+                  D.TD('Updated:')
+                ]),
+                D.TR([
+                  D.TD([refImgClone]),
+                  D.TD([canvasEl])
+                ])
+              ])
+            ]);
             resultsEl.appendChild(resultGroupEl);
 
             // TODO: When bulk update is accepted, send overwrite requests to server with new image as "Ref"
