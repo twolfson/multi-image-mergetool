@@ -51,6 +51,11 @@ html
           // Bind our overlay to the element
           this.handles = [targetEl];
           this.bindHandles();
+
+          // Calculate target dimensions
+          // TODO: For wider browser support, see what `draggabilly` does (prob uses `get-size`)
+          // bounds = {x, y, width, height, top, right, bottom, left}
+          this.bounds = targetEl.getBoundingClientRect();
         }
         // Inherit prototype from Unidragger
         Overlay.prototype = Object.create(Unidragger.prototype);
@@ -69,30 +74,57 @@ html
         Overlay.prototype.update = function (evt, pointer, moveVector) {
           // If the move vector's X dimension is normal
           // DEV: We use `pointerDownPoint` instead of `dragStartPoint` for better cursor positioning
+          var left, top, width, height;
           if (moveVector.x >= 0) {
-            this.overlayEl.style.left = this.pointerDownPoint.x + 'px';
-            this.overlayEl.style.width = moveVector.x + 'px';
+            left = this.pointerDownPoint.x;
+            width = moveVector.x;
           // Otherwise (inverted), use opposite parameters)
           } else {
             // DEV: Technically we are subtracting moveVector as it's a negative value
-            this.overlayEl.style.left = this.pointerDownPoint.x + moveVector.x + 'px';
-            this.overlayEl.style.width = (-1 * moveVector.x) + 'px';
+            left = this.pointerDownPoint.x + moveVector.x;
+            width = (-1 * moveVector.x);
           }
 
           // Similar behavior for Y dimension
           if (moveVector.y >= 0) {
-            this.overlayEl.style.top = this.pointerDownPoint.y + 'px';
-            this.overlayEl.style.height = moveVector.y + 'px';
+            top = this.pointerDownPoint.y;
+            height = moveVector.y;
           } else {
-            this.overlayEl.style.top = this.pointerDownPoint.y + moveVector.y + 'px';
-            this.overlayEl.style.height = (-1 * moveVector.y) + 'px';
+            top = this.pointerDownPoint.y + moveVector.y;
+            height = (-1 * moveVector.y);
           }
+
+          // Restrict our dimensions so we don't go out of bounds
+          // DEV: We limit top/left first as height/width offsets are dependent
+          if (top < this.bounds.top) {
+            // Remove excess distance from height to account for overflow
+            // height += 100 - 200 /* higher on page - lower on page */;
+            height += top - this.bounds.top;
+            top = this.bounds.top;
+          }
+          if (left < this.bounds.left) {
+            width += left - this.bounds.left;
+            left = this.bounds.left;
+          }
+          // bottomEdgeFromTop = 100 + 800 /* 900 */
+          var bottomEdgeFromTop = this.bounds.top + this.bounds.height;
+          if (top + height > bottomEdgeFromTop) {
+            // height = 900 - 300 /* 600 */
+            height = bottomEdgeFromTop - top;
+          }
+          var rightEdgeFromLeft = this.bounds.left + this.bounds.width;
+          if (left + width > rightEdgeFromLeft) {
+            width = rightEdgeFromLeft - left;
+          }
+
+          // Update our element position
+          this.overlayEl.style.left = left + 'px';
+          this.overlayEl.style.width = width + 'px';
+          this.overlayEl.style.top = top + 'px';
+          this.overlayEl.style.height = height + 'px';
         };
         Overlay.prototype.dragMove = function(evt, pointer, moveVector) {
           this.update(evt, pointer, moveVector);
-          // TODO: Figure out why mouse isn't always at top right of overlay...
-          //   Prob can see what `mockdesk` does...
-          // TODO: Restrict overlay element to boundaries of original element
         };
 
         // Make image draggable
