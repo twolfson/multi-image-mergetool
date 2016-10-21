@@ -46,6 +46,11 @@ html
     p(style="margin-bottom: 0") Results:
     table#results(style="margin-left: 20px")
 
+    //- TODO: Consider scrollspy for update buttons
+    //- TODO: Consider buttons to expand row of images to full screen
+    //- TODO: Consider magnifying glass zoom on images (e.g. like in ecommerce sites)
+    //- TODO: Figure out how to make selection work, maybe normal GUI like Gemini but with jawbone effect for matching items
+
     script(src="https://cdn.rawgit.com/jed/domo/13c45aba3e94dd2d1bc469ce3339bbc1e3a10314/lib/domo.js")
     script.
       document.addEventListener('DOMContentLoaded', function handleReady () {
@@ -89,6 +94,7 @@ html
             // DEV: Performance alternatives we thought of but aren't needed
             //   Extract image from 2nd canvas via `ndarray`
             //   Use web workers
+            //   Requesting server do it via `get-pixels` and `save-pixels`
             // https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/rect
             context.rect(targetArea.left, targetArea.top, targetArea.width, targetArea.height);
             context.clip();
