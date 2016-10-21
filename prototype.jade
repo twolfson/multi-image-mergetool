@@ -17,6 +17,10 @@ html
       }
 
       /* Overlay styles */
+      .overlay-bound {
+        /* http://chrisnager.github.io/cursors/ */
+        cursor: crosshair;
+      }
       .overlay {
         position: absolute;
         width: 50px;
@@ -26,7 +30,10 @@ html
         opacity: 0.5;
       }
   body
+    //- Provide info to the user
     h1 gist-gemini-fancy prototype
+    p Click and drag over the image to generate an overlay
+
     //- Load an images directly from our report
     //- img(src="gemini-report/images/root/default-large/Chrome~current.png")
     img(src="gemini-report/images/root/default-large/Chrome~diff.png")
@@ -51,6 +58,9 @@ html
           // Bind our overlay to the element
           this.handles = [targetEl];
           this.bindHandles();
+
+          // Add an overlay binding class to our element
+          targetEl.className += ' overlay-bound';
 
           // Calculate target dimensions
           // TODO: For wider browser support, see what `draggabilly` does (prob uses `get-size`)
