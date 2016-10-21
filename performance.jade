@@ -74,13 +74,30 @@ html
 
           // Iterate over our sets
           Array.prototype.forEach.call(compareSetEls, function forEachCompareSetEl (compareSetEl, i) {
-            // TODO: Create a canvas, load our diff into it, overwrite select area of canvas
+            // Find our source image
+            var diffImg = compareSetEl.querySelector('[data-compare-type=diff]');
+
+            // Create a canvas
+            // https://github.com/scijs/get-pixels/blob/7c447cd979637b31e47e148f238a1e71611af481/dom-pixels.js#L14-L18
+            var canvasEl = document.createElement('canvas');
+            canvasEl.width = diffImg.width;
+            canvasEl.height = diffImg.height;
+            var context = canvasEl.getContext('2d');
+
+            // Load our diff into the canvas
+            // https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/drawImage
+            context.drawImage(diffImg, 0, 0);
+
+            // Shrink canvas for output
+            var imgHeight = 250;
+            canvasEl.style.height = 250 + 'px';
+
             // Output our updated diff to table
             var titleTdEl = document.createElement('td');
             titleTdEl.textContent = 'path/to/image/' + i + '/Chrome';
             titleTrEl.appendChild(titleTdEl);
             var bodyTdEl = document.createElement('td');
-            bodyTdEl.textContent = 'path/to/image/' + i + '/Chrome';
+            bodyTdEl.appendChild(canvasEl);
             bodyTrEl.appendChild(bodyTdEl);
           });
         }
