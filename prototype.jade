@@ -28,6 +28,10 @@ html
         background: #33CC33;
         border: 2px solid #00FF00;
         opacity: 0.5;
+
+        /* Allow click through for new selection */
+        /* TODO: Depending on configuration, this could be a drag action on the overlay */
+        pointer-events: none;
       }
   body
     //- Provide info to the user
@@ -86,7 +90,6 @@ html
           }
 
           // Update our box position
-          // TODO: Update cursor via CSS
           this.update(evt, pointer, {x: 0, y: 0});
         };
         Overlay.prototype.update = function (evt, pointer, moveVector) {
