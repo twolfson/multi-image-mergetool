@@ -74,7 +74,8 @@ html
 
           // Iterate over our sets
           Array.prototype.forEach.call(compareSetEls, function forEachCompareSetEl (compareSetEl, i) {
-            // Find our source image
+            // Find our source images
+            var currentImg = compareSetEl.querySelector('[data-compare-type=current]');
             var diffImg = compareSetEl.querySelector('[data-compare-type=diff]');
 
             // Create a canvas
@@ -87,6 +88,15 @@ html
             // Load our diff into the canvas
             // https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/drawImage
             context.drawImage(diffImg, 0, 0);
+
+            // Draw our selection to clip and draw image in clipping
+            // DEV: This is probably the most efficient way (outside of web workers) because
+            //   we would have to draw image twice no matter what
+            //   Maybe there's double pixel updates but I don't thinks so
+            // https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/rect
+            context.rect(targetArea.left, targetArea.top, targetArea.width, targetArea.height);
+            context.clip();
+            context.drawImage(currentImg, 0, 0);
 
             // Shrink canvas for output
             var imgHeight = 250;
