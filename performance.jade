@@ -71,6 +71,9 @@ html
           var resultsEl = document.querySelector('#results');
 
           // TODO: Realizing we need to do matching on similar content (i.e. same width image + same diff in selection)
+          //   It looks like Gemini's comparison library isn't built for browser
+          //     https://github.com/gemini-testing/looks-same
+          //   For now, use direct comparison with `get-pixels` and `ndarray`
 
           // Iterate over our sets
           Array.prototype.forEach.call(compareSetEls, function forEachCompareSetEl (compareSetEl, i) {
