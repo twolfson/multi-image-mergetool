@@ -52,16 +52,9 @@ html
         // Simplifiy domo reference
         var D = window.domo;
 
-        // Find our image
-        var imgEl = document.querySelector('img');
-
-        // Run a different performance test based on a flag
-        // TODO: Test out bulk overlay of selection
-        // TODO: Test out bulk testing images
-        var TEST = 'UPDATE_SECTION';
-
-        // If we are running an update test
-        if (TEST === 'UPDATE_SECTION') {
+        // Define and run our update logic
+        bulkUpdateSelection();
+        function bulkUpdateSelection() {
           // Specify target area (this would be done via overlay selection)
           // DEV: Target area gathered from `/prototype`
           var targetArea = {left: 159, top: 0, width: 205, height: 63.133331298828125};
@@ -133,7 +126,7 @@ html
 
             // TODO: When bulk update is accepted, send overwrite requests to server with new image as "Ref"
             //   and use `?1` trick to refresh images
-            //   then re-run comparisons for all curr
+            //   then re-run comparisons for all current vs ref
           });
         }
       });
