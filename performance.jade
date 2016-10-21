@@ -85,6 +85,7 @@ html
           //     Although, it's likely less efficient since we have to extract image data and compare it
 
           // Iterate over our sets
+          var documentFragment = document.createDocumentFragment();
           Array.prototype.forEach.call(compareSetEls, function forEachCompareSetEl (compareSetEl, i) {
             // Find our source images
             var currentImg = compareSetEl.querySelector('[data-compare-type=current]');
@@ -122,6 +123,7 @@ html
             refImgClone.style.height = imgHeight + 'px';
 
             // Generate and append result content
+            // DEV: We use a document fragment to avoid `n` DOM edits -- instead it's 1
             var resultGroupEl = D.DIV([
               D.TR([
                 // TODO: Add collapse support like in `gemini-gui`
@@ -143,12 +145,13 @@ html
                 D.TD([canvasEl])
               ])
             ]);
-            resultsEl.appendChild(resultGroupEl);
+            documentFragment.appendChild(resultGroupEl);
 
             // TODO: When bulk update is accepted, send overwrite requests to server with new image as "Ref"
             //   and use `?1` trick to refresh images
             //   then re-run comparisons for all current vs ref
             // DEV: We are realizing that Gemini likely does comparisons in Node.js so we should do the same on update
           });
+          resultsEl.appendChild(documentFragment);
         }
       });
