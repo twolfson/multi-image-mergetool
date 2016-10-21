@@ -43,7 +43,7 @@ html
         - i += 1
 
     //- Define an output area for images
-    p Results:
+    p(style="margin-bottom: 0") Results:
     div(style="overflow-x: scroll;")
       table
         tr#title-tr
@@ -93,6 +93,9 @@ html
             // DEV: This is probably the most efficient way (outside of web workers) because
             //   we would have to draw image twice no matter what
             //   Maybe there's double pixel updates but I don't thinks so
+            // DEV: Performance alternatives we thought of but aren't needed
+            //   Extract image from 2nd canvas via `ndarray`
+            //   Use web workers
             // https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/rect
             context.rect(targetArea.left, targetArea.top, targetArea.width, targetArea.height);
             context.clip();
