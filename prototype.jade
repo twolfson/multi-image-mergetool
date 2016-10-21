@@ -18,6 +18,16 @@ html
         /* https://github.com/corysimmons/typographic/blob/2.9.3/scss/typographic.scss#L34 */
         font-family: 'Helvetica Neue', 'Helvetica', 'Arial', 'sans-serif';
       }
+
+      /* Overlay styles */
+      .overlay {
+        position: absolute;
+        width: 50px;
+        height: 50px;
+        background: #33CC33;
+        border: 2px solid #00FF00;
+        opacity: 0.5;
+      }
   body
     h1 gist-gemini-fancy prototype
     //- Load an images directly from our report
@@ -48,14 +58,7 @@ html
           // If we don't have an overlay element, create one now
           if (!this.overlayEl) {
             this.overlayEl = document.createElement('div');
-            this.overlayEl.style.cssText = [
-              'position: absolute',
-              'width: 50px',
-              'height: 50px',
-              'background: #33CC33',
-              'border: 2px solid #00FF00',
-              'opacity: 0.5',
-            ].join(';');
+            this.overlayEl.className = 'overlay';
             document.body.appendChild(this.overlayEl);
           }
 
