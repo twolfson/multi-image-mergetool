@@ -9,11 +9,8 @@ html
       }
 
       /* Perform nice resets */
-      html, body {
-        height: 100%;
-      }
-
       body {
+        height: 100%;
         margin: 0;
         /* https://github.com/corysimmons/typographic/blob/2.9.3/scss/typographic.scss#L34 */
         font-family: 'Helvetica Neue', 'Helvetica', 'Arial', 'sans-serif';
@@ -35,6 +32,9 @@ html
     img(src="gemini-report/images/root/default-large/Chrome~diff.png")
     //- img(src="gemini-report/images/root/default-large/Chrome~ref.png")
 
+    //- Place an overflow element for scroll testing
+    div(style="width: 120vw; height: 100vh;") &nbsp;
+
     //- Load in our dependencies for `unidragger`
     script(src="https://cdn.rawgit.com/metafizzy/ev-emitter/v1.0.3/ev-emitter.js")
     script(src="https://cdn.rawgit.com/metafizzy/unipointer/v2.1.0/unipointer.js")
@@ -55,7 +55,15 @@ html
           // Calculate target dimensions
           // TODO: For wider browser support, see what `draggabilly` does (prob uses `get-size`)
           // bounds = {x, y, width, height, top, right, bottom, left}
-          this.bounds = targetEl.getBoundingClientRect();
+          // http://youmightnotneedjquery.com/#offset
+          // DEV: This is our poor man's `_.extend`
+          var _bounds = targetEl.getBoundingClientRect();
+          var bounds = this.bounds = {};
+          ['x', 'y', 'width', 'height', 'top', 'right', 'bottom', 'left'].forEach(function copyKey (key) {
+            bounds[key] = _bounds[key];
+          });
+          this.bounds.top += document.documentElement.scrollTop + document.body.scrollTop;
+          this.bounds.left += document.documentElement.scrollLeft + document.body.scrollLeft;
         }
         // Inherit prototype from Unidragger
         Overlay.prototype = Object.create(Unidragger.prototype);
@@ -67,13 +75,6 @@ html
             document.body.appendChild(this.overlayEl);
           }
 
-          // Correct pointer down location with scrolling
-          this.correctedDownPoint = {
-            x: this.pointerDownPoint.x + document.body.scrollLeft,
-            y: this.pointerDownPoint.y + document.body.scrollTop
-          }
-          console.log(document.body.scrollLeft);
-
           // Update our box position
           // TODO: Update cursor via CSS
           this.update(evt, pointer, {x: 0, y: 0});
@@ -83,21 +84,21 @@ html
           // DEV: We use `pointerDownPoint` instead of `dragStartPoint` for better cursor positioning
           var left, top, width, height;
           if (moveVector.x >= 0) {
-            left = this.correctedDownPoint.x;
+            left = this.pointerDownPoint.x;
             width = moveVector.x;
           // Otherwise (inverted), use opposite parameters)
           } else {
             // DEV: Technically we are subtracting moveVector as it's a negative value
-            left = this.correctedDownPoint.x + moveVector.x;
+            left = this.pointerDownPoint.x + moveVector.x;
             width = (-1 * moveVector.x);
           }
 
           // Similar behavior for Y dimension
           if (moveVector.y >= 0) {
-            top = this.correctedDownPoint.y;
+            top = this.pointerDownPoint.y;
             height = moveVector.y;
           } else {
-            top = this.correctedDownPoint.y + moveVector.y;
+            top = this.pointerDownPoint.y + moveVector.y;
             height = (-1 * moveVector.y);
           }
 
