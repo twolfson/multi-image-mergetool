@@ -44,9 +44,10 @@ html
 
     //- Define an output area for images
     p Results:
-    table
-      tr#title-tr
-      tr#body-tr
+    div(style="overflow-x: scroll;")
+      table
+        tr#title-tr
+        tr#body-tr
 
     script.
       document.addEventListener('DOMContentLoaded', function handleReady () {
@@ -64,9 +65,23 @@ html
           // DEV: Target area gathered from `/prototype`
           var targetArea = {left: 159, top: 0, width: 205, height: 63.133331298828125};
 
-          // Define our image sets to update
-          // Create 100 canvases to update
+          // Find our sets of images to update
+          var compareSetEls = document.querySelectorAll('[data-compare-set]');
 
-          // Load 100 distinct sets of images (current, diff, ref AKA actual, diff, expected)
+          // Find our output targets
+          var titleTrEl = document.querySelector('#title-tr');
+          var bodyTrEl = document.querySelector('#body-tr');
+
+          // Iterate over our sets
+          Array.prototype.forEach.call(compareSetEls, function forEachCompareSetEl (compareSetEl, i) {
+            // TODO: Create a canvas, load our diff into it, overwrite select area of canvas
+            // Output our updated diff to table
+            var titleTdEl = document.createElement('td');
+            titleTdEl.textContent = 'path/to/image/' + i + '/Chrome';
+            titleTrEl.appendChild(titleTdEl);
+            var bodyTdEl = document.createElement('td');
+            bodyTdEl.textContent = 'path/to/image/' + i + '/Chrome';
+            bodyTrEl.appendChild(bodyTdEl);
+          });
         }
       });
