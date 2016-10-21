@@ -127,6 +127,7 @@ html
             // TODO: When bulk update is accepted, send overwrite requests to server with new image as "Ref"
             //   and use `?1` trick to refresh images
             //   then re-run comparisons for all current vs ref
+            // DEV: We are realizing that Gemini likely does comparisons in Node.js so we should do the same on update
           });
         }
       });
