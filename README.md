@@ -25,4 +25,7 @@ ENV=normal npm run gemini-update
 
 # Capture our alternate Gemini images (causing a diff)
 ENV=alt npm run gemini-test
+
+# Open our prototype page in your browser
+xdg-open http://localhost:3000/prototype
 ```
