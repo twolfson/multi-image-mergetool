@@ -17,16 +17,56 @@ html
       | This page is a proof of concept to verify we won't have performance issues with a lot of pages
 
     //- Load an images directly from our report
-    //- img(src="gemini-report/images/root/default-large/Chrome~current.png")
-    img(src="gemini-report/images/root/default-large/Chrome~diff.png")
-    //- img(src="gemini-report/images/root/default-large/Chrome~ref.png")
+    table
+      - var imgHeight = '250';
+      tr
+        td Current:
+        td Diff:
+        td Ref:
+      tr
+        td
+          img(src="gemini-report/images/root/default-large/Chrome~current.png", height=imgHeight)
+        td
+          img(src="gemini-report/images/root/default-large/Chrome~diff.png", height=imgHeight)
+        td
+          img(src="gemini-report/images/root/default-large/Chrome~ref.png", height=imgHeight)
+
+    //- Load large set of images in hidden container
+    //- DEV: In reality, we would probably have something like Gemini's hidden selection
+    div(style="display: none")
+      - var i = 0;
+      while (i < 100)
+        div(data-compare-set=i)
+          img(data-compare-type="current", src="gemini-report/images/root/default-large/Chrome~current.png")
+          img(data-compare-type="diff", src="gemini-report/images/root/default-large/Chrome~diff.png")
+          img(data-compare-type="ref", src="gemini-report/images/root/default-large/Chrome~ref.png")
+        - i += 1
+
+    //- Define an output area for images
+    p Results:
+    table
+      tr#title-tr
+      tr#body-tr
 
     script.
       document.addEventListener('DOMContentLoaded', function handleReady () {
         // Find our image
         var imgEl = document.querySelector('img');
 
+        // Run a different performance test based on a flag
         // TODO: Test out bulk overlay of selection
-        // TODO: Test out bulk updating sections of an image
         // TODO: Test out bulk testing images
+        var TEST = 'UPDATE_SECTION';
+
+        // If we are running an update test
+        if (TEST === 'UPDATE_SECTION') {
+          // Specify target area (this would be done via overlay selection)
+          // DEV: Target area gathered from `/prototype`
+          var targetArea = {left: 159, top: 0, width: 205, height: 63.133331298828125};
+
+          // Define our image sets to update
+          // Create 100 canvases to update
+
+          // Load 100 distinct sets of images (current, diff, ref AKA actual, diff, expected)
+        }
       });
