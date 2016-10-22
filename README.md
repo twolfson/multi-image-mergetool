@@ -1,33 +1,35 @@
-# gist-gemini-fancy
-Proof of concept to explore fancy conflict resolution for images
+# multi-image-mergetool [![Build status](https://travis-ci.org/twolfson/multi-image-mergetool.svg?branch=master)](https://travis-ci.org/twolfson/multi-image-mergetool)
 
-## Getting started
-To reuse our proof of concept, run the following steps:
+Resolve multiple image conflicts at the same time
 
-```bash
-# Clone our repo
-git clone https://gist.github.com/2745867438113ed97ad5a39b7a2a410e.git gist-gemini-fancy
-cd gist-gemini-fancy
+## Getting Started
+Install the module with: `npm install multi-image-mergetool`
 
-# Install our dependencies (including Selenium)
-npm install
-npm run webdriver-update
-
-# Start our server
-npm start
-
-# In another tab, start our Selenium server
-npm run webdriver-start
-
-# In yet another tab:
-# Capture our normal Gemini images
-ENV=normal npm run gemini-update
-
-# Capture our alternate Gemini images (causing a diff)
-ENV=alt npm run gemini-test
-
-# Open our prototype page in your browser
-xdg-open http://localhost:3000/prototype
-# or open our performance page
-xdg-open http://localhost:3000/performance
+```js
+var multiImageMergetool = require('multi-image-mergetool');
+multiImageMergetool(); // 'awesome'
 ```
+
+## Documentation
+_(Coming soon)_
+
+## Examples
+_(Coming soon)_
+
+## Contributing
+In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint via `npm run lint` and test via `npm test`.
+
+## Donating
+Support this project and [others by no][gratipay] via [gratipay][].
+
+[![Support via Gratipay][gratipay-badge]][gratipay]
+
+[gratipay-badge]: https://cdn.rawgit.com/gratipay/gratipay-badge/2.x.x/dist/gratipay.svg
+[gratipay]: https://www.gratipay.com/no/
+
+## Unlicense
+As of Oct 22 2016, Todd Wolfson has released this repository and its contents to the public domain.
+
+It has been released under the [UNLICENSE][].
+
+[UNLICENSE]: UNLICENSE
