@@ -34,7 +34,8 @@
   "dependencies": {
     "commander": "~2.9.0",
     "express": "~4.14.0",
-    "jade": "~1.11.0"
+    "jade": "~1.11.0",
+    "opener": "~1.4.2"
   },
   "devDependencies": {
     "gemini": "~4.12.2",

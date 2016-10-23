@@ -10,6 +10,8 @@ TODO: Move from Jade to HTML so we can have `gh-pages` demo
 TODO: Add gh-pages demonstration of tool (with mock server responses)
 TODO: Clean up scripts and dependencies
 TODO: Include performance tests in final test suite
+TODO: Document CLI flags (`--help`)
+TODO: Remove our TODOs and console.logs
 
 ## Getting Started
 Install the module with: `npm install multi-image-mergetool`

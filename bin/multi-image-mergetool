@@ -4,8 +4,3 @@ var program = require('../lib/cli');
 
 // Parse the arguments
 program.parse(process.argv);
-
-// If there weren't enough arguments, display help
-if (process.argv.length <= 2) {
-  program.outputHelp();
-}
