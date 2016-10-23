@@ -3,7 +3,7 @@
 Resolve multiple image conflicts at the same time
 
 TODO: Add JSON reporter to Gemini or build out `multi-image-assert`
-TODO: Simplest API will be `gemini-test --reporter json || multi-image-mergetool --gemini` (loads Gemini config, finds screens based on that, (skips initial assertion), starts server + opens browser window)
+TODO: Simplest API will be `gemini-test --reporter json || multi-image-mergetool --preset gemini` (loads Gemini config, finds screens based on that, (skips initial assertion), starts server + opens browser window)
 TODO: Move to statically saved images instead of Gemini generated ones
 TODO: Test out via `karma` and Sauce Labs/BrowserStack?
 TODO: Move from Jade to HTML so we can have `gh-pages` demo
@@ -12,7 +12,7 @@ TODO: Clean up scripts and dependencies
 TODO: Include performance tests in final test suite
 TODO: Document CLI flags (`--help`)
 TODO: Remove our TODOs and console.logs
-TODO: Add `--gemini` flag support
+TODO: Add `--preset gemini` flag support
 
 ## Getting Started
 Install the module with: `npm install multi-image-mergetool`
