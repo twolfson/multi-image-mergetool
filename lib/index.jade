@@ -34,7 +34,8 @@ html
           td
             img(data-compare-type="current", src="/images/#{image_set.currentImg}", height=imgHeight)
           td
-            img(data-compare-type="diff", src="/images/#{image_set.diffImg}", height=imgHeight)
+            //- TODO: Ditch `expected-diff-img` as we have multiple images now
+            img#expected-diff-img(data-compare-type="diff", src="/images/#{image_set.diffImg}", height=imgHeight)
           td
             img(data-compare-type="ref", src="/images/#{image_set.refImg}", height=imgHeight)
 
