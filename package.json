@@ -41,7 +41,9 @@
     "express": "~4.14.0",
     "glob": "~7.1.1",
     "jade": "~1.11.0",
-    "opener": "~1.4.2"
+    "looks-same": "~3.0.0",
+    "opener": "~1.4.2",
+    "tmp": "0.0.29"
   },
   "devDependencies": {
     "gemini": "~4.12.2",
