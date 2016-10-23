@@ -32,6 +32,7 @@
     "webdriver-update": "webdriver-manager update"
   },
   "dependencies": {
+    "commander": "~2.9.0",
     "express": "~4.14.0",
     "jade": "~1.11.0"
   },
