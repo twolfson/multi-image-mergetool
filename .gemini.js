@@ -15,4 +15,3 @@ exports.browsers = {
     suitesPerSession: 1
   }
 };
-

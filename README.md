@@ -4,6 +4,8 @@ Resolve multiple image conflicts at the same time
 
 TODO: Add JSON reporter to Gemini or build out `multi-image-assert`
 TODO: Simplest API will be `gemini-test --reporter json || multi-image-mergetool --gemini` (loads Gemini config, finds screens based on that, (skips initial assertion), starts server + opens browser window)
+TODO: Move to statically saved images instead of Gemini generated ones
+TODO: Test out via `karma` and Sauce Labs/BrowserStack?
 
 ## Getting Started
 Install the module with: `npm install multi-image-mergetool`
