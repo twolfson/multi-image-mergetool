@@ -33,6 +33,13 @@ _(Coming soon)_
 ## Contributing
 In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint via `npm run lint` and test via `npm test`.
 
+## Prior art
+`multi-image-mergetool` was inspired by:
+
+- https://github.com/gemini-testing/gemini-gui
+- https://applitools.com/
+- [@twolfson's previous work on visual testing](http://twolfson.com/2014-02-25-visual-regression-testing-in-travis-ci)
+
 ## Unlicense
 As of Oct 22 2016, Todd Wolfson has released this repository and its contents to the public domain.
 
