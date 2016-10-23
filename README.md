@@ -46,6 +46,8 @@ In lieu of a formal styleguide, take care to maintain the existing coding style.
 - https://github.com/gemini-testing/gemini-gui
 - https://applitools.com/
 - [@twolfson's previous work on visual testing](http://twolfson.com/2014-02-25-visual-regression-testing-in-travis-ci)
+- Initial proof of concept: <https://gist.github.com/twolfson/2745867438113ed97ad5a39b7a2a410e>
+- Initial mockups: <https://gist.github.com/twolfson/c4236abadeada82e2686c940fb23341d>
 
 ## Unlicense
 As of Oct 22 2016, Todd Wolfson has released this repository and its contents to the public domain.
