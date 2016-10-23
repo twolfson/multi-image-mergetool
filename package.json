@@ -15,7 +15,10 @@
   "bugs": {
     "url": "https://github.com/twolfson/multi-image-mergetool/issues"
   },
-  "main": "lib/multi-image-mergetool",
+  "bin": {
+    "multi-image-mergetool": "bin/multi-image-mergetool"
+  },
+  "main": "lib/server",
   "engines": {
     "node": ">= 0.10.0"
   },
