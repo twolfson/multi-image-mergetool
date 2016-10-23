@@ -9,6 +9,7 @@ TODO: Test out via `karma` and Sauce Labs/BrowserStack?
 TODO: Move from Jade to HTML so we can have `gh-pages` demo
 TODO: Add gh-pages demonstration of tool (with mock server responses)
 TODO: Clean up scripts and dependencies
+TODO: Include performance tests in final test suite
 
 ## Getting Started
 Install the module with: `npm install multi-image-mergetool`
@@ -26,6 +27,9 @@ Support this project and [others by twolfson][projects] via [donations][support-
 
 ## Documentation
 _(Coming soon)_
+
+### Architecture choices
+We chose to use a server/browser implementation over a desktop application (e.g. Electron) for more flexibility with little development cost. It allows us to support virtualized environments (e.g. Vagrant, Docker) without asking our users to bend over backwards.
 
 ## Examples
 _(Coming soon)_
