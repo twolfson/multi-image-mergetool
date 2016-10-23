@@ -43,15 +43,16 @@ html
       - var i = 0;
       while (i < 200)
         //- Create set which has matching selection
-        div(data-compare-set=i)
-          img(data-compare-type="current", src="gemini-report/images/root/default-large/Chrome~current.png")
-          img(data-compare-type="diff", src="gemini-report/images/root/default-large/Chrome~diff.png")
-          img(data-compare-type="ref", src="gemini-report/images/root/default-large/Chrome~ref.png")
-        //- Create set without matching selection
-        div(data-compare-set=i + 1)
-          img(data-compare-type="current", src="gemini-report/images/root/default-large/Chrome~ref.png")
-          img(data-compare-type="diff", src="gemini-report/images/root/default-large/Chrome~ref.png")
-          img(data-compare-type="ref", src="gemini-report/images/root/default-large/Chrome~ref.png")
+        each image_set in image_sets
+          div(data-compare-set=i)
+            img(data-compare-type="current", src=image_set.currentImg)
+            img(data-compare-type="diff", src=image_set.diffImg)
+            img(data-compare-type="ref", src=image_set.refImg)
+          //- Create set without matching selection
+          div(data-compare-set=i + 1)
+            img(data-compare-type="current", src=image_set.currentImg)
+            img(data-compare-type="diff", src=image_set.currentImg)
+            img(data-compare-type="ref", src=image_set.currentImg)
         - i += 2
 
     //- Define an output area for images
