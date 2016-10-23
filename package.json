@@ -21,20 +21,30 @@
   },
   "license": "Unlicense",
   "scripts": {
+    "gemini-update": "npm run verify-webdriver-running && gemini update gemini.js",
+    "gemini-test": "npm run verify-webdriver-running && gemini test --reporter html --reporter flat gemini.js",
     "precheck": "twolfson-style precheck lib/ test/",
     "lint": "twolfson-style lint lib/ test/",
     "pretest": "twolfson-style install",
-    "test": "npm run precheck && mocha --reporter dot && npm run lint"
+    "test": "npm run precheck && mocha --reporter dot && npm run lint",
+    "verify-webdriver-running": "curl --silent http://localhost:4444/ > /dev/null || (echo \"Webdriver isn't running, please start it via \\`npm run webdriver-start\\`\" 1>&2 && exit 1)",
+    "webdriver-start": "xvfb-run webdriver-manager start",
+    "webdriver-update": "webdriver-manager update"
   },
-  "dependencies": {},
+  "dependencies": {
+    "express": "~4.14.0",
+    "jade": "~1.11.0"
+  },
   "devDependencies": {
+    "gemini": "~4.12.2",
     "foundry": "~4.0.3",
     "foundry-release-git": "~2.0.2",
     "foundry-release-npm": "~2.0.2",
     "jscs": "~1.7.3",
     "jshint": "~2.5.10",
     "mocha": "~1.11.0",
-    "twolfson-style": "~1.6.0"
+    "twolfson-style": "~1.6.0",
+    "webdriver-manager": "~10.2.4"
   },
   "keywords": [
     "image",
