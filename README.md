@@ -12,6 +12,7 @@ TODO: Clean up scripts and dependencies
 TODO: Include performance tests in final test suite
 TODO: Document CLI flags (`--help`)
 TODO: Remove our TODOs and console.logs
+TODO: Add `--gemini` flag support
 
 ## Getting Started
 Install the module with: `npm install multi-image-mergetool`
