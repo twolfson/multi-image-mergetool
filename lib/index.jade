@@ -29,13 +29,14 @@ html
         td Current:
         td Diff:
         td Ref:
-      tr
-        td
-          img(src="gemini-report/images/root/default-large/Chrome~current.png", height=imgHeight)
-        td
-          img#expected-diff-img(src="gemini-report/images/root/default-large/Chrome~diff.png", height=imgHeight)
-        td
-          img(src="gemini-report/images/root/default-large/Chrome~ref.png", height=imgHeight)
+      each image_set in image_sets
+        tr
+          td
+            img(data-compare-type="current", src="/images/#{image_set.currentImg}", height=imgHeight)
+          td
+            img(data-compare-type="diff", src="/images/#{image_set.diffImg}", height=imgHeight)
+          td
+            img(data-compare-type="ref", src="/images/#{image_set.refImg}", height=imgHeight)
 
     //- Load large set of images in hidden container
     //- DEV: In reality, we would probably have something like Gemini's hidden selection
@@ -45,14 +46,14 @@ html
         //- Create set which has matching selection
         each image_set in image_sets
           div(data-compare-set=i)
-            img(data-compare-type="current", src="/images#{image_set.currentImg}")
-            img(data-compare-type="diff", src="/images#image_set.diffImg")
-            img(data-compare-type="ref", src="/images#{image_set.refImg}")
+            img(data-compare-type="current", src="/images/#{image_set.currentImg}")
+            img(data-compare-type="diff", src="/images/#{image_set.diffImg}")
+            img(data-compare-type="ref", src="/images/#{image_set.refImg}")
           //- Create set without matching selection
           div(data-compare-set=i + 1)
-            img(data-compare-type="current", src="/images#{image_set.currentImg}")
-            img(data-compare-type="diff", src="/images#{image_set.currentImg}")
-            img(data-compare-type="ref", src="/images#{image_set.currentImg}")
+            img(data-compare-type="current", src="/images/#{image_set.currentImg}")
+            img(data-compare-type="diff", src="/images/#{image_set.currentImg}")
+            img(data-compare-type="ref", src="/images/#{image_set.currentImg}")
         - i += 2
 
     //- Define an output area for images
