@@ -10,15 +10,14 @@ html
     //- TODO: Expose images in tree list like gemini-gui, maybe even simplified variants like GitHub
     //-   (e.g. `a/b/c` when only 1 file)
     - var imgHeight = '250';
-    each image_set, i in image_sets
+    each image_set in image_sets
       ul
         li
-          - var imageSetId = 'image-set__' + encodeURIComponent(image_set.refImg).replace('~', '');
-          - console.log(imageSetId);
-          //- DEV: `data-target=#image-set...` (first hash is for id, second is for interpolation)
-          a(href="javascript:void 0;", data-toggle="collapse", data-target="##{imageSetId}",
+          //- DEV: We use `data-id` as `id` has restrictions on characters
+          //- TODO: Show match pass/fail status
+          a(href="javascript:void 0;", data-toggle="collapse", data-target="[data-id=\"#{image_set.refImg}\"]",
             aria-expanded="false", aria-controls=imageSetId)= image_set.refImg
-          table.collapse(id=imageSetId)
+          table.collapse(data-id=image_set.refImg)
             tr
               td Current:
               td Diff:
