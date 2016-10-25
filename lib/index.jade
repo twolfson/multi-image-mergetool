@@ -3,28 +3,34 @@ html
   head
     title multi-image-mergetool
     link(rel="stylesheet", href="https://cdn.rawgit.com/twbs/bootstrap/v3.3.7/dist/css/bootstrap.min.css", text="text/css")
+    script(src="https://code.jquery.com/jquery-3.1.1.min.js", integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=", crossorigin="anonymous")
+    script(src="https://cdn.rawgit.com/twbs/bootstrap/v3.3.7/dist/js/bootstrap.min.js")
   body
     //- Expose our images
     //- TODO: Expose images in tree list like gemini-gui, maybe even simplified variants like GitHub
     //-   (e.g. `a/b/c` when only 1 file)
     - var imgHeight = '250';
-    each image_set in image_sets
+    each image_set, i in image_sets
       ul
         li
-          strong= image_set.refImg
-        table
-          tr
-            td Current:
-            td Diff:
-            td Ref:
+          - var imageSetId = 'image-set__' + encodeURIComponent(image_set.refImg).replace('~', '');
+          - console.log(imageSetId);
+          //- DEV: `data-target=#image-set...` (first hash is for id, second is for interpolation)
+          a(href="javascript:void 0;", data-toggle="collapse", data-target="##{imageSetId}",
+            aria-expanded="false", aria-controls=imageSetId)= image_set.refImg
+          table.collapse(id=imageSetId)
             tr
-              td
-                img(data-compare-type="current", src="/images/#{image_set.currentImg}", height=imgHeight)
-              td
-                //- TODO: Ditch `expected-diff-img` as we have multiple images now
-                img.expected-diff-img(data-compare-type="diff", src="/images/#{image_set.diffImg}", height=imgHeight)
-              td
-                img(data-compare-type="ref", src="/images/#{image_set.refImg}", height=imgHeight)
+              td Current:
+              td Diff:
+              td Ref:
+              tr
+                td
+                  img(data-compare-type="current", src="/images/#{image_set.currentImg}", height=imgHeight)
+                td
+                  //- TODO: Ditch `expected-diff-img` as we have multiple images now
+                  img.expected-diff-img(data-compare-type="diff", src="/images/#{image_set.diffImg}", height=imgHeight)
+                td
+                  img(data-compare-type="ref", src="/images/#{image_set.refImg}", height=imgHeight)
     //- TODO: When moving to repo, don't work on polishing overlay in separate repo yet
     //-   First: Make sure we can get approval fully working (i.e. gemini does a comparison + approval data with no fuss)
     //-   Second: Improve selection in this repo so we can work out any kinks that might change its API
