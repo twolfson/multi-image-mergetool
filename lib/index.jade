@@ -31,6 +31,8 @@ html
           var imgSetHumanName = imgSet.refImg;
 
           // Generate our image set element
+          // TODO: Move this to a constructor with methods that are run via Bootstrap bindings
+          //   e.g. `click: [data-image-set] .btn[data-accept]` or something like that... I dislike `data-accept` but yea
           var imgSetEl = D.UL([
             D.LI([
               // DEV: We use `data-id` as `id` has restrictions on characters
