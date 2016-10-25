@@ -46,15 +46,28 @@ html
                 D.TR([
                   D.TD('Current:'),
                   D.TD('Diff:'),
-                  D.TD('Ref:'),
-                  //- D.TR([
-                  //-   D.TD([
-                  //-     img(data-compare-type="current", src="/images/-{image_set.currentImg}", height=imgHeight)
-                  //-   D.TD([
-                  //-     // TODO: Ditch `expected-diff-img` as we have multiple images now
-                  //-     img.expected-diff-img(data-compare-type="diff", src="/images/-{image_set.diffImg}", height=imgHeight)
-                  //-   D.TD([
-                  //-     img(data-compare-type="ref", src="/images/-{image_set.refImg}", height=imgHeight)
+                  D.TD('Ref:')
+                ]),
+                D.TR([
+                  D.TD([
+                    D.IMG({
+                      'data-compare-type': 'current', src: '/images/' + imgSet.currentImg,
+                      height: imgHeight
+                    })
+                  ]),
+                  D.TD([
+                    // TODO: Ditch `expected-diff-img` as we have multiple images now
+                    D.IMG({
+                      'data-compare-type': 'diff', src: '/images/' + imgSet.diffImg,
+                      height: imgHeight, className: 'expected-diff-img'
+                    })
+                  ]),
+                  D.TD([
+                    D.IMG({
+                      'data-compare-type': 'ref', src: '/images/' + imgSet.refImg,
+                      height: imgHeight
+                    })
+                  ])
                 ])
               ])
             ])
