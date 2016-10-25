@@ -2,42 +2,35 @@ doctype html
 html
   head
     title multi-image-mergetool
-    style.
-      /* Perform nice resets */
-      body {
-        height: 100%;
-        margin: 0;
-        /* https://github.com/corysimmons/typographic/blob/2.9.3/scss/typographic.scss#L34 */
-        font-family: 'Helvetica Neue', 'Helvetica', 'Arial', 'sans-serif';
-      }
+    link(rel="stylesheet", href="https://cdn.rawgit.com/twbs/bootstrap/v3.3.7/dist/css/bootstrap.min.css", text="text/css")
   body
-    //- Provide info to the user
-    h1 gist-gemini-fancy performance
-    p
-      | This page is a proof of concept to verify we won't have performance issues with a lot of pages
-
+    //- Expose our images
+    //- TODO: Expose images in tree list like gemini-gui, maybe even simplified variants like GitHub
+    //-   (e.g. `a/b/c` when only 1 file)
+    - var imgHeight = '250';
+    each image_set in image_sets
+      ul
+        li
+          strong= image_set.refImg
+        table
+          tr
+            td Current:
+            td Diff:
+            td Ref:
+            tr
+              td
+                img(data-compare-type="current", src="/images/#{image_set.currentImg}", height=imgHeight)
+              td
+                //- TODO: Ditch `expected-diff-img` as we have multiple images now
+                img.expected-diff-img(data-compare-type="diff", src="/images/#{image_set.diffImg}", height=imgHeight)
+              td
+                img(data-compare-type="ref", src="/images/#{image_set.refImg}", height=imgHeight)
     //- TODO: When moving to repo, don't work on polishing overlay in separate repo yet
     //-   First: Make sure we can get approval fully working (i.e. gemini does a comparison + approval data with no fuss)
     //-   Second: Improve selection in this repo so we can work out any kinks that might change its API
     //-     This might break a rule of mine which is open source/break out first but technically it's already open source =/
     //-   Third: Figure out jawbone and magnification etc (maybe do something in a mockup tool)
 
-    //- Load an images directly from our report
-    table
-      - var imgHeight = '250';
-      tr
-        td Current:
-        td Diff:
-        td Ref:
-      each image_set in image_sets
-        tr
-          td
-            img(data-compare-type="current", src="/images/#{image_set.currentImg}", height=imgHeight)
-          td
-            //- TODO: Ditch `expected-diff-img` as we have multiple images now
-            img#expected-diff-img(data-compare-type="diff", src="/images/#{image_set.diffImg}", height=imgHeight)
-          td
-            img(data-compare-type="ref", src="/images/#{image_set.refImg}", height=imgHeight)
 
     //- Load large set of images in hidden container
     //- DEV: In reality, we would probably have something like Gemini's hidden selection
