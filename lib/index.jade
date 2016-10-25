@@ -25,7 +25,7 @@ html
         var imgHeight = '250';
         var imageSets = window.imageSets;
         var docFrag = document.createDocumentFragment();
-        imageSets.forEach(function createImageSet (imgSet) {
+        imageSets.forEach(function createImageSet (imgSet, i) {
           // Create local variables for our image set
           var imgSetId = imgSet.refImg;
           var imgSetHumanName = imgSet.refImg;
@@ -37,11 +37,13 @@ html
               // TODO: Show match pass/fail status
               D.A({
                 href: 'javascript:void 0;', 'data-toggle': 'collapse',
-                'data-target': '[data-id="' + imgSetId + '"]',
-                'aria-expanded': 'false', 'aria-controls': imgSetId
+                'data-target': '[data-id="' + imgSetId + '"]', 'aria-controls': imgSetId
               }, imgSetHumanName),
               D.TABLE({
-                className: 'collapse', 'data-id': imgSetId
+                // Make our first image set visible
+                // TODO: Remove this flag, make only failing tests visible
+                // DEV: If class names get too complex, use `classnames` library
+                class: i === 0 ? 'collapse in' : 'collapse', 'data-id': imgSetId
               }, [
                 D.TR([
                   D.TD('Current:'),
@@ -59,7 +61,7 @@ html
                     // TODO: Ditch `expected-diff-img` as we have multiple images now
                     D.IMG({
                       'data-compare-type': 'diff', src: '/images/' + imgSet.diffImg,
-                      height: imgHeight, className: 'expected-diff-img'
+                      height: imgHeight, class: 'expected-diff-img'
                     })
                   ]),
                   D.TD([
