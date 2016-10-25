@@ -5,66 +5,81 @@ html
     link(rel="stylesheet", href="https://cdn.rawgit.com/twbs/bootstrap/v3.3.7/dist/css/bootstrap.min.css", text="text/css")
     script(src="https://code.jquery.com/jquery-3.1.1.min.js", integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=", crossorigin="anonymous")
     script(src="https://cdn.rawgit.com/twbs/bootstrap/v3.3.7/dist/js/bootstrap.min.js")
+    script(src="https://cdn.rawgit.com/jed/domo/13c45aba3e94dd2d1bc469ce3339bbc1e3a10314/lib/domo.js")
   body
-    //- Expose our images
-    //- TODO: Expose images in tree list like gemini-gui, maybe even simplified variants like GitHub
-    //-   (e.g. `a/b/c` when only 1 file)
-    - var imgHeight = '250';
-    each image_set in image_sets
-      ul
-        li
-          //- DEV: We use `data-id` as `id` has restrictions on characters
-          //- TODO: Show match pass/fail status
-          a(href="javascript:void 0;", data-toggle="collapse", data-target="[data-id=\"#{image_set.refImg}\"]",
-            aria-expanded="false", aria-controls=imageSetId)= image_set.refImg
-          table.collapse(data-id=image_set.refImg)
-            tr
-              td Current:
-              td Diff:
-              td Ref:
-              tr
-                td
-                  img(data-compare-type="current", src="/images/#{image_set.currentImg}", height=imgHeight)
-                td
-                  //- TODO: Ditch `expected-diff-img` as we have multiple images now
-                  img.expected-diff-img(data-compare-type="diff", src="/images/#{image_set.diffImg}", height=imgHeight)
-                td
-                  img(data-compare-type="ref", src="/images/#{image_set.refImg}", height=imgHeight)
+    //- Expose our data directly to `window`
+    script
+      //- TODO: Make sure there are no XSS holes like `</script><script>alert(1)`
+      | window.imageSets = !{JSON.stringify(image_sets)};
+
+    //- Define our main script
+    //- TODO: Relocate into another file
+    script.
+      document.addEventListener('DOMContentLoaded', function handleReady () {
+        // Simplifiy domo reference
+        var D = window.domo;
+
+        // Expose our images
+        // TODO: Expose images in tree list like gemini-gui, maybe even simplified variants like GitHub
+        //   (e.g. `a/b/c` when only 1 file)
+        var imgHeight = '250';
+        var imageSets = window.imageSets;
+        var docFrag = document.createDocumentFragment();
+        imageSets.forEach(function createImageSet (imgSet) {
+          // Create local variables for our image set
+          var imgSetId = imgSet.refImg;
+          var imgSetHumanName = imgSet.refImg;
+
+          // Generate our image set element
+          var imgSetEl = D.UL([
+            D.LI([
+              // DEV: We use `data-id` as `id` has restrictions on characters
+              // TODO: Show match pass/fail status
+              D.A({
+                href: 'javascript:void 0;', 'data-toggle': 'collapse',
+                'data-target': '[data-id="' + imgSetId + '"]',
+                'aria-expanded': 'false', 'aria-controls': imgSetId
+              }, imgSetHumanName),
+              D.TABLE({
+                className: 'collapse', 'data-id': imgSetId
+              }, [
+                D.TR([
+                  D.TD('Current:'),
+                  D.TD('Diff:'),
+                  D.TD('Ref:'),
+                  //- D.TR([
+                  //-   D.TD([
+                  //-     img(data-compare-type="current", src="/images/-{image_set.currentImg}", height=imgHeight)
+                  //-   D.TD([
+                  //-     // TODO: Ditch `expected-diff-img` as we have multiple images now
+                  //-     img.expected-diff-img(data-compare-type="diff", src="/images/-{image_set.diffImg}", height=imgHeight)
+                  //-   D.TD([
+                  //-     img(data-compare-type="ref", src="/images/-{image_set.refImg}", height=imgHeight)
+                ])
+              ])
+            ])
+          ]);
+
+          // Append our element to a document fragment
+          // DEV: We use a document fragment to prevent redrawing elements on each append
+          docFrag.appendChild(imgSetEl);
+        });
+
+        // Apppend our document fragment
+        document.body.appendChild(docFrag);
+      });
+
     //- TODO: When moving to repo, don't work on polishing overlay in separate repo yet
     //-   First: Make sure we can get approval fully working (i.e. gemini does a comparison + approval data with no fuss)
     //-   Second: Improve selection in this repo so we can work out any kinks that might change its API
     //-     This might break a rule of mine which is open source/break out first but technically it's already open source =/
     //-   Third: Figure out jawbone and magnification etc (maybe do something in a mockup tool)
 
-
-    //- Load large set of images in hidden container
-    //- DEV: In reality, we would probably have something like Gemini's hidden selection
-    div(style="display: none")
-      - var i = 0;
-      while (i < 200)
-        //- Create set which has matching selection
-        each image_set in image_sets
-          div(data-compare-set=i)
-            img(data-compare-type="current", src="/images/#{image_set.currentImg}")
-            img(data-compare-type="diff", src="/images/#{image_set.diffImg}")
-            img(data-compare-type="ref", src="/images/#{image_set.refImg}")
-          //- Create set without matching selection
-          div(data-compare-set=i + 1)
-            img(data-compare-type="current", src="/images/#{image_set.currentImg}")
-            img(data-compare-type="diff", src="/images/#{image_set.currentImg}")
-            img(data-compare-type="ref", src="/images/#{image_set.currentImg}")
-        - i += 2
-
-    //- Define an output area for images
-    p(style="margin-bottom: 0") Results:
-    table#results(style="margin-left: 20px")
-
     //- TODO: Consider scrollspy for update buttons
     //- TODO: Consider buttons to expand row of images to full screen
     //- TODO: Consider magnifying glass zoom on images (e.g. like in ecommerce sites)
     //- TODO: Figure out how to make selection work, maybe normal GUI like Gemini but with jawbone effect for matching items
 
-    script(src="https://cdn.rawgit.com/jed/domo/13c45aba3e94dd2d1bc469ce3339bbc1e3a10314/lib/domo.js")
     script.
       document.addEventListener('DOMContentLoaded', function handleReady () {
         // Simplifiy domo reference
