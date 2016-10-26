@@ -33,51 +33,65 @@ html
           // Generate our image set element
           // TODO: Move this to a constructor with methods that are run via Bootstrap bindings
           //   e.g. `click: [data-image-set] .btn[data-accept]` or something like that... I dislike `data-accept` but yea
+          // TODO: Show match pass/fail status (e.g. green/red)
           var imgSetEl = D.UL([
             D.LI([
-              // DEV: We use `data-id` as `id` has restrictions on characters
-              // TODO: Show match pass/fail status
+              // Row title
               D.A({
                 href: 'javascript:void 0;', 'data-toggle': 'collapse',
                 'data-target': '[data-id="' + imgSetId + '"]', 'aria-controls': imgSetId
               }, imgSetHumanName),
-              D.TABLE({
+
+              // Collapsable container for row
+              // DEV: We use `data-id` as `id` has restrictions on characters
+              D.DIV({
                 // Make our first image set visible
                 // TODO: Remove this flag, make only failing tests visible
                 // DEV: If class names get too complex, use `classnames` library
                 class: i === 0 ? 'collapse in' : 'collapse', 'data-id': imgSetId
               }, [
-                D.TR([
-                  D.TD('Current:'),
-                  D.TD('Diff:'),
-                  D.TD('Ref:')
+                // Action buttons
+                D.DIV([
+                  D.BUTTON({
+                    class: 'btn btn-default',
+                    'data-action': 'accept'
+                  }, '✓ Accept changes')
                 ]),
-                D.TR([
-                  D.TD([
-                    D.IMG({
-                      'data-compare-type': 'current',
-                      src: '/images/' + imgSet.currentImg,
-                      style: 'width: 100%; max-width: ' + imgWidth + 'px'
-                    })
+
+                // Image set
+                D.TABLE([
+                  D.TR([
+                    D.TD('Current:'),
+                    D.TD('Diff:'),
+                    D.TD('Ref:')
                   ]),
-                  D.TD([
-                    // TODO: Ditch `expected-diff-img` as we have multiple images now
-                    D.IMG({
-                      'data-compare-type': 'diff',
-                      src: '/images/' + imgSet.diffImg,
-                      class: 'expected-diff-img',
-                      style: 'width: 100%; max-width: ' + imgWidth + 'px',
-                    })
-                  ]),
-                  D.TD([
-                    D.IMG({
-                      'data-compare-type': 'ref',
-                      src: '/images/' + imgSet.refImg,
-                      style: 'width: 100%; max-width: ' + imgWidth + 'px'
-                    })
+                  D.TR([
+                    D.TD([
+                      D.IMG({
+                        'data-compare-type': 'current',
+                        src: '/images/' + imgSet.currentImg,
+                        style: 'width: 100%; max-width: ' + imgWidth + 'px'
+                      })
+                    ]),
+                    D.TD([
+                      // TODO: Ditch `expected-diff-img` as we have multiple images now
+                      D.IMG({
+                        'data-compare-type': 'diff',
+                        src: '/images/' + imgSet.diffImg,
+                        class: 'expected-diff-img',
+                        style: 'width: 100%; max-width: ' + imgWidth + 'px',
+                      })
+                    ]),
+                    D.TD([
+                      D.IMG({
+                        'data-compare-type': 'ref',
+                        src: '/images/' + imgSet.refImg,
+                        style: 'width: 100%; max-width: ' + imgWidth + 'px'
+                      })
+                    ])
                   ])
                 ])
-              ])
+              ]),
             ])
           ]);
 
