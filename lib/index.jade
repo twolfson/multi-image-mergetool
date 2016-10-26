@@ -163,7 +163,7 @@ html
 
       // Define acceptance helper
       function acceptImageSetChanges(acceptedImgBase64, imgSetId) {
-        // Make an AJAX call to accept our image
+        // TODO: Make an AJAX call to accept our image
 
         // Fade out diff and reference images to "loading" state
         var $imgSet = $('[data-image-set="' + jQuery.escapeSelector(imgSetId) + '"]');
@@ -179,6 +179,7 @@ html
         // TODO: If there is an error, reset our status
 
         // TODO: When loading completes, remove loading state and update image references
+        //   This is development mocking for now
         setTimeout(function () {
           $diffImg.removeClass('loading');
           $refImg.removeClass('loading');
