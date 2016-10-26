@@ -97,14 +97,15 @@ html
                     D.TD('Ref:')
                   ]),
                   D.TR([
-                    D.TD([
+                    D.TD({style: 'width: 33%'} ,[
                       D.IMG({
                         'data-compare-type': 'current',
                         src: '/images/' + imgSet.currentImg,
                         style: 'width: 100%'
                       })
                     ]),
-                    D.TD([
+                    //- DEV: We use `width: 33%` to guarantee no widths change when we use a loading spinner
+                    D.TD({style: 'width: 33%'} ,[
                       // TODO: Ditch `expected-diff-img` as we have multiple images now
                       D.IMG({
                         'data-compare-type': 'diff',
@@ -113,7 +114,7 @@ html
                         style: 'width: 100%',
                       })
                     ]),
-                    D.TD([
+                    D.TD({style: 'width: 33%'} ,[
                       D.IMG({
                         'data-compare-type': 'ref',
                         src: '/images/' + imgSet.refImg,
@@ -138,12 +139,14 @@ html
       function acceptImageSetChanges(acceptedImg, imgSetId) {
         // Make an AJAX call to accept our image
 
-        // Update diff and reference image to a loading image
+        // Fade out diff and reference images to "loading" state
 
         // TODO: Eagerly update our status
-        //   This won't be the scenario for
+        //   This won't be the scenario for update reference image (i.e. we are progressively updating images)
 
         // TODO: If there is an error, reset our status
+
+        // TODO: When loading completes, remove loading state and update image references
       }
 
       // Set up image acceptance binding
