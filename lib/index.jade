@@ -8,6 +8,25 @@ html
         /* Same width as `container-fluid` */
         padding-left: 15px;
       }
+
+      /* Built on http://codepen.io/twolfson/pen/XjQdKL */
+      .loading {
+        /* Default to low opacity for browsers without keyframe support */
+        opacity: 0.3;
+
+        /* Add our animation */
+        /* https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Animations/Using_CSS_animations */
+        animation-duration: 0.5s;
+        animation-name: loading;
+        animation-iteration-count: infinite;
+        animation-direction: alternate;
+        animation-timing-function: linear;
+      }
+
+      @keyframes loading {
+        from { opacity: 0.3; }
+        to { opacity: 0.4; }
+      }
     script(src="https://code.jquery.com/jquery-3.1.1.min.js", integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=", crossorigin="anonymous")
     script(src="https://cdn.rawgit.com/twbs/bootstrap/v3.3.7/dist/js/bootstrap.min.js")
     script(src="https://cdn.rawgit.com/jed/domo/13c45aba3e94dd2d1bc469ce3339bbc1e3a10314/lib/domo.js")
@@ -135,11 +154,24 @@ html
         document.body.appendChild(containerEl);
       });
 
+      // Define cache busting helper
+      function cachebustImg($img) {
+        var originalSrc = $img.attr('src');
+        var newSrc = originalSrc.match(/\?1$/) ? originalSrc + '1' : originalSrc + '?1';
+        $img.attr('src', newSrc);
+      }
+
       // Define acceptance helper
-      function acceptImageSetChanges(acceptedImg, imgSetId) {
+      function acceptImageSetChanges(acceptedImgBase64, imgSetId) {
         // Make an AJAX call to accept our image
 
         // Fade out diff and reference images to "loading" state
+        var $imgSet = $('[data-image-set="' + jQuery.escapeSelector(imgSetId) + '"]');
+        //- assert.strictEqual($imgSet.length, 1);
+        var $diffImg = $imgSet.find('[data-compare-type="diff"]');
+        var $refImg = $imgSet.find('[data-compare-type="ref"]');
+        $diffImg.addClass('loading');
+        $refImg.addClass('loading');
 
         // TODO: Eagerly update our status
         //   This won't be the scenario for update reference image (i.e. we are progressively updating images)
@@ -147,6 +179,18 @@ html
         // TODO: If there is an error, reset our status
 
         // TODO: When loading completes, remove loading state and update image references
+        setTimeout(function () {
+          $diffImg.removeClass('loading');
+          $refImg.removeClass('loading');
+          cachebustImg($diffImg);
+          cachebustImg($refImg);
+        }, 1000);
+      }
+
+      // Define base64 content helper
+      function getBase64Content(imgEl) {
+        // TODO: Complete base64 extraction
+        return '';
       }
 
       // Set up image acceptance binding
@@ -155,13 +199,16 @@ html
         var btnEl = evt.target;
         var $imgSet = $(btnEl).closest('[data-image-set]');
         var imgSetId = $imgSet.data('image-set');
-        assert.strictEqual($imgSet.length, 1);
+        //- assert.strictEqual($imgSet.length, 1);
 
         // Find the current image
         var $currentImg = $imgSet.find('[data-compare-type="current"]');
-        assert.strictEqual($currentImg.length, 1);
+        //- assert.strictEqual($currentImg.length, 1);
+
+        // TODO: Extract base64 content for image
 
         // Run acceptance function
+        acceptImageSetChanges($currentImg[0], imgSetId);
       });
 
     script.
