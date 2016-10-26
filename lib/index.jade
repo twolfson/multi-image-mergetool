@@ -3,6 +3,11 @@ html
   head
     title multi-image-mergetool
     link(rel="stylesheet", href="https://cdn.rawgit.com/twbs/bootstrap/v3.3.7/dist/css/bootstrap.min.css", text="text/css")
+    style.
+      ul {
+        /* Same width as `container-fluid` */
+        padding-left: 15px;
+      }
     script(src="https://code.jquery.com/jquery-3.1.1.min.js", integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=", crossorigin="anonymous")
     script(src="https://cdn.rawgit.com/twbs/bootstrap/v3.3.7/dist/js/bootstrap.min.js")
     script(src="https://cdn.rawgit.com/jed/domo/13c45aba3e94dd2d1bc469ce3339bbc1e3a10314/lib/domo.js")
@@ -24,7 +29,9 @@ html
         //   (e.g. `a/b/c` when only 1 file)
         var imgWidth = '400';
         var imageSets = window.imageSets;
-        var docFrag = document.createDocumentFragment();
+        var containerEl = D.DIV({
+          class: 'container-fluid'
+        });
         imageSets.forEach(function createImageSet (imgSet, i) {
           // Create local variables for our image set
           var imgSetId = imgSet.refImg;
@@ -48,7 +55,7 @@ html
                 // Make our first image set visible
                 // TODO: Remove this flag, make only failing tests visible
                 // DEV: If class names get too complex, use `classnames` library
-                class: i === 0 ? 'collapse in' : 'collapse', 'data-id': imgSetId
+                class: i === 0 ? 'collapse in well' : 'collapse well', 'data-id': imgSetId
               }, [
                 // Action buttons
                 D.DIV([
@@ -78,7 +85,7 @@ html
                       D.IMG({
                         'data-compare-type': 'current',
                         src: '/images/' + imgSet.currentImg,
-                        style: 'width: 100%; max-width: ' + imgWidth + 'px'
+                        style: 'width: 100%'
                       })
                     ]),
                     D.TD([
@@ -87,14 +94,14 @@ html
                         'data-compare-type': 'diff',
                         src: '/images/' + imgSet.diffImg,
                         class: 'expected-diff-img',
-                        style: 'width: 100%; max-width: ' + imgWidth + 'px',
+                        style: 'width: 100%',
                       })
                     ]),
                     D.TD([
                       D.IMG({
                         'data-compare-type': 'ref',
                         src: '/images/' + imgSet.refImg,
-                        style: 'width: 100%; max-width: ' + imgWidth + 'px'
+                        style: 'width: 100%'
                       })
                     ])
                   ])
@@ -105,11 +112,11 @@ html
 
           // Append our element to a document fragment
           // DEV: We use a document fragment to prevent redrawing elements on each append
-          docFrag.appendChild(imgSetEl);
+          containerEl.appendChild(imgSetEl);
         });
 
         // Apppend our document fragment
-        document.body.appendChild(docFrag);
+        document.body.appendChild(containerEl);
       });
 
     //- TODO: When moving to repo, don't work on polishing overlay in separate repo yet
