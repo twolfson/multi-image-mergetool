@@ -55,7 +55,15 @@ html
                   D.BUTTON({
                     class: 'btn btn-default',
                     'data-action': 'accept'
-                  }, '✓ Accept changes')
+                  }, '✓ Accept changes'),
+                  ' ',
+                  D.BUTTON({
+                    class: 'btn btn-default',
+                    'data-action': 'accept',
+                    // TODO: Make our button disabled and only enable when an overlay is drawn
+                    // TODO: When changes are accepted, reset all affected overlays and buttons
+                    disabled: 'disabled'
+                  }, 'Find similar images with selection'),
                 ]),
 
                 // Image set
