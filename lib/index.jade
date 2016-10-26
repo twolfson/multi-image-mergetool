@@ -17,6 +17,18 @@ html
       //- TODO: Make sure there are no XSS holes like `</script><script>alert(1)`
       | window.imageSets = !{JSON.stringify(image_sets)};
 
+    //- TODO: Consider scrollspy for update buttons
+    //- TODO: Consider buttons to expand row of images to full screen
+    //- TODO: Consider magnifying glass zoom on images (e.g. like in ecommerce sites)
+    //- TODO: Figure out how to make selection work, maybe normal GUI like Gemini but with jawbone effect for matching items
+
+    //- TODO: Next: Add image acceptance support
+    //- TODO: Next: Add non-click image matching
+    //- TODO: Next: Add image acceptance support for matched images
+    //- TODO: Next: Move to click image matching
+    //- TODO: Next: Add overlay support
+    //- TODO: Next: Add result update (i.e. pass/fail) if we still lack it
+
     //- Define our main script
     //- TODO: Relocate into another file
     script.
@@ -24,14 +36,17 @@ html
         // Simplifiy domo reference
         var D = window.domo;
 
+        // Generate our container element
+        // DEV: We use a container element instead of the DOM directly to prevent redrawing elements on each append
+        var containerEl = D.DIV({
+          class: 'container-fluid'
+        });
+
         // Expose our images
         // TODO: Expose images in tree list like gemini-gui, maybe even simplified variants like GitHub
         //   (e.g. `a/b/c` when only 1 file)
         var imgWidth = '400';
         var imageSets = window.imageSets;
-        var containerEl = D.DIV({
-          class: 'container-fluid'
-        });
         imageSets.forEach(function createImageSet (imgSet, i) {
           // Create local variables for our image set
           var imgSetId = imgSet.refImg;
@@ -110,25 +125,13 @@ html
             ])
           ]);
 
-          // Append our element to a document fragment
-          // DEV: We use a document fragment to prevent redrawing elements on each append
+          // Append our element to the container element
           containerEl.appendChild(imgSetEl);
         });
 
-        // Apppend our document fragment
+        // Apppend our container element
         document.body.appendChild(containerEl);
       });
-
-    //- TODO: When moving to repo, don't work on polishing overlay in separate repo yet
-    //-   First: Make sure we can get approval fully working (i.e. gemini does a comparison + approval data with no fuss)
-    //-   Second: Improve selection in this repo so we can work out any kinks that might change its API
-    //-     This might break a rule of mine which is open source/break out first but technically it's already open source =/
-    //-   Third: Figure out jawbone and magnification etc (maybe do something in a mockup tool)
-
-    //- TODO: Consider scrollspy for update buttons
-    //- TODO: Consider buttons to expand row of images to full screen
-    //- TODO: Consider magnifying glass zoom on images (e.g. like in ecommerce sites)
-    //- TODO: Figure out how to make selection work, maybe normal GUI like Gemini but with jawbone effect for matching items
 
     script.
       document.addEventListener('DOMContentLoaded', function handleReady () {
