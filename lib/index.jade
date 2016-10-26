@@ -153,6 +153,7 @@ html
             // https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/rect
             context.rect(0, 0, targetArea.width, targetArea.height);
             context.clip();
+            // TODO: Verify that drawing scaled images doesn't affect canvas drawing
             context.drawImage(img, -1 * targetArea.left, -1 * targetArea.top);
 
             // Return our generated canvas
@@ -185,6 +186,7 @@ html
             // If the images are different widths, return false
             // TODO: Allow this to be a configurable heuristic
             var actualDiffImg = compareSet.diffImg;
+            // TODO: Use `actualWidth`
             if (expectedDiffImg.width !== actualDiffImg.width) {
               return false;
             }
