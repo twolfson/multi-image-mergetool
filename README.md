@@ -15,6 +15,7 @@ TODO: Remove our TODOs and console.logs
 TODO: Add `--preset gemini` flag support
 TODO: Remove external dependencies (e.g. rawgit, jQuery CDN)
 TODO: Standardize on imgSet vs imageSet
+TODO: Reset dev via: `rm -r gemini gemini-report; cp -r gemini-report-bak/* .`
 
 ## Getting Started
 Install the module with: `npm install multi-image-mergetool`
