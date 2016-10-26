@@ -14,6 +14,7 @@ TODO: Document CLI flags (`--help`)
 TODO: Remove our TODOs and console.logs
 TODO: Add `--preset gemini` flag support
 TODO: Remove external dependencies (e.g. rawgit, jQuery CDN)
+TODO: Standardize on imgSet vs imageSet
 
 ## Getting Started
 Install the module with: `npm install multi-image-mergetool`
