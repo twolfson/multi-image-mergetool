@@ -70,13 +70,14 @@ html
                 // Make our first image set visible
                 // TODO: Remove this flag, make only failing tests visible
                 // DEV: If class names get too complex, use `classnames` library
-                class: i === 0 ? 'collapse in well' : 'collapse well', 'data-id': imgSetId
+                class: i === 0 ? 'collapse in well' : 'collapse well',
+                'data-image-set': imgSetId
               }, [
                 // Action buttons
                 D.DIV([
                   D.BUTTON({
                     class: 'btn btn-default',
-                    'data-action': 'accept'
+                    'data-action': 'accept-changes'
                   }, '✓ Accept changes'),
                   ' ',
                   D.BUTTON({
@@ -131,6 +132,33 @@ html
 
         // Apppend our container element
         document.body.appendChild(containerEl);
+      });
+
+      // Define acceptance helper
+      function acceptImageSetChanges(acceptedImg, imgSetId) {
+        // Make an AJAX call to accept our image
+
+        // Update diff and reference image to a loading image
+
+        // TODO: Eagerly update our status
+        //   This won't be the scenario for
+
+        // TODO: If there is an error, reset our status
+      }
+
+      // Set up image acceptance binding
+      $('body').on('click', 'button[data-action="accept-changes"]', function handleClick (evt) {
+        // Find our image set container
+        var btnEl = evt.target;
+        var $imgSet = $(btnEl).closest('[data-image-set]');
+        var imgSetId = $imgSet.data('image-set');
+        assert.strictEqual($imgSet.length, 1);
+
+        // Find the current image
+        var $currentImg = $imgSet.find('[data-compare-type="current"]');
+        assert.strictEqual($currentImg.length, 1);
+
+        // Run acceptance function
       });
 
     script.
