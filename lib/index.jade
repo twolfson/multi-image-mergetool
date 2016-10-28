@@ -276,7 +276,7 @@ html
               currentImg: imageSetEl.querySelector('[data-compare-type=current]'),
               diffImg: imageSetEl.querySelector('[data-compare-type=diff]'),
               refImg: imageSetEl.querySelector('[data-compare-type=ref]'),
-              humanName: imageSetEl.dataset['image-set']
+              humanName: imageSetEl.getAttribute('data-image-set')
             };
           });
 
@@ -370,8 +370,8 @@ html
             // Create a canvas
             // https://github.com/scijs/get-pixels/blob/7c447cd979637b31e47e148f238a1e71611af481/dom-pixels.js#L14-L18
             var canvasEl = document.createElement('canvas');
-            canvasEl.width = refImg.width;
-            canvasEl.height = refImg.height;
+            canvasEl.width = refImg.naturalWidth;
+            canvasEl.height = refImg.naturalHeight;
             var context = canvasEl.getContext('2d');
 
             // Load our reference into the canvas
@@ -393,10 +393,9 @@ html
             context.drawImage(currentImg, 0, 0);
 
             // Duplicate reference image and shrink both canvas/image for output
-            var imgHeight = 250;
-            canvasEl.style.height = imgHeight + 'px';
+            canvasEl.style.width = '100%';
             var refImgClone = refImg.cloneNode();
-            refImgClone.style.height = imgHeight + 'px';
+            canvasEl.style.width = '100%';
 
             // Generate and append result content
             // DEV: We use a document fragment to avoid `n` DOM edits -- instead it's 1
@@ -417,8 +416,8 @@ html
                 }, [
                   D.INPUT({type: 'checkbox', checked: true})
                 ]),
-                D.TD([refImgClone]),
-                D.TD([canvasEl])
+                D.TD({style: 'vertical-align: top;'}, [refImgClone]),
+                D.TD({style: 'vertical-align: top;'}, [canvasEl])
               ])
             ]);
             resultsDocFrag.appendChild(resultGroupEl);
