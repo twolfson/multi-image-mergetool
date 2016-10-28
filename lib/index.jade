@@ -244,19 +244,14 @@ html
       document.addEventListener('DOMContentLoaded', function handleReady () {
         // Simplifiy domo reference
         var D = window.domo;
-        return;
 
         // Specify target area (this would be done via overlay selection)
         // DEV: Target area gathered from `/prototype`
         var targetArea = {left: 159, top: 0, width: 205, height: 63.133331298828125};
 
-        // TODO: Realizing we need to do matching on similar content (i.e. same width image + same diff in selection)
-        //   It looks like Gemini's comparison library isn't built for browser
-        //     https://github.com/gemini-testing/looks-same
-        //   For now, use direct comparison with `get-pixels` and `ndarray`
-        //   Actually, we can prob use a second canvas with negative placement for x/y and same width/neight
-        //     This is more future-proof and dodges loading `ndarray` dependencies
-        //     Although, it's likely less efficient since we have to extract image data and compare it
+        // Specify expected diff image
+        // TODO: Load expected diff image based on selected image
+        var expectedDiffImg = document.querySelector('[data-image-set]:first-child [data-compare-type=diff]');
 
         // Start our chain of methods
         findSelectionMatches();
@@ -265,15 +260,15 @@ html
           console.time('findSelectionMatches');
 
           // Find our sets of images to update
-          var compareSetEls = document.querySelectorAll('[data-compare-set]');
+          var imageSetEls = document.querySelectorAll('[data-image-set]');
 
           // Convert image sets into objects so we can add metadata
-          var compareSets = Array.prototype.map.call(compareSetEls, function createCompareSet (compareSetEl, i) {
+          var imageSetInfoArr = Array.prototype.map.call(imageSetEls, function createImageSet (imageSetEl, i) {
             return {
-              currentImg: compareSetEl.querySelector('[data-compare-type=current]'),
-              diffImg: compareSetEl.querySelector('[data-compare-type=diff]'),
-              refImg: compareSetEl.querySelector('[data-compare-type=ref]'),
-              name: 'path/to/image/' + i + '/Chrome'
+              currentImg: imageSetEl.querySelector('[data-compare-type=current]'),
+              diffImg: imageSetEl.querySelector('[data-compare-type=diff]'),
+              refImg: imageSetEl.querySelector('[data-compare-type=ref]'),
+              id: imageSetEl.dataset['image-set']
             };
           });
 
@@ -286,8 +281,8 @@ html
             canvasEl.height = targetArea.height;
             var context = canvasEl.getContext('2d');
 
-            // Draw a clip for safety (performanc), then our image
-            // DEV: We haven't tested if this improves performance but assume it should
+            // Draw a clip as a performance precaution, then our image
+            // DEV: We haven't tested if using a clip improves performance but assume it should
             // https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/drawImage
             // https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/rect
             context.rect(0, 0, targetArea.width, targetArea.height);
@@ -299,8 +294,10 @@ html
             // https://github.com/scijs/get-pixels/blob/7c447cd979637b31e47e148f238a1e71611af481/dom-pixels.js#L19-L20
             return context.getImageData(0, 0, targetArea.width, targetArea.height).data;
           }
-          var expectedDiffImg = document.querySelector('#expected-diff-img').cloneNode();
+
           // Reset HTML/CSS overrides
+          // TODO: We should be able to remove overrides by using `naturalWidth`
+          expectedDiffImg = expectedDiffImg.cloneNode();
           delete expectedDiffImg.height; delete expectedDiffImg.width;
           delete expectedDiffImg.style; delete expectedDiffImg.className;
           var expectedImageData = getSelectionImageData(expectedDiffImg);
