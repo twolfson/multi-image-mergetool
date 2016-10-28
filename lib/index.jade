@@ -107,34 +107,38 @@ html
                 ]),
 
                 // Image set
-                D.TABLE([
-                  D.TR([
-                    D.TD('Current:'),
-                    D.TD('Diff:'),
-                    D.TD('Ref:')
+                D.TABLE({class: 'table'}, [
+                  D.THEAD([
+                    D.TR([
+                      D.TH('Current:'),
+                      D.TH('Diff:'),
+                      D.TH('Ref:')
+                    ])
                   ]),
-                  D.TR([
-                    D.TD({style: 'width: 33%'} ,[
-                      D.IMG({
-                        'data-compare-type': 'current',
-                        src: '/images/' + encodeURIComponent(imgSet.currentImg),
-                        style: 'width: 100%'
-                      })
-                    ]),
-                    //- DEV: We use `width: 33%` to guarantee no widths change when we use a loading spinner or images are missing
-                    D.TD({style: 'width: 33%'} ,[
-                      D.IMG({
-                        'data-compare-type': 'diff',
-                        src: '/images/' + encodeURIComponent(imgSet.diffImg),
-                        style: 'width: 100%',
-                      })
-                    ]),
-                    D.TD({style: 'width: 33%'} ,[
-                      D.IMG({
-                        'data-compare-type': 'ref',
-                        src: '/images/' + encodeURIComponent(imgSet.refImg),
-                        style: 'width: 100%'
-                      })
+                  D.TBODY([
+                    D.TR([
+                      D.TD({style: 'width: 33%'} ,[
+                        D.IMG({
+                          'data-compare-type': 'current',
+                          src: '/images/' + encodeURIComponent(imgSet.currentImg),
+                          style: 'width: 100%'
+                        })
+                      ]),
+                      //- DEV: We use `width: 33%` to guarantee no widths change when we use a loading spinner or images are missing
+                      D.TD({style: 'width: 33%'} ,[
+                        D.IMG({
+                          'data-compare-type': 'diff',
+                          src: '/images/' + encodeURIComponent(imgSet.diffImg),
+                          style: 'width: 100%',
+                        })
+                      ]),
+                      D.TD({style: 'width: 33%'} ,[
+                        D.IMG({
+                          'data-compare-type': 'ref',
+                          src: '/images/' + encodeURIComponent(imgSet.refImg),
+                          style: 'width: 100%'
+                        })
+                      ])
                     ])
                   ])
                 ])
