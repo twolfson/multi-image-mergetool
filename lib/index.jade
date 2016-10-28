@@ -183,9 +183,10 @@ html
 
           // If there is an error
           jqXHR.fail(function handleFail (jqXHR, textStatus, errorThrown) {
-            // TODO: Figure out what errors are
+            // TODO: Expose error to user so they can retry
+            console.error('Error encountered "' + errorThrown + '" when updating image "' + imgSetId + '"');
 
-            // TODO: Reset sets
+            // TODO: Reset set status
           });
 
           // When loading completes, remove loading state and update image references
