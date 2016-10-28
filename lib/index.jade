@@ -123,11 +123,9 @@ html
                     ]),
                     //- DEV: We use `width: 33%` to guarantee no widths change when we use a loading spinner or images are missing
                     D.TD({style: 'width: 33%'} ,[
-                      // TODO: Ditch `expected-diff-img` as we have multiple images now
                       D.IMG({
                         'data-compare-type': 'diff',
                         src: '/images/' + encodeURIComponent(imgSet.diffImg),
-                        class: 'expected-diff-img',
                         style: 'width: 100%',
                       })
                     ]),
