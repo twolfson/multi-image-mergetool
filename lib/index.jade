@@ -367,7 +367,7 @@ html
           console.time('bulkUpdateSelection');
 
           // Find our output targets
-          var resultsTableEl = D.TABLE({class: 'table'});
+          var resultsDocFrag = D.FRAGMENT();
 
           // Generate and updated ref image for each of our comparisons
           imageSetInfos.forEach(function generateUpdatedRef (imageSetInfo) {
@@ -407,18 +407,19 @@ html
 
             // Generate and append result content
             // DEV: We use a document fragment to avoid `n` DOM edits -- instead it's 1
-            var resultGroupEl = D.FRAGMENT([
+            // DEV: Tables will all use same width due to heuristics
+            var resultGroupEl = D.TABLE({class: 'table'}, [
               D.THEAD([
                 D.TR([
                   // TODO: Add collapse support like in `gemini-gui`
-                  D.TD({colspan: 3}, D.B(imageSetInfo.humanName))
+                  D.TH({colspan: 3}, D.B(imageSetInfo.humanName))
                 ]),
                 D.TR([
                   // TODO: Move style out of inline and to classes for more performance
                   // DEV: `min-width` is to give us spacing for "Save update text"
-                  D.TH({style: 'padding-right: 10px; min-width: 120px;'}, 'Save update:'),
-                  D.TH('Original ref:'),
-                  D.TH('Updated ref:')
+                  D.TD({style: 'padding-right: 10px; min-width: 120px;'}, 'Save update:'),
+                  D.TD('Original ref:'),
+                  D.TD('Updated ref:')
                 ]),
               ]),
               D.TBODY([
@@ -433,7 +434,7 @@ html
                 ])
               ])
             ]);
-            resultsTableEl.appendChild(resultGroupEl);
+            resultsDocFrag.appendChild(resultGroupEl);
 
             // TODO: When bulk update is accepted, send overwrite requests to server with new image as "Ref"
             //   and use `?1` trick to refresh images
@@ -442,7 +443,7 @@ html
           });
 
           // Append aggregate content to DOM
-          resultsEl.appendChild(resultsTableEl);
+          resultsEl.appendChild(resultsDocFrag);
 
           // End our performance check
           console.timeEnd('bulkUpdateSelection');
