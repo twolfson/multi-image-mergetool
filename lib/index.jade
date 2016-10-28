@@ -165,7 +165,8 @@ html
           $img.attr('src', newSrc);
         }
 
-        // Define acceptance helper
+        // Define acceptance and update helpers
+        // TODO: Consolidate these helpers
         function acceptImageSetChanges(acceptedImgBase64, imgSetId) {
           // Fade out diff and reference images to "loading" state
           var $imgSet = $('[data-image-set="' + jQuery.escapeSelector(imgSetId) + '"]');
@@ -189,7 +190,46 @@ html
             // TODO: Expose error to user so they can retry
             console.error('Error encountered "' + errorThrown + '" when updating image "' + imgSetId + '"');
 
-            // TODO: Reset set status
+            // TODO: Reset status to previous state
+          });
+
+          // When loading completes, remove loading state and update image references
+          jqXHR.always(function handleAlways (dataOrJqXHR, textStatus, jqXHROrErrorThrown) {
+            $diffImg.removeClass('loading');
+            $refImg.removeClass('loading');
+            cachebustImg($diffImg);
+            cachebustImg($refImg);
+          });
+        }
+
+        function updateReferenceImage(imgBase64, imgSetId) {
+          // Fade out diff and reference images to "loading" state
+          var $imgSet = $('[data-image-set="' + jQuery.escapeSelector(imgSetId) + '"]');
+          //- assert.strictEqual($imgSet.length, 1);
+          var $diffImg = $imgSet.find('[data-compare-type="diff"]');
+          var $refImg = $imgSet.find('[data-compare-type="ref"]');
+          $diffImg.addClass('loading');
+          $refImg.addClass('loading');
+
+          // TODO: Set status to neutral state
+
+          // Make an AJAX call to accept our image
+          // http://api.jquery.com/jQuery.ajax/#jqXHR
+          var jqXHR = $.post('/update-image-set/' + encodeURIComponent(imgSetId), {
+            ref: imgBase64
+          });
+
+          // If there is an error
+          jqXHR.fail(function handleFail (jqXHR, textStatus, errorThrown) {
+            // TODO: Expose error to user so they can retry
+            console.error('Error encountered "' + errorThrown + '" when updating image "' + imgSetId + '"');
+
+            // TODO: Reset status to previous state
+          });
+
+          // When we complete updating
+          jqXHR.done(function handleDone (data, textStatus, jqXHR) {
+            // TODO: Update status to new state
           });
 
           // When loading completes, remove loading state and update image references
@@ -268,9 +308,9 @@ html
             //- assert.strictEqual($updatedRefCanvas.length, 1);
             var base64Data = $updatedRefCanvas[0].toDataURL('image/png');
 
-            // Run acceptance function
-            //- updateImageSetChanges(base64Data, similarImgSetId);
-            console.log(base64Data, similarImgSetId);
+            // Run update function
+            // TODO: Remove results when all loaded
+            updateReferenceImage(base64Data, similarImgSetId);
           });
         });
       });
