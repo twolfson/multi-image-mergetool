@@ -43,9 +43,9 @@ html
 
     //- [x] TODO: Next: Add image acceptance support
     //- [x] TODO: Next: Add automatic image matching
-    //- [ ] TODO: Next: Add image acceptance support for matched images
-    //- [ ] TODO: Next: Filter out unselected matched images
-    //- [ ] TODO: Next: Move to button triggered image matching
+    //- [x] TODO: Next: Add image acceptance support for matched images
+    //- [x] TODO: Next: Filter out unselected matched images
+    //- [ ] TODO: Next: Move to button triggered image matching (i.e. clicking button uses preloaded overlay data but will generate results)
     //- [ ] TODO: Next: Add click/drag overlay support
     //- [ ] TODO: Next: Add result update (i.e. pass/fail) if we still lack it
 
@@ -207,6 +207,7 @@ html
           var $imgSet = $('[data-image-set="' + jQuery.escapeSelector(imgSetId) + '"]');
           //- assert.strictEqual($imgSet.length, 1);
           var $diffImg = $imgSet.find('[data-compare-type="diff"]');
+          // TODO: We are selecting results table image as well via this selected due to cloneNode. Figure out how to not select it or make results disappear or something
           var $refImg = $imgSet.find('[data-compare-type="ref"]');
           $diffImg.addClass('loading');
           $refImg.addClass('loading');
