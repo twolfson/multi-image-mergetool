@@ -117,7 +117,7 @@ html
                     D.TD({style: 'width: 33%'} ,[
                       D.IMG({
                         'data-compare-type': 'current',
-                        src: '/images/' + imgSet.currentImg,
+                        src: '/images/' + encodeURIComponent(imgSet.currentImg),
                         style: 'width: 100%'
                       })
                     ]),
@@ -126,7 +126,7 @@ html
                       // TODO: Ditch `expected-diff-img` as we have multiple images now
                       D.IMG({
                         'data-compare-type': 'diff',
-                        src: '/images/' + imgSet.diffImg,
+                        src: '/images/' + encodeURIComponent(imgSet.diffImg),
                         class: 'expected-diff-img',
                         style: 'width: 100%',
                       })
@@ -134,7 +134,7 @@ html
                     D.TD({style: 'width: 33%'} ,[
                       D.IMG({
                         'data-compare-type': 'ref',
-                        src: '/images/' + imgSet.refImg,
+                        src: '/images/' + encodeURIComponent(imgSet.refImg),
                         style: 'width: 100%'
                       })
                     ])
