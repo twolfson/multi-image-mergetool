@@ -42,8 +42,9 @@ html
     //- TODO: Figure out how to make selection work, maybe normal GUI like Gemini but with jawbone effect for matching items
 
     //- [x] TODO: Next: Add image acceptance support
-    //- [ ] TODO: Next: Add automatic image matching
+    //- [x] TODO: Next: Add automatic image matching
     //- [ ] TODO: Next: Add image acceptance support for matched images
+    //- [ ] TODO: Next: Filter out unselected matched images
     //- [ ] TODO: Next: Move to button triggered image matching
     //- [ ] TODO: Next: Add click/drag overlay support
     //- [ ] TODO: Next: Add result update (i.e. pass/fail) if we still lack it
@@ -258,7 +259,13 @@ html
         var expectedImgSetEl = document.querySelector('[data-image-set]');
         var expectedDiffImg = expectedImgSetEl.querySelector('[data-compare-type=diff]');
         var resultsEl = D.DIV([
-          D.H4('Similar images:')
+          D.H4('Similar images:'),
+          D.DIV([
+            D.BUTTON({
+              class: 'btn btn-default',
+              'data-action': 'update-similar-images'
+            }, '✓ Update selected images'),
+          ])
         ]);
         // TODO: Delete results element upon resolution
         expectedImgSetEl.appendChild(resultsEl);
@@ -435,11 +442,6 @@ html
               ])
             ]);
             resultsDocFrag.appendChild(resultGroupEl);
-
-            // TODO: When bulk update is accepted, send overwrite requests to server with new image as "Ref"
-            //   and use `?1` trick to refresh images
-            //   then re-run comparisons for all current vs ref
-            // DEV: We are realizing that Gemini likely does comparisons in Node.js so we should do the same on update
           });
 
           // Append aggregate content to DOM
