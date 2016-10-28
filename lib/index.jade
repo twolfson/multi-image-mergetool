@@ -164,8 +164,6 @@ html
 
         // Define acceptance helper
         function acceptImageSetChanges(acceptedImgBase64, imgSetId) {
-          // TODO: Make an AJAX call to accept our image
-
           // Fade out diff and reference images to "loading" state
           var $imgSet = $('[data-image-set="' + jQuery.escapeSelector(imgSetId) + '"]');
           //- assert.strictEqual($imgSet.length, 1);
@@ -177,22 +175,48 @@ html
           // TODO: Eagerly update our status
           //   This won't be the scenario for update reference image (i.e. we are progressively updating images)
 
-          // TODO: If there is an error, reset our status
+          // Make an AJAX call to accept our image
+          // http://api.jquery.com/jQuery.ajax/#jqXHR
+          var jqXHR = $.post('/accept-image/' + encodeURIComponent(imgSetId), {
+            image: acceptedImgBase64
+          });
 
-          // TODO: When loading completes, remove loading state and update image references
-          //   This is development mocking for now
-          setTimeout(function () {
+          // If there is an error
+          jqXHR.fail(function handleFail (jqXHR, textStatus, errorThrown) {
+            // TODO: Figure out what errors are
+
+            // TODO: Reset sets
+          });
+
+          // When loading completes, remove loading state and update image references
+          jqXHR.always(function handleAlways (dataOrJqXHR, textStatus, jqXHROrErrorThrown) {
             $diffImg.removeClass('loading');
             $refImg.removeClass('loading');
             cachebustImg($diffImg);
             cachebustImg($refImg);
-          }, 1000);
+          });
         }
 
         // Define base64 content helper
+        // TODO: Find a base64 content helper library?
+        var base64CanvasEl = document.createElement('canvas');
+        var base64Context = base64CanvasEl.getContext('2d');
         function getBase64Content(imgEl) {
-          // TODO: Complete base64 extraction
-          return '';
+          // Resize our canvas to target size
+          var width = base64CanvasEl.width = imgEl.naturalWidth;
+          var height = base64CanvasEl.height = imgEl.naturalHeight;
+
+          // Clear our canvas to prevent legacy artifacts
+          // https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/clearRect
+          // TODO: Test me that we clear legacy artifacts properly
+          base64Context.clearRect(0, 0, width, height);
+
+          // Draw our image and return its data URL
+          // https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/drawImage
+          // https://developer.mozilla.org/en-US/docs/Web/API/HTMLCanvasElement/toDataURL
+          // DEV: We use `image/png` for lossless encoding which is necessary for visual comparison
+          base64Context.drawImage(imgEl, 0, 0);
+          return base64CanvasEl.toDataURL('image/png');
         }
 
         // Set up image acceptance binding
@@ -207,10 +231,11 @@ html
           var $currentImg = $imgSet.find('[data-compare-type="current"]');
           //- assert.strictEqual($currentImg.length, 1);
 
-          // TODO: Extract base64 content for image
+          // Extract base64 content for image
+          var base64Data = getBase64Content($currentImg[0]);
 
           // Run acceptance function
-          acceptImageSetChanges($currentImg[0], imgSetId);
+          acceptImageSetChanges(base64Data, imgSetId);
         });
       });
 
@@ -299,7 +324,7 @@ html
             // If the images are different widths, return false
             // TODO: Allow this to be a configurable heuristic
             var actualDiffImg = compareSet.diffImg;
-            // TODO: Use `actualWidth`
+            // TODO: Use `naturalWidth`
             if (expectedDiffImg.width !== actualDiffImg.width) {
               return false;
             }
