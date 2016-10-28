@@ -48,7 +48,7 @@ html
     //- TODO: Next: Add overlay support
     //- TODO: Next: Add result update (i.e. pass/fail) if we still lack it
 
-    //- Define our main script
+    //- Define our initial render script
     //- TODO: Relocate into another file
     script.
       document.addEventListener('DOMContentLoaded', function handleReady () {
@@ -72,8 +72,6 @@ html
           var imgSetHumanName = imgSet.refImg;
 
           // Generate our image set element
-          // TODO: Move this to a constructor with methods that are run via Bootstrap bindings
-          //   e.g. `click: [data-image-set] .btn[data-accept]` or something like that... I dislike `data-accept` but yea
           // TODO: Show match pass/fail status (e.g. green/red)
           var imgSetEl = D.UL([
             D.LI([
@@ -154,62 +152,66 @@ html
         document.body.appendChild(containerEl);
       });
 
-      // Define cache busting helper
-      function cachebustImg($img) {
-        var originalSrc = $img.attr('src');
-        var newSrc = originalSrc.match(/\?1$/) ? originalSrc + '1' : originalSrc + '?1';
-        $img.attr('src', newSrc);
-      }
+    //- Define our button bindings
+    script.
+      document.addEventListener('DOMContentLoaded', function handleReady () {
+        // Define cache busting helper
+        function cachebustImg($img) {
+          var originalSrc = $img.attr('src');
+          var newSrc = originalSrc.match(/\?1$/) ? originalSrc + '1' : originalSrc + '?1';
+          $img.attr('src', newSrc);
+        }
 
-      // Define acceptance helper
-      function acceptImageSetChanges(acceptedImgBase64, imgSetId) {
-        // TODO: Make an AJAX call to accept our image
+        // Define acceptance helper
+        function acceptImageSetChanges(acceptedImgBase64, imgSetId) {
+          // TODO: Make an AJAX call to accept our image
 
-        // Fade out diff and reference images to "loading" state
-        var $imgSet = $('[data-image-set="' + jQuery.escapeSelector(imgSetId) + '"]');
-        //- assert.strictEqual($imgSet.length, 1);
-        var $diffImg = $imgSet.find('[data-compare-type="diff"]');
-        var $refImg = $imgSet.find('[data-compare-type="ref"]');
-        $diffImg.addClass('loading');
-        $refImg.addClass('loading');
+          // Fade out diff and reference images to "loading" state
+          var $imgSet = $('[data-image-set="' + jQuery.escapeSelector(imgSetId) + '"]');
+          //- assert.strictEqual($imgSet.length, 1);
+          var $diffImg = $imgSet.find('[data-compare-type="diff"]');
+          var $refImg = $imgSet.find('[data-compare-type="ref"]');
+          $diffImg.addClass('loading');
+          $refImg.addClass('loading');
 
-        // TODO: Eagerly update our status
-        //   This won't be the scenario for update reference image (i.e. we are progressively updating images)
+          // TODO: Eagerly update our status
+          //   This won't be the scenario for update reference image (i.e. we are progressively updating images)
 
-        // TODO: If there is an error, reset our status
+          // TODO: If there is an error, reset our status
 
-        // TODO: When loading completes, remove loading state and update image references
-        //   This is development mocking for now
-        setTimeout(function () {
-          $diffImg.removeClass('loading');
-          $refImg.removeClass('loading');
-          cachebustImg($diffImg);
-          cachebustImg($refImg);
-        }, 1000);
-      }
+          // TODO: When loading completes, remove loading state and update image references
+          //   This is development mocking for now
+          setTimeout(function () {
+            $diffImg.removeClass('loading');
+            $refImg.removeClass('loading');
+            cachebustImg($diffImg);
+            cachebustImg($refImg);
+          }, 1000);
+        }
 
-      // Define base64 content helper
-      function getBase64Content(imgEl) {
-        // TODO: Complete base64 extraction
-        return '';
-      }
+        // Define base64 content helper
+        function getBase64Content(imgEl) {
+          // TODO: Complete base64 extraction
+          return '';
+        }
 
-      // Set up image acceptance binding
-      $('body').on('click', 'button[data-action="accept-changes"]', function handleClick (evt) {
-        // Find our image set container
-        var btnEl = evt.target;
-        var $imgSet = $(btnEl).closest('[data-image-set]');
-        var imgSetId = $imgSet.data('image-set');
-        //- assert.strictEqual($imgSet.length, 1);
+        // Set up image acceptance binding
+        $('body').on('click', 'button[data-action="accept-changes"]', function handleClick (evt) {
+          // Find our image set container
+          var btnEl = evt.target;
+          var $imgSet = $(btnEl).closest('[data-image-set]');
+          var imgSetId = $imgSet.data('image-set');
+          //- assert.strictEqual($imgSet.length, 1);
 
-        // Find the current image
-        var $currentImg = $imgSet.find('[data-compare-type="current"]');
-        //- assert.strictEqual($currentImg.length, 1);
+          // Find the current image
+          var $currentImg = $imgSet.find('[data-compare-type="current"]');
+          //- assert.strictEqual($currentImg.length, 1);
 
-        // TODO: Extract base64 content for image
+          // TODO: Extract base64 content for image
 
-        // Run acceptance function
-        acceptImageSetChanges($currentImg[0], imgSetId);
+          // Run acceptance function
+          acceptImageSetChanges($currentImg[0], imgSetId);
+        });
       });
 
     script.
