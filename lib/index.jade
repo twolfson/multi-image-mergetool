@@ -253,7 +253,13 @@ html
 
         // Specify expected diff image
         // TODO: Load expected diff image based on selected image
-        var expectedDiffImg = document.querySelector('[data-image-set]:first-child [data-compare-type=diff]');
+        // DEV: This loads first matching image only due to `querySelector` instead of `querySelectorAll`
+        var expectedDiffImg = document.querySelector('[data-image-set] [data-compare-type=diff]');
+        var resultsEl = D.DIV([
+          D.H4('Results:')
+        ]);
+        // TODO: Delete results element upon resolution
+        document.querySelector('[data-image-set]').appendChild(resultsEl);
 
         // Start our chain of methods
         findSelectionMatches();
@@ -265,12 +271,12 @@ html
           var imageSetEls = document.querySelectorAll('[data-image-set]');
 
           // Convert image sets into objects so we can add metadata
-          var imageSetInfoArr = Array.prototype.map.call(imageSetEls, function createImageSet (imageSetEl, i) {
+          var imageSetInfos = Array.prototype.map.call(imageSetEls, function createImageSet (imageSetEl, i) {
             return {
               currentImg: imageSetEl.querySelector('[data-compare-type=current]'),
               diffImg: imageSetEl.querySelector('[data-compare-type=diff]'),
               refImg: imageSetEl.querySelector('[data-compare-type=ref]'),
-              id: imageSetEl.dataset['image-set']
+              humanName: imageSetEl.dataset['image-set']
             };
           });
 
@@ -320,12 +326,11 @@ html
           }
 
           // Filter image sets based on matching widths and selection
-          var matchingCompareSets = compareSets.filter(function matchCompareSet (compareSet) {
+          var matchingImageSetInfos = imageSetInfos.filter(function matchImageSetInfo (imageSetInfo) {
             // If the images are different widths, return false
             // TODO: Allow this to be a configurable heuristic
-            var actualDiffImg = compareSet.diffImg;
-            // TODO: Use `naturalWidth`
-            if (expectedDiffImg.width !== actualDiffImg.width) {
+            var actualDiffImg = imageSetInfo.diffImg;
+            if (expectedDiffImg.naturalWidth !== actualDiffImg.naturalWidth) {
               return false;
             }
 
@@ -346,22 +351,21 @@ html
           console.timeEnd('findSelectionMatches');
 
           // Pass through matching sets to `bulkUpdateSelection`
-          bulkUpdateSelection(matchingCompareSets);
+          bulkUpdateSelection(matchingImageSetInfos);
         }
 
-        function bulkUpdateSelection(compareSets) {
+        function bulkUpdateSelection(imageSetInfos) {
           // Start our performance check (620ms total for 100 1024x1600 images, 400ms seems to be first `drawImage`)
           console.time('bulkUpdateSelection');
 
           // Find our output targets
-          var resultsEl = document.querySelector('#results');
           var resultsDocFrag = document.createDocumentFragment();
 
           // Generate and updated ref image for each of our comparisons
-          compareSets.forEach(function generateUpdatedRef (compareSet) {
+          imageSetInfos.forEach(function generateUpdatedRef (imageSetInfo) {
             // Localize our references
-            var currentImg = compareSet.currentImg;
-            var refImg = compareSet.refImg;
+            var currentImg = imageSetInfo.currentImg;
+            var refImg = imageSetInfo.refImg;
 
             // Create a canvas
             // https://github.com/scijs/get-pixels/blob/7c447cd979637b31e47e148f238a1e71611af481/dom-pixels.js#L14-L18
@@ -399,7 +403,7 @@ html
             var resultGroupEl = D.DIV([
               D.TR([
                 // TODO: Add collapse support like in `gemini-gui`
-                D.TD({colspan: 3}, D.B(compareSet.name))
+                D.TD({colspan: 3}, D.B(imageSetInfo.humanName))
               ]),
               D.TR([
                 // TODO: Move style out of inline and to classes for more performance
