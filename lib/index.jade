@@ -367,7 +367,7 @@ html
           console.time('bulkUpdateSelection');
 
           // Find our output targets
-          var resultsDocFrag = document.createDocumentFragment();
+          var resultsTableEl = D.TABLE({class: 'table'});
 
           // Generate and updated ref image for each of our comparisons
           imageSetInfos.forEach(function generateUpdatedRef (imageSetInfo) {
@@ -407,29 +407,33 @@ html
 
             // Generate and append result content
             // DEV: We use a document fragment to avoid `n` DOM edits -- instead it's 1
-            var resultGroupEl = D.DIV([
-              D.TR([
-                // TODO: Add collapse support like in `gemini-gui`
-                D.TD({colspan: 3}, D.B(imageSetInfo.humanName))
-              ]),
-              D.TR([
-                // TODO: Move style out of inline and to classes for more performance
-                // DEV: `min-width` is to give us spacing for "Save update text"
-                D.TD({style: 'padding-right: 10px; min-width: 100px;'}, 'Save update:'),
-                D.TD('Original ref:'),
-                D.TD('Updated ref:')
-              ]),
-              D.TR([
-                D.TD({
-                  style: 'vertical-align: top;'
-                }, [
-                  D.INPUT({type: 'checkbox', checked: true})
+            var resultGroupEl = D.FRAGMENT([
+              D.THEAD([
+                D.TR([
+                  // TODO: Add collapse support like in `gemini-gui`
+                  D.TD({colspan: 3}, D.B(imageSetInfo.humanName))
                 ]),
-                D.TD({style: 'vertical-align: top;'}, [refImgClone]),
-                D.TD({style: 'vertical-align: top;'}, [canvasEl])
+                D.TR([
+                  // TODO: Move style out of inline and to classes for more performance
+                  // DEV: `min-width` is to give us spacing for "Save update text"
+                  D.TH({style: 'padding-right: 10px; min-width: 120px;'}, 'Save update:'),
+                  D.TH('Original ref:'),
+                  D.TH('Updated ref:')
+                ]),
+              ]),
+              D.TBODY([
+                D.TR([
+                  D.TD({
+                    style: 'vertical-align: top;'
+                  }, [
+                    D.INPUT({type: 'checkbox', checked: true})
+                  ]),
+                  D.TD({style: 'vertical-align: top;'}, [refImgClone]),
+                  D.TD({style: 'vertical-align: top;'}, [canvasEl])
+                ])
               ])
             ]);
-            resultsDocFrag.appendChild(resultGroupEl);
+            resultsTableEl.appendChild(resultGroupEl);
 
             // TODO: When bulk update is accepted, send overwrite requests to server with new image as "Ref"
             //   and use `?1` trick to refresh images
@@ -438,7 +442,7 @@ html
           });
 
           // Append aggregate content to DOM
-          resultsEl.appendChild(resultsDocFrag);
+          resultsEl.appendChild(resultsTableEl);
 
           // End our performance check
           console.timeEnd('bulkUpdateSelection');
