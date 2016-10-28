@@ -254,12 +254,13 @@ html
         // Specify expected diff image
         // TODO: Load expected diff image based on selected image
         // DEV: This loads first matching image only due to `querySelector` instead of `querySelectorAll`
-        var expectedDiffImg = document.querySelector('[data-image-set] [data-compare-type=diff]');
+        var expectedImgSetEl = document.querySelector('[data-image-set]');
+        var expectedDiffImg = expectedImgSetEl.querySelector('[data-compare-type=diff]');
         var resultsEl = D.DIV([
-          D.H4('Results:')
+          D.H4('Similar images:')
         ]);
         // TODO: Delete results element upon resolution
-        document.querySelector('[data-image-set]').appendChild(resultsEl);
+        expectedImgSetEl.appendChild(resultsEl);
 
         // Start our chain of methods
         findSelectionMatches();
@@ -269,9 +270,15 @@ html
 
           // Find our sets of images to update
           var imageSetEls = document.querySelectorAll('[data-image-set]');
+          imageSetEls = Array.prototype.slice.call(imageSetEls);
+
+          // Remove original matching image set
+          imageSetEls = imageSetEls.filter(function removeOriginalImageSet (imageSetEl) {
+            return imageSetEl !== expectedImgSetEl;
+          });
 
           // Convert image sets into objects so we can add metadata
-          var imageSetInfos = Array.prototype.map.call(imageSetEls, function createImageSet (imageSetEl, i) {
+          var imageSetInfos = imageSetEls.map(function createImageSetInfo (imageSetEl) {
             return {
               currentImg: imageSetEl.querySelector('[data-compare-type=current]'),
               diffImg: imageSetEl.querySelector('[data-compare-type=diff]'),
@@ -395,7 +402,7 @@ html
             // Duplicate reference image and shrink both canvas/image for output
             canvasEl.style.width = '100%';
             var refImgClone = refImg.cloneNode();
-            canvasEl.style.width = '100%';
+            refImgClone.style.width = '100%';
 
             // Generate and append result content
             // DEV: We use a document fragment to avoid `n` DOM edits -- instead it's 1
@@ -406,7 +413,8 @@ html
               ]),
               D.TR([
                 // TODO: Move style out of inline and to classes for more performance
-                D.TD({style: 'padding-right: 10px;'}, 'Save update:'),
+                // DEV: `min-width` is to give us spacing for "Save update text"
+                D.TD({style: 'padding-right: 10px; min-width: 100px;'}, 'Save update:'),
                 D.TD('Original ref:'),
                 D.TD('Updated ref:')
               ]),
