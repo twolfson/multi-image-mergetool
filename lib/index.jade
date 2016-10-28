@@ -244,6 +244,7 @@ html
 
     script.
       document.addEventListener('DOMContentLoaded', function handleReady () {
+      setTimeout(function waitForImagesToLoad () {
         // Simplifiy domo reference
         var D = window.domo;
 
@@ -442,4 +443,5 @@ html
           // End our performance check
           console.timeEnd('bulkUpdateSelection');
         }
+      }, 500);
       });
