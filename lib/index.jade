@@ -280,19 +280,18 @@ html
           var imageSetEls = document.querySelectorAll('[data-image-set]');
           imageSetEls = Array.prototype.slice.call(imageSetEls);
 
-          // Remove original matching image set
-          imageSetEls = imageSetEls.filter(function removeOriginalImageSet (imageSetEl) {
-            return imageSetEl !== expectedImgSetEl;
-          });
-
           // Convert image sets into objects so we can add metadata
           var imageSetInfos = imageSetEls.map(function createImageSetInfo (imageSetEl) {
-            return {
+            var retVal = {
               currentImg: imageSetEl.querySelector('[data-compare-type=current]'),
               diffImg: imageSetEl.querySelector('[data-compare-type=diff]'),
               refImg: imageSetEl.querySelector('[data-compare-type=ref]'),
               humanName: imageSetEl.getAttribute('data-image-set')
             };
+            if (imageSetEl === expectedImgSetEl) {
+              retVal.humanName += ' (current suite)';
+            }
+            return retVal;
           });
 
           // Prepare canvas for images to match against
