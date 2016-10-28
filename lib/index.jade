@@ -177,8 +177,8 @@ html
 
           // Make an AJAX call to accept our image
           // http://api.jquery.com/jQuery.ajax/#jqXHR
-          var jqXHR = $.post('/accept-image/' + encodeURIComponent(imgSetId), {
-            image: acceptedImgBase64
+          var jqXHR = $.post('/update-image-set/' + encodeURIComponent(imgSetId), {
+            ref: acceptedImgBase64
           });
 
           // If there is an error
