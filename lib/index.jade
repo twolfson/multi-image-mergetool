@@ -490,8 +490,14 @@ html
           // Resolve our ratio scale
           var scaleRatio = expectedDiffImg.naturalWidth / expectedDiffImg.width;
 
+          // Remove previously existing results
+          var _resultsEl = expectedImgSetCollapseEl.querySelector('.results');
+          if (_resultsEl) {
+            expectedImgSetCollapseEl.removeChild(_resultsEl);
+          }
+
           // Generate and append our results
-          var resultsEl = D.DIV([
+          var resultsEl = D.DIV({class: 'results'}, [
             D.H4('Similar images:'),
             D.DIV([
               D.BUTTON({
