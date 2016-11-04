@@ -158,6 +158,9 @@ html
     //- Define our button bindings
     script.
       document.addEventListener('DOMContentLoaded', function handleReady () {
+        // Simplifiy domo reference
+        var D = window.domo;
+
         // Define cache busting helper
         function cachebustImg($img) {
           var originalSrc = $img.attr('src');
