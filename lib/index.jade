@@ -27,7 +27,6 @@ html
         pointer-events: none;
       }
 
-
       /* Built on http://codepen.io/twolfson/pen/XjQdKL */
       .loading {
         /* Default to low opacity for browsers without keyframe support */
@@ -101,6 +100,7 @@ html
         // bounds = {x, y, width, height, top, right, bottom, left}
         // http://youmightnotneedjquery.com/#offset
         // DEV: This is our poor man's `_.extend`
+        // DEV: We resolve target dimensions on drag start to prevent boundary issues if element was initially hidden/collapsed
         var _bounds = this.targetEl.getBoundingClientRect();
         var bounds = this.bounds = {};
         ['x', 'y', 'width', 'height', 'top', 'right', 'bottom', 'left'].forEach(function copyKey (key) {
