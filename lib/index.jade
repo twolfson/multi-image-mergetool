@@ -9,6 +9,14 @@ html
         padding-left: 15px;
       }
 
+      /* Images equal styles */
+      .image-set__title[data-images-equal="false"] {
+        color: red;
+      }
+      .image-set__title[data-images-equal="true"] {
+        color: green;
+      }
+
       /* Overlay styles */
       .overlay-bound {
         /* http://chrisnager.github.io/cursors/ */
@@ -211,22 +219,23 @@ html
           var imgSetHumanName = imgSet.refImg;
 
           // Generate our image set element
-          // TODO: Show match pass/fail status (e.g. green/red)
           var imgSetEl = D.UL({'data-image-set': imgSetId}, [
             D.LI([
               // Row title
               D.A({
+                class: 'image-set__title',
                 href: 'javascript:void 0;', 'data-toggle': 'collapse',
-                'data-target': '[data-image-set="' + imgSetId + '"] [data-image-set-expand]', 'aria-controls': imgSetId
+                'data-target': '[data-image-set="' + imgSetId + '"] [data-image-set-expand]',
+                'data-images-equal': imgSet.imagesEqual,
+                'aria-controls': imgSetId
               }, imgSetHumanName),
 
               // Collapsable container for row
               // DEV: We use `data-id` as `id` has restrictions on characters
               D.DIV({
                 // Make our first image set visible
-                // TODO: Remove this flag, make only failing tests visible
                 // DEV: If class names get too complex, use `classnames` library
-                class: i === 0 ? 'collapse in well' : 'collapse well',
+                class: imgSet.imagesEqual ? 'collapse well' : 'collapse in well',
                 'data-image-set-expand': true
               }, [
                 // Action buttons
