@@ -100,7 +100,7 @@ html
                   ' ',
                   D.BUTTON({
                     class: 'btn btn-default',
-                    'data-action': 'accept',
+                    'data-action': 'find-similar-images',
                     // TODO: Make our button disabled and only enable when an overlay is drawn
                     // TODO: When changes are accepted, reset all affected overlays and buttons
                     // disabled: 'disabled'
@@ -314,219 +314,218 @@ html
             updateReferenceImage(base64Data, similarImgSetId);
           });
         });
-      });
-
-    script.
-      document.addEventListener('DOMContentLoaded', function handleReady () {
-      setTimeout(function waitForImagesToLoad () {
-        // Simplifiy domo reference
-        var D = window.domo;
 
         // Specify target area (this would be done via overlay selection)
         // DEV: Target area gathered from `/prototype`
         var targetArea = {left: 159, top: 0, width: 205, height: 63.133331298828125};
 
-        // Specify expected diff image
-        // TODO: Load expected diff image based on selected image
-        // DEV: This loads first matching image only due to `querySelector` instead of `querySelectorAll`
-        var expectedImgSetEl = document.querySelector('[data-image-set]');
-        var expectedDiffImg = expectedImgSetEl.querySelector('[data-compare-type=diff]');
-        var resultsEl = D.DIV([
-          D.H4('Similar images:'),
-          D.DIV([
-            D.BUTTON({
-              class: 'btn btn-default',
-              'data-action': 'update-similar-images'
-            }, '✓ Update selected images'),
-          ])
-        ]);
-        // TODO: Delete results element upon resolution
-        expectedImgSetEl.appendChild(resultsEl);
+        $('body').on('click', 'button[data-action="find-similar-images"]', function handleClick (evt) {
+          // Find our image set container
+          var btnEl = evt.target;
+          var $expectedImgSet = $(btnEl).closest('[data-image-set]');
+          var expectedImgSetEl = $expectedImgSet[0];
 
-        // Start our chain of methods
-        findSelectionMatches();
-        function findSelectionMatches() {
-          // Start our performance check (70ms for 200 1024x1600 images)
-          console.time('findSelectionMatches');
+          // Resolve our expected diff img
+          // DEV: This loads first matching image only due to `querySelector` instead of `querySelectorAll`
+          var expectedDiffImg = expectedImgSetEl.querySelector('[data-compare-type=diff]');
 
-          // Find our sets of images to update
-          var imageSetEls = document.querySelectorAll('[data-image-set]');
-          imageSetEls = Array.prototype.slice.call(imageSetEls);
+          // Generate and append our results
+          var resultsEl = D.DIV([
+            D.H4('Similar images:'),
+            D.DIV([
+              D.BUTTON({
+                class: 'btn btn-default',
+                'data-action': 'update-similar-images'
+              }, '✓ Update selected images'),
+            ])
+          ]);
+          // TODO: Delete results element upon resolution
+          expectedImgSetEl.appendChild(resultsEl);
 
-          // Convert image sets into objects so we can add metadata
-          var imageSetInfos = imageSetEls.map(function createImageSetInfo (imageSetEl) {
-            var retVal = {
-              currentImg: imageSetEl.querySelector('[data-compare-type=current]'),
-              diffImg: imageSetEl.querySelector('[data-compare-type=diff]'),
-              refImg: imageSetEl.querySelector('[data-compare-type=ref]'),
-              id: imageSetEl.getAttribute('data-image-set'),
-              humanName: imageSetEl.getAttribute('data-image-set')
-            };
-            if (imageSetEl === expectedImgSetEl) {
-              retVal.humanName += ' (current set)';
+          // Start our chain of methods
+          findSelectionMatches();
+          function findSelectionMatches() {
+            // Start our performance check (70ms for 200 1024x1600 images)
+            console.time('findSelectionMatches');
+
+            // Find our sets of images to update
+            var imageSetEls = document.querySelectorAll('[data-image-set]');
+            imageSetEls = Array.prototype.slice.call(imageSetEls);
+
+            // Convert image sets into objects so we can add metadata
+            var imageSetInfos = imageSetEls.map(function createImageSetInfo (imageSetEl) {
+              var retVal = {
+                currentImg: imageSetEl.querySelector('[data-compare-type=current]'),
+                diffImg: imageSetEl.querySelector('[data-compare-type=diff]'),
+                refImg: imageSetEl.querySelector('[data-compare-type=ref]'),
+                id: imageSetEl.getAttribute('data-image-set'),
+                humanName: imageSetEl.getAttribute('data-image-set')
+              };
+              if (imageSetEl === expectedImgSetEl) {
+                retVal.humanName += ' (current set)';
+              }
+              return retVal;
+            });
+
+            // Prepare canvas for images to match against
+            function getSelectionImageData(img) {
+              // Generate our canvas sized down to the selection
+              // https://github.com/scijs/get-pixels/blob/7c447cd979637b31e47e148f238a1e71611af481/dom-pixels.js#L14-L18
+              var canvasEl = document.createElement('canvas');
+              canvasEl.width = targetArea.width;
+              canvasEl.height = targetArea.height;
+              var context = canvasEl.getContext('2d');
+
+              // Draw a clip as a performance precaution, then our image
+              // DEV: We haven't tested if using a clip improves performance but assume it should
+              // https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/drawImage
+              // https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/rect
+              context.rect(0, 0, targetArea.width, targetArea.height);
+              context.clip();
+              // TODO: Verify that drawing scaled images doesn't affect canvas drawing
+              context.drawImage(img, -1 * targetArea.left, -1 * targetArea.top);
+
+              // Return our generated canvas
+              // https://github.com/scijs/get-pixels/blob/7c447cd979637b31e47e148f238a1e71611af481/dom-pixels.js#L19-L20
+              return context.getImageData(0, 0, targetArea.width, targetArea.height).data;
             }
-            return retVal;
-          });
 
-          // Prepare canvas for images to match against
-          function getSelectionImageData(img) {
-            // Generate our canvas sized down to the selection
-            // https://github.com/scijs/get-pixels/blob/7c447cd979637b31e47e148f238a1e71611af481/dom-pixels.js#L14-L18
-            var canvasEl = document.createElement('canvas');
-            canvasEl.width = targetArea.width;
-            canvasEl.height = targetArea.height;
-            var context = canvasEl.getContext('2d');
+            // Reset HTML/CSS overrides
+            // TODO: We should be able to remove overrides by using `naturalWidth`
+            expectedDiffImg = expectedDiffImg.cloneNode();
+            delete expectedDiffImg.height; delete expectedDiffImg.width;
+            delete expectedDiffImg.style; delete expectedDiffImg.className;
+            var expectedImageData = getSelectionImageData(expectedDiffImg);
 
-            // Draw a clip as a performance precaution, then our image
-            // DEV: We haven't tested if using a clip improves performance but assume it should
-            // https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/drawImage
-            // https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/rect
-            context.rect(0, 0, targetArea.width, targetArea.height);
-            context.clip();
-            // TODO: Verify that drawing scaled images doesn't affect canvas drawing
-            context.drawImage(img, -1 * targetArea.left, -1 * targetArea.top);
-
-            // Return our generated canvas
-            // https://github.com/scijs/get-pixels/blob/7c447cd979637b31e47e148f238a1e71611af481/dom-pixels.js#L19-L20
-            return context.getImageData(0, 0, targetArea.width, targetArea.height).data;
-          }
-
-          // Reset HTML/CSS overrides
-          // TODO: We should be able to remove overrides by using `naturalWidth`
-          expectedDiffImg = expectedDiffImg.cloneNode();
-          delete expectedDiffImg.height; delete expectedDiffImg.width;
-          delete expectedDiffImg.style; delete expectedDiffImg.className;
-          var expectedImageData = getSelectionImageData(expectedDiffImg);
-
-          // Prepare deep equals helper
-          // DEV: This is bad for security as we short circuit (i.e. not time constant comparison)
-          function deepEquals(aArr, bArr) {
-            if (aArr.length !== bArr.length) {
-              return false;
-            }
-            var i = 0;
-            for (; i < aArr.length; i += 1) {
-              if (aArr[i] !== bArr[i]) {
+            // Prepare deep equals helper
+            // DEV: This is bad for security as we short circuit (i.e. not time constant comparison)
+            function deepEquals(aArr, bArr) {
+              if (aArr.length !== bArr.length) {
                 return false;
               }
+              var i = 0;
+              for (; i < aArr.length; i += 1) {
+                if (aArr[i] !== bArr[i]) {
+                  return false;
+                }
+              }
+              return true;
             }
-            return true;
+
+            // Filter image sets based on matching widths and selection
+            var matchingImageSetInfos = imageSetInfos.filter(function matchImageSetInfo (imageSetInfo) {
+              // If the images are different widths, return false
+              // TODO: Allow this to be a configurable heuristic
+              var actualDiffImg = imageSetInfo.diffImg;
+              if (expectedDiffImg.naturalWidth !== actualDiffImg.naturalWidth) {
+                return false;
+              }
+
+              // If the selection is different, return false
+              // DEV: We current do an exact match but could move to other comparison script
+              //   Unfortunately, Gemini's comparison seems to be Node.js only
+              //   and an exact match is "good enough" for now
+              var actualImageData = getSelectionImageData(actualDiffImg);
+              if (!deepEquals(actualImageData, expectedImageData)) {
+                return false;
+              }
+
+              // Otherwise, approve match
+              return true;
+            });
+
+            // End our performance check
+            console.timeEnd('findSelectionMatches');
+
+            // Pass through matching sets to `bulkUpdateSelection`
+            bulkUpdateSelection(matchingImageSetInfos);
           }
 
-          // Filter image sets based on matching widths and selection
-          var matchingImageSetInfos = imageSetInfos.filter(function matchImageSetInfo (imageSetInfo) {
-            // If the images are different widths, return false
-            // TODO: Allow this to be a configurable heuristic
-            var actualDiffImg = imageSetInfo.diffImg;
-            if (expectedDiffImg.naturalWidth !== actualDiffImg.naturalWidth) {
-              return false;
-            }
+          function bulkUpdateSelection(imageSetInfos) {
+            // Start our performance check (620ms total for 100 1024x1600 images, 400ms seems to be first `drawImage`)
+            console.time('bulkUpdateSelection');
 
-            // If the selection is different, return false
-            // DEV: We current do an exact match but could move to other comparison script
-            //   Unfortunately, Gemini's comparison seems to be Node.js only
-            //   and an exact match is "good enough" for now
-            var actualImageData = getSelectionImageData(actualDiffImg);
-            if (!deepEquals(actualImageData, expectedImageData)) {
-              return false;
-            }
+            // Find our output targets
+            var resultsDocFrag = D.FRAGMENT();
 
-            // Otherwise, approve match
-            return true;
-          });
+            // Generate and updated ref image for each of our comparisons
+            imageSetInfos.forEach(function generateUpdatedRef (imageSetInfo) {
+              // Localize our references
+              var currentImg = imageSetInfo.currentImg;
+              var refImg = imageSetInfo.refImg;
 
-          // End our performance check
-          console.timeEnd('findSelectionMatches');
+              // Create a canvas
+              // https://github.com/scijs/get-pixels/blob/7c447cd979637b31e47e148f238a1e71611af481/dom-pixels.js#L14-L18
+              var canvasEl = D.CANVAS({class: 'updated-ref'});
+              canvasEl.width = refImg.naturalWidth;
+              canvasEl.height = refImg.naturalHeight;
+              var context = canvasEl.getContext('2d');
 
-          // Pass through matching sets to `bulkUpdateSelection`
-          bulkUpdateSelection(matchingImageSetInfos);
-        }
+              // Load our reference into the canvas
+              // https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/drawImage
+              context.drawImage(refImg, 0, 0);
 
-        function bulkUpdateSelection(imageSetInfos) {
-          // Start our performance check (620ms total for 100 1024x1600 images, 400ms seems to be first `drawImage`)
-          console.time('bulkUpdateSelection');
+              // Update our selected portion on reference and draw image in clipping
+              // DEV: This is probably the most efficient way (outside of web workers) because
+              //   we would have to draw image twice no matter what
+              //   Maybe there's double pixel updates but I don't thinks so
+              // DEV: Performance alternatives we thought of but aren't needed
+              //   Extract image from 2nd canvas via `ndarray`
+              //   Use web workers
+              //   Requesting server do it via `get-pixels` and `save-pixels`
+              // DEV: Slowest part is drawing initial image above
+              // https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/rect
+              context.rect(targetArea.left, targetArea.top, targetArea.width, targetArea.height);
+              context.clip();
+              context.drawImage(currentImg, 0, 0);
 
-          // Find our output targets
-          var resultsDocFrag = D.FRAGMENT();
+              // Duplicate reference image and shrink both canvas/image for output
+              canvasEl.style.width = '100%';
+              var refImgClone = refImg.cloneNode();
+              refImgClone.style.width = '100%';
 
-          // Generate and updated ref image for each of our comparisons
-          imageSetInfos.forEach(function generateUpdatedRef (imageSetInfo) {
-            // Localize our references
-            var currentImg = imageSetInfo.currentImg;
-            var refImg = imageSetInfo.refImg;
-
-            // Create a canvas
-            // https://github.com/scijs/get-pixels/blob/7c447cd979637b31e47e148f238a1e71611af481/dom-pixels.js#L14-L18
-            var canvasEl = D.CANVAS({class: 'updated-ref'});
-            canvasEl.width = refImg.naturalWidth;
-            canvasEl.height = refImg.naturalHeight;
-            var context = canvasEl.getContext('2d');
-
-            // Load our reference into the canvas
-            // https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/drawImage
-            context.drawImage(refImg, 0, 0);
-
-            // Update our selected portion on reference and draw image in clipping
-            // DEV: This is probably the most efficient way (outside of web workers) because
-            //   we would have to draw image twice no matter what
-            //   Maybe there's double pixel updates but I don't thinks so
-            // DEV: Performance alternatives we thought of but aren't needed
-            //   Extract image from 2nd canvas via `ndarray`
-            //   Use web workers
-            //   Requesting server do it via `get-pixels` and `save-pixels`
-            // DEV: Slowest part is drawing initial image above
-            // https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/rect
-            context.rect(targetArea.left, targetArea.top, targetArea.width, targetArea.height);
-            context.clip();
-            context.drawImage(currentImg, 0, 0);
-
-            // Duplicate reference image and shrink both canvas/image for output
-            canvasEl.style.width = '100%';
-            var refImgClone = refImg.cloneNode();
-            refImgClone.style.width = '100%';
-
-            // Generate and append result content
-            // DEV: We use a document fragment to avoid `n` DOM edits -- instead it's 1
-            // DEV: Tables will all use same width due to heuristics
-            var resultGroupEl = D.TABLE({
-              class: 'table',
-              'data-similar-image-set': imageSetInfo.id
-            }, [
-              D.THEAD([
-                D.TR([
-                  // TODO: Add collapse support like in `gemini-gui`
-                  D.TH({colspan: 3}, imageSetInfo.humanName)
-                ]),
-                D.TR([
-                  // TODO: Move style out of inline and to classes for more performance
-                  // DEV: `min-width` is to give us spacing for "Save update text"
-                  D.TD({style: 'padding-right: 10px; min-width: 120px;'}, 'Save update:'),
-                  D.TD('Original ref:'),
-                  D.TD('Updated ref:')
-                ]),
-              ]),
-              D.TBODY([
-                D.TR([
-                  D.TD({
-                    style: 'vertical-align: top;'
-                  }, [
-                    D.INPUT({name: 'save_update', type: 'checkbox', checked: true})
+              // Generate and append result content
+              // DEV: We use a document fragment to avoid `n` DOM edits -- instead it's 1
+              // DEV: Tables will all use same width due to heuristics
+              var resultGroupEl = D.TABLE({
+                class: 'table',
+                'data-similar-image-set': imageSetInfo.id
+              }, [
+                D.THEAD([
+                  D.TR([
+                    // TODO: Add collapse support like in `gemini-gui`
+                    D.TH({colspan: 3}, imageSetInfo.humanName)
                   ]),
-                  D.TD({style: 'vertical-align: top;'}, [refImgClone]),
-                  // TODO: Consider adding updated diff image here or placing overlay or muting non-overlay section
-                  //   It's hard to see the changes as is but maybe the overlay selection will make it more obvious
-                  D.TD({style: 'vertical-align: top;'}, [canvasEl])
+                  D.TR([
+                    // TODO: Move style out of inline and to classes for more performance
+                    // DEV: `min-width` is to give us spacing for "Save update text"
+                    D.TD({style: 'padding-right: 10px; min-width: 120px;'}, 'Save update:'),
+                    D.TD('Original ref:'),
+                    D.TD('Updated ref:')
+                  ]),
+                ]),
+                D.TBODY([
+                  D.TR([
+                    D.TD({
+                      style: 'vertical-align: top;'
+                    }, [
+                      D.INPUT({name: 'save_update', type: 'checkbox', checked: true})
+                    ]),
+                    D.TD({style: 'vertical-align: top;'}, [refImgClone]),
+                    // TODO: Consider adding updated diff image here or placing overlay or muting non-overlay section
+                    //   It's hard to see the changes as is but maybe the overlay selection will make it more obvious
+                    D.TD({style: 'vertical-align: top;'}, [canvasEl])
+                  ])
                 ])
-              ])
-            ]);
-            resultsDocFrag.appendChild(resultGroupEl);
-          });
+              ]);
+              resultsDocFrag.appendChild(resultGroupEl);
+            });
 
-          // Append aggregate content to DOM
-          resultsEl.appendChild(resultsDocFrag);
+            // Append aggregate content to DOM
+            resultsEl.appendChild(resultsDocFrag);
 
-          // End our performance check
-          console.timeEnd('bulkUpdateSelection');
-        }
-      }, 500);
+            // End our performance check
+            console.timeEnd('bulkUpdateSelection');
+          }
+        });
       });
