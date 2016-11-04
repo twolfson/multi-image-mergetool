@@ -675,6 +675,7 @@ html
                     // DEV: `min-width` is to give us spacing for "Save update text"
                     D.TD({style: 'padding-right: 10px; min-width: 120px;'}, 'Save update:'),
                     D.TD('Original ref:'),
+                    D.TD('Updated diff:'),
                     D.TD('Updated ref:')
                   ]),
                 ]),
@@ -685,9 +686,10 @@ html
                     }, [
                       D.INPUT({name: 'save_update', type: 'checkbox', checked: true})
                     ]),
-                    D.TD({style: 'vertical-align: top;'}, [refImgClone]),
-                    // TODO: Consider adding updated diff image here or placing overlay or muting non-overlay section
+                    // TODO: Consider placing overlay on canvases or muting non-overlay section
                     //   It's hard to see the changes as is but maybe the overlay selection will make it more obvious
+                    D.TD({style: 'vertical-align: top;'}, [refImgClone]),
+                    D.TD({style: 'vertical-align: top;'}, [updatedDiffCanvasEl]),
                     D.TD({style: 'vertical-align: top;'}, [updatedRefCanvasEl])
                   ])
                 ])
