@@ -165,7 +165,8 @@ html
         this.overlayEl.style.height = height + 'px';
 
         // Emit an update event
-        this.emitEvent('change:overlay', [evt, pointer, {
+        // TODO: Make sure we erase overlayInfo on unbind
+        this.overlayInfo = {
           absolute: {
             left: left,
             width: width,
@@ -178,7 +179,8 @@ html
             top: top - this.bounds.top,
             height: height
           }
-        }]);
+        };
+        this.emitEvent('change:overlay', [evt, pointer, this.overlayInfo]);
       };
       Overlay.prototype.dragMove = function(evt, pointer, moveVector) {
         this.update(evt, pointer, moveVector);
@@ -207,12 +209,12 @@ html
 
           // Generate our image set element
           // TODO: Show match pass/fail status (e.g. green/red)
-          var imgSetEl = D.UL([
+          var imgSetEl = D.UL({'data-image-set': imgSetId}, [
             D.LI([
               // Row title
               D.A({
                 href: 'javascript:void 0;', 'data-toggle': 'collapse',
-                'data-target': '[data-image-set="' + imgSetId + '"]', 'aria-controls': imgSetId
+                'data-target': '[data-image-set="' + imgSetId + '"] [data-image-set-expand]', 'aria-controls': imgSetId
               }, imgSetHumanName),
 
               // Collapsable container for row
@@ -222,7 +224,7 @@ html
                 // TODO: Remove this flag, make only failing tests visible
                 // DEV: If class names get too complex, use `classnames` library
                 class: i === 0 ? 'collapse in well' : 'collapse well',
-                'data-image-set': imgSetId
+                'data-image-set-expand': true
               }, [
                 // Action buttons
                 D.DIV([
@@ -283,6 +285,9 @@ html
           // Bind an overlay to diff image
           // TODO: Explore binding overlay to each of images (that jumps between them)
           var imgOverlay = new Overlay(imgSetEl.querySelector('img[data-compare-type=diff]'));
+
+          // Save imgOverlay directly to imgSetEl
+          imgSetEl.imgOverlay = imgOverlay;
 
           // Append our element to the container element
           containerEl.appendChild(imgSetEl);
@@ -455,15 +460,16 @@ html
           });
         });
 
-        // Specify target area (this would be done via overlay selection)
-        // DEV: Target area gathered from `/prototype`
-        var targetArea = {left: 159, top: 0, width: 205, height: 63.133331298828125};
-
         $('body').on('click', 'button[data-action="find-similar-images"]', function handleClick (evt) {
           // Find our image set container
           var btnEl = evt.target;
           var $expectedImgSet = $(btnEl).closest('[data-image-set]');
           var expectedImgSetEl = $expectedImgSet[0];
+
+          // Find our target area
+          var imgOverlay = expectedImgSetEl.imgOverlay;
+          // assert(imgOverlay);
+          var targetArea = imgOverlay.overlayInfo.relative;
 
           // Resolve our expected diff img
           // DEV: This loads first matching image only due to `querySelector` instead of `querySelectorAll`
