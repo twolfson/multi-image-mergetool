@@ -225,7 +225,7 @@ html
               D.A({
                 class: 'image-set__title',
                 href: 'javascript:void 0;', 'data-toggle': 'collapse',
-                'data-target': '[data-image-set="' + imgSetId + '"] [data-image-set-expand]',
+                'data-target': '[data-image-set="' + imgSetId + '"] .image-set__collapse',
                 'data-images-equal': imgSet.imagesEqual,
                 'aria-controls': imgSetId
               }, imgSetHumanName),
@@ -235,8 +235,7 @@ html
               D.DIV({
                 // Make our first image set visible
                 // DEV: If class names get too complex, use `classnames` library
-                class: imgSet.imagesEqual ? 'collapse well' : 'collapse in well',
-                'data-image-set-expand': true
+                class: imgSet.imagesEqual ? 'image-set__collapse collapse well' : 'image-set__collapse collapse in well'
               }, [
                 // Action buttons
                 D.DIV([
@@ -477,6 +476,7 @@ html
           var btnEl = evt.target;
           var $expectedImgSet = $(btnEl).closest('[data-image-set]');
           var expectedImgSetEl = $expectedImgSet[0];
+          var expectedImgSetCollapseEl = $expectedImgSet.find('.image-set__collapse')[0];
 
           // Find our target area
           var imgOverlay = expectedImgSetEl.imgOverlay;
@@ -501,7 +501,7 @@ html
             ])
           ]);
           // TODO: Delete results element upon resolution
-          expectedImgSetEl.appendChild(resultsEl);
+          expectedImgSetCollapseEl.appendChild(resultsEl);
 
           // Start our chain of methods
           findSelectionMatches();
@@ -617,30 +617,33 @@ html
               var currentImg = imageSetInfo.currentImg;
               var refImg = imageSetInfo.refImg;
 
-              // Create a canvas
-              // https://github.com/scijs/get-pixels/blob/7c447cd979637b31e47e148f238a1e71611af481/dom-pixels.js#L14-L18
-              var canvasEl = D.CANVAS({class: 'updated-ref'});
-              canvasEl.width = refImg.naturalWidth;
-              canvasEl.height = refImg.naturalHeight;
-              var context = canvasEl.getContext('2d');
+              // Create helper to generate new canvases
+              function createUpdatedCanvas(baseImg) {
+                // Create a canvas
+                // https://github.com/scijs/get-pixels/blob/7c447cd979637b31e47e148f238a1e71611af481/dom-pixels.js#L14-L18
+                var canvasEl = D.CANVAS({class: 'updated-ref'});
+                canvasEl.width = refImg.naturalWidth;
+                canvasEl.height = refImg.naturalHeight;
+                var context = canvasEl.getContext('2d');
 
-              // Load our reference into the canvas
-              // https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/drawImage
-              context.drawImage(refImg, 0, 0);
+                // Load our reference into the canvas
+                // https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/drawImage
+                context.drawImage(baseImg, 0, 0);
 
-              // Update our selected portion on reference and draw image in clipping
-              // DEV: This is probably the most efficient way (outside of web workers) because
-              //   we would have to draw image twice no matter what
-              //   Maybe there's double pixel updates but I don't thinks so
-              // DEV: Performance alternatives we thought of but aren't needed
-              //   Extract image from 2nd canvas via `ndarray`
-              //   Use web workers
-              //   Requesting server do it via `get-pixels` and `save-pixels`
-              // DEV: Slowest part is drawing initial image above
-              // https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/rect
-              context.rect(targetArea.left, targetArea.top, targetArea.width, targetArea.height);
-              context.clip();
-              context.drawImage(currentImg, 0, 0);
+                // Update our selected portion on reference and draw image in clipping
+                // DEV: This is probably the most efficient way (outside of web workers) because
+                //   we would have to draw image twice no matter what
+                //   Maybe there's double pixel updates but I don't thinks so
+                // DEV: Performance alternatives we thought of but aren't needed
+                //   Extract image from 2nd canvas via `ndarray`
+                //   Use web workers
+                //   Requesting server do it via `get-pixels` and `save-pixels`
+                // DEV: Slowest part is drawing initial image above
+                // https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/rect
+                context.rect(targetArea.left, targetArea.top, targetArea.width, targetArea.height);
+                context.clip();
+                context.drawImage(currentImg, 0, 0);
+              }
 
               // Duplicate reference image and shrink both canvas/image for output
               canvasEl.style.width = '100%';
