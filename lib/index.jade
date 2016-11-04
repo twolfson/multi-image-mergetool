@@ -615,18 +615,19 @@ html
             imageSetInfos.forEach(function generateUpdatedRef (imageSetInfo) {
               // Localize our references
               var currentImg = imageSetInfo.currentImg;
+              var diffImg = imageSetInfo.diffImg;
               var refImg = imageSetInfo.refImg;
 
               // Create helper to generate new canvases
-              function createUpdatedCanvas(baseImg) {
+              function createUpdatedCanvas(baseImg, attributes) {
                 // Create a canvas
                 // https://github.com/scijs/get-pixels/blob/7c447cd979637b31e47e148f238a1e71611af481/dom-pixels.js#L14-L18
-                var canvasEl = D.CANVAS({class: 'updated-ref'});
+                var canvasEl = D.CANVAS(attributes);
                 canvasEl.width = refImg.naturalWidth;
                 canvasEl.height = refImg.naturalHeight;
                 var context = canvasEl.getContext('2d');
 
-                // Load our reference into the canvas
+                // Load our base image onto the canvas
                 // https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/drawImage
                 context.drawImage(baseImg, 0, 0);
 
@@ -643,12 +644,19 @@ html
                 context.rect(targetArea.left, targetArea.top, targetArea.width, targetArea.height);
                 context.clip();
                 context.drawImage(currentImg, 0, 0);
+
+                // Return our canvas
+                return canvasEl;
               }
 
-              // Duplicate reference image and shrink both canvas/image for output
-              canvasEl.style.width = '100%';
+              // Generate updated images and clone reference image
               var refImgClone = refImg.cloneNode();
+              var updatedDiffCanvasEl = createUpdatedCanvas(diffImg, {class: 'updated-diff'});
+              var updatedRefCanvasEl = createUpdatedCanvas(refImg, {class: 'updated-ref'});
+              // Shrink all canvases/images for output
               refImgClone.style.width = '100%';
+              updatedDiffCanvasEl.style.width = '100%';
+              updatedRefCanvasEl.style.width = '100%';
 
               // Generate and append result content
               // DEV: We use a document fragment to avoid `n` DOM edits -- instead it's 1
@@ -680,7 +688,7 @@ html
                     D.TD({style: 'vertical-align: top;'}, [refImgClone]),
                     // TODO: Consider adding updated diff image here or placing overlay or muting non-overlay section
                     //   It's hard to see the changes as is but maybe the overlay selection will make it more obvious
-                    D.TD({style: 'vertical-align: top;'}, [canvasEl])
+                    D.TD({style: 'vertical-align: top;'}, [updatedRefCanvasEl])
                   ])
                 ])
               ]);
