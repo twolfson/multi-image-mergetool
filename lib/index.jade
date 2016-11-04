@@ -78,9 +78,9 @@ html
     //- [x] TODO: Next: Filter out unselected matched images
     //- [x] TODO: Next: Move to button triggered image matching (i.e. clicking button uses preloaded overlay data but will generate results)
     //- [ ] TODO: Next: Add click/drag overlay support
-    //-    Mostly done, want to fix up expands to only expand bad images
-    //-    Then highlight new overlay area better in "Similar images"
-    //-    Then remove "Similar images" when we update it
+    //-    [x] Mostly done, want to fix up expands to only expand bad images
+    //-    [ ] Then highlight new overlay area better in "Similar images"
+    //-    [ ] Then remove "Similar images" when we update it
     //- [ ] TODO: Next: Add result update (i.e. pass/fail) if we still lack it
 
     //- Setup our overlay definition
@@ -487,6 +487,9 @@ html
           // DEV: This loads first matching image only due to `querySelector` instead of `querySelectorAll`
           var expectedDiffImg = expectedImgSetEl.querySelector('[data-compare-type=diff]');
 
+          // Resolve our ratio scale
+          var scaleRatio = expectedDiffImg.naturalWidth / expectedDiffImg.width;
+
           // Generate and append our results
           var resultsEl = D.DIV([
             D.H4('Similar images:'),
@@ -530,22 +533,24 @@ html
               // Generate our canvas sized down to the selection
               // https://github.com/scijs/get-pixels/blob/7c447cd979637b31e47e148f238a1e71611af481/dom-pixels.js#L14-L18
               var canvasEl = document.createElement('canvas');
-              canvasEl.width = targetArea.width;
-              canvasEl.height = targetArea.height;
+              var targetWidth = Math.ceil(targetArea.width * scaleRatio);
+              var targetHeight = Math.ceil(targetArea.height * scaleRatio);
+              canvasEl.width = targetWidth;
+              canvasEl.height = targetHeight;
               var context = canvasEl.getContext('2d');
 
               // Draw a clip as a performance precaution, then our image
               // DEV: We haven't tested if using a clip improves performance but assume it should
               // https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/drawImage
               // https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/rect
-              context.rect(0, 0, targetArea.width, targetArea.height);
+              context.rect(0, 0, targetWidth, targetHeight);
               context.clip();
               // TODO: Verify that drawing scaled images doesn't affect canvas drawing
-              context.drawImage(img, -1 * targetArea.left, -1 * targetArea.top);
+              context.drawImage(img, -1 * Math.floor(targetArea.left * scaleRatio), -1 * Math.floor(targetArea.top * scaleRatio));
 
               // Return our generated canvas
               // https://github.com/scijs/get-pixels/blob/7c447cd979637b31e47e148f238a1e71611af481/dom-pixels.js#L19-L20
-              return context.getImageData(0, 0, targetArea.width, targetArea.height).data;
+              return context.getImageData(0, 0, targetWidth, targetHeight).data;
             }
 
             // Reset HTML/CSS overrides
