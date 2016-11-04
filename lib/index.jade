@@ -13,6 +13,9 @@ html
       .image-set__title[data-images-equal="false"] {
         color: red;
       }
+      .image-set__title[data-images-equal="updating"] {
+        color: black;
+      }
       .image-set__title[data-images-equal="true"] {
         color: green;
       }
@@ -77,10 +80,7 @@ html
     //- [x] TODO: Next: Add image acceptance support for matched images
     //- [x] TODO: Next: Filter out unselected matched images
     //- [x] TODO: Next: Move to button triggered image matching (i.e. clicking button uses preloaded overlay data but will generate results)
-    //- [ ] TODO: Next: Add click/drag overlay support
-    //-    [x] Mostly done, want to fix up expands to only expand bad images
-    //-    [ ] Then highlight new overlay area better in "Similar images"
-    //-    [ ] Then remove "Similar images" when we update it
+    //- [x] TODO: Next: Add click/drag overlay support
     //- [ ] TODO: Next: Add result update (i.e. pass/fail) if we still lack it
 
     //- Setup our overlay definition
@@ -331,9 +331,12 @@ html
           var $refImg = $imgSet.find('[data-compare-type="ref"]');
           $diffImg.addClass('loading');
           $refImg.addClass('loading');
+          var $imagesEqual = $imgSet.find('[data-images-equal]');
+          var oldStatus = $imagesEqual.attr('data-images-equal');
 
-          // TODO: Eagerly update our status
-          //   This won't be the scenario for update reference image (i.e. we are progressively updating images)
+          // Eagerly update our status
+          // DEV: This won't be the scenario for update reference image (i.e. we are progressively updating images)
+          $imagesEqual.attr('data-images-equal', 'true');
 
           // Make an AJAX call to accept our image
           // http://api.jquery.com/jQuery.ajax/#jqXHR
@@ -346,7 +349,9 @@ html
             // TODO: Expose error to user so they can retry
             console.error('Error encountered "' + errorThrown + '" when updating image "' + imgSetId + '"');
 
-            // TODO: Reset status to previous state
+            // Reset status to previous state
+            // TODO: Test resetting to previous state on failure
+            $imagesEqual.attr('data-images-equal', oldStatus);
           });
 
           // When loading completes, remove loading state and update image references
