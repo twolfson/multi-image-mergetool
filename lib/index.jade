@@ -13,8 +13,9 @@ html
       .image-set__title[data-images-equal="false"] {
         color: red;
       }
-      .image-set__title[data-images-equal="updating"] {
+      .image-set__title[data-images-equal="loading"] {
         color: black;
+        opacity: 0.3;
       }
       .image-set__title[data-images-equal="true"] {
         color: green;
@@ -331,11 +332,11 @@ html
           var $refImg = $imgSet.find('[data-compare-type="ref"]');
           $diffImg.addClass('loading');
           $refImg.addClass('loading');
-          var $imagesEqual = $imgSet.find('[data-images-equal]');
-          var oldStatus = $imagesEqual.attr('data-images-equal');
 
           // Eagerly update our status
           // DEV: This won't be the scenario for update reference image (i.e. we are progressively updating images)
+          var $imagesEqual = $imgSet.find('[data-images-equal]');
+          var oldStatus = $imagesEqual.attr('data-images-equal');
           $imagesEqual.attr('data-images-equal', 'true');
 
           // Make an AJAX call to accept our image
@@ -373,7 +374,10 @@ html
           $diffImg.addClass('loading');
           $refImg.addClass('loading');
 
-          // TODO: Set status to neutral state
+          // Set status to neutral state
+          var $imagesEqual = $imgSet.find('[data-images-equal]');
+          var oldStatus = $imagesEqual.attr('data-images-equal');
+          $imagesEqual.attr('data-images-equal', 'loading');
 
           // Make an AJAX call to accept our image
           // http://api.jquery.com/jQuery.ajax/#jqXHR
@@ -386,12 +390,16 @@ html
             // TODO: Expose error to user so they can retry
             console.error('Error encountered "' + errorThrown + '" when updating image "' + imgSetId + '"');
 
-            // TODO: Reset status to previous state
+            // Reset status to previous state
+            // TODO: Test resetting to previous state on failure
+            $imagesEqual.attr('data-images-equal', oldStatus);
           });
 
           // When we complete updating
           jqXHR.done(function handleDone (data, textStatus, jqXHR) {
-            // TODO: Update status to new state
+            // Update status to new state
+            // data = {imagesEqual: true}
+            $imagesEqual.attr('data-images-equal', data.imagesEqual);
           });
 
           // When loading completes, remove loading state and update image references
