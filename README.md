@@ -17,6 +17,7 @@ TODO: Remove external dependencies (e.g. rawgit, jQuery CDN)
 TODO: Standardize on imgSet vs imageSet
 TODO: Reset dev via: `rm -r gemini gemini-report; cp -r gemini-report-bak/* .`
 TODO: Mockups reference https://gist.github.com/twolfson/c4236abadeada82e2686c940fb23341d
+TODO: Testing strategy -- Karma for browser code, with plenty of isolation for things like overlay, button scenarios, handling HTTP request (fake responses via sinon or a fixed-server). Mocha for server tests -- maybe selenium for integration test but think it's overkill. Maybe use something from server tests as fixtures for browser tests so we have contract agreement on HTTP interface
 
 ## Getting Started
 Install the module with: `npm install multi-image-mergetool`
