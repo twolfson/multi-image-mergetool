@@ -635,8 +635,13 @@ html
             resultsEl.appendChild(D.DIV([
               D.BUTTON({
                 class: 'btn btn-default',
+                'data-action': 'accept-similar-images'
+              }, '✓ Accept similar images'),
+              ' ',
+              D.BUTTON({
+                class: 'btn btn-default',
                 'data-action': 'update-similar-images'
-              }, '✓ Update selected images'),
+              }, '✓ Update similar images with selection'),
             ]));
 
             // Pass through matching sets to `bulkUpdateSelection`
