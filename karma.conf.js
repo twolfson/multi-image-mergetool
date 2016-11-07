@@ -10,8 +10,8 @@ module.exports = function (config) {
     frameworks: ['browserify', 'mocha'],
 
     // list of files / patterns to load in the browser
+    // DEV: `lib` files will be loaded via `require`
     files: [
-      'lib/js/*.js',
       'test/*.js'
     ],
 
