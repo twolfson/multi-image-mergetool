@@ -1,6 +1,7 @@
-// Load in dependencies
+// Load in our dependencies
 var assert = require('assert');
-var multiImageMergetool = require('../');
+var Overlay = require('../lib/js/overlay');
+// var Application = require('../lib/js/application');
 
 // Start our tests
 describe('multi-image-mergetool', function () {
