@@ -10,6 +10,20 @@ matrix:
   allow_failures:
     - node_js: "5"
 
+# Set up g++ dependencies for png-img
+# https://github.com/gemini-testing/gemini/blob/v4.13.4/.travis.yml#L12
+# https://github.com/gemini-testing/gemini/blob/v4.13.4/.travis.yml#L59-L65
+env:
+  global:
+    - CXX=g++-4.8
+addons:
+  apt:
+    sources:
+    - ubuntu-toolchain-r-test
+    packages:
+    - gcc-4.8
+    - g++-4.8
+
 before_install:
   - curl --location http://rawgit.com/twolfson/fix-travis-ci/master/lib/install.sh | bash -s
 
