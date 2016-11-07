@@ -63,6 +63,8 @@ html
       //- TODO: Make sure there are no XSS holes like `</script><script>alert(1)`
       | window.imageSets = !{JSON.stringify(image_sets)};
 
-    //- Load our script
-    //- TODO: Add an initialization hook (e.g. `Application.init()`)
+    //- Load our script and initialize it
     script(src="/lib/js/index.js")
+    script.
+      window.application = new Application(window.imageSets);
+      Application.bind();
