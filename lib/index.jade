@@ -719,11 +719,12 @@ html
               }
 
               // Generate updated images and clone reference image
-              var refImgClone = refImg.cloneNode();
+              var currentImgClone = currentImg.cloneNode();
+              currentImgClone.className = 'original-current';
               var updatedDiffCanvasEl = createUpdatedCanvas(diffImg, {class: 'updated-diff'});
               var updatedRefCanvasEl = createUpdatedCanvas(refImg, {class: 'updated-ref'});
               // Shrink all canvases/images for output
-              refImgClone.style.width = '100%';
+              currentImgClone.style.width = '100%';
               updatedDiffCanvasEl.style.width = '100%';
               updatedRefCanvasEl.style.width = '100%';
 
@@ -743,7 +744,7 @@ html
                     // TODO: Move style out of inline and to classes for more performance
                     // DEV: `min-width` is to give us spacing for "Save update text"
                     D.TD({style: 'padding-right: 10px; min-width: 120px;'}, 'Save update:'),
-                    D.TD('Original ref:'),
+                    D.TD('Original current:'),
                     D.TD('Updated diff:'),
                     D.TD('Updated ref:')
                   ]),
@@ -757,7 +758,7 @@ html
                     ]),
                     // TODO: Consider placing overlay on canvases or muting non-overlay section
                     //   It's hard to see the changes as is but maybe the overlay selection will make it more obvious
-                    D.TD({style: 'vertical-align: top;'}, [refImgClone]),
+                    D.TD({style: 'vertical-align: top;'}, [currentImgClone]),
                     D.TD({style: 'vertical-align: top;'}, [updatedDiffCanvasEl]),
                     D.TD({style: 'vertical-align: top;'}, [updatedRefCanvasEl])
                   ])
