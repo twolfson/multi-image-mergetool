@@ -452,7 +452,7 @@ html
           acceptImageSetChanges(base64Data, imgSetId);
         });
 
-        $('body').on('click', 'button[data-action="update-similar-images"]', function handleClick (evt) {
+        function findSelectedSimilarImageSets(evt) {
           // Find our image set container
           var btnEl = evt.target;
           var $imgSet = $(btnEl).closest('[data-image-set]');
@@ -462,16 +462,21 @@ html
           var $similarImageSets = $imgSet.find('[data-similar-image-set]');
           //- assert.strictEqual($currentImg.length, 1);
 
-          // For each of our similar image sets
-          $similarImageSets.each(function updateImageSet (i, similarImageSetEl) {
+          // Filter our similar image sets to selected ones
+          return $similarImageSets.filter(function updateImageSet (i, similarImageSetEl) {
+            return (similarImageSet.querySelector('[name=save_update]').checked;
+          });
+        }
+
+        $('body').on('click', 'button[data-action="update-similar-images"]', function handleClick (evt) {
+          // Resolve our image sets
+          var $selectedSimilarImageSets = findSelectedSimilarImageSets(evt);
+
+          // Update our image set based on its selection
+          $selectedSimilarImageSets.each(function updateImageSet (i, similarImageSetEl) {
             // Move back to jQuery collection
             var $similarImageSet = $(similarImageSetEl);
             var similarImgSetId = $similarImageSet.data('similar-image-set');
-
-            // If the image set wasn't selected, then return
-            if ($similarImageSet.find('[name=save_update]').prop('checked') !== true) {
-              return;
-            }
 
             // Extract updated base64 content
             var $updatedRefCanvas = $similarImageSet.find('.updated-ref');
