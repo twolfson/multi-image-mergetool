@@ -468,8 +468,28 @@ html
           });
         }
 
+        $('body').on('click', 'button[data-action="accept-similar-images"]', function handleClick (evt) {
+          // Resolve our similar image sets
+          var $selectedSimilarImageSets = findSelectedSimilarImageSets(evt);
+
+          // Accept our image set based on its selection
+          $selectedSimilarImageSets.each(function updateImageSet (i, similarImageSetEl) {
+            // Move back to jQuery collection
+            var $similarImageSet = $(similarImageSetEl);
+            var similarImgSetId = $similarImageSet.data('similar-image-set');
+
+            // Find our original current image
+            var $originalCurrentImg = $similarImageSet.find('.original-current');
+            //- assert.strictEqual($originalCurrentImg.length, 1);
+            var originalCurrentImgBase64 = getBase64Content($originalCurrentImg[0]);
+
+            // Run accept function
+            // TODO: Remove results when all loaded
+            acceptImageSetChanges(originalCurrentImgBase64, similarImgSetId);
+          });
+        });
         $('body').on('click', 'button[data-action="update-similar-images"]', function handleClick (evt) {
-          // Resolve our image sets
+          // Resolve our similar image sets
           var $selectedSimilarImageSets = findSelectedSimilarImageSets(evt);
 
           // Update our image set based on its selection
