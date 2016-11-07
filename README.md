@@ -2,29 +2,32 @@
 
 Resolve multiple image conflicts at the same time
 
-TODO: Add JSON reporter to Gemini or build out `multi-image-assert`
-TODO: Simplest API will be `gemini-test --reporter json || multi-image-mergetool --preset gemini` (loads Gemini config, finds screens based on that, (skips initial assertion), starts server + opens browser window)
-TODO: Move to statically saved images instead of Gemini generated ones
-TODO: Test out via `karma` and Sauce Labs/BrowserStack?
-TODO: Move from Jade to HTML so we can have `gh-pages` demo
-TODO: Add gh-pages demonstration of tool (with mock server responses)
-TODO: Clean up scripts and dependencies
-TODO: Include performance tests in final test suite
-TODO: Document CLI flags (`--help`)
-TODO: Remove our TODOs and console.logs
-TODO: Add `--preset gemini` flag support
-TODO: Remove external dependencies (e.g. rawgit, jQuery CDN)
-TODO: Standardize on imgSet vs imageSet
-TODO: Reset dev via: `rm -r gemini gemini-report; cp -r gemini-report-bak/* .`
-TODO: Mockups reference https://gist.github.com/twolfson/c4236abadeada82e2686c940fb23341d
-TODO: Testing strategy -- Karma for browser code, with plenty of isolation for things like overlay, button scenarios, handling HTTP request (fake responses via sinon or a fixed-server). Mocha for server tests -- maybe selenium for integration test but think it's overkill. Maybe use something from server tests as fixtures for browser tests so we have contract agreement on HTTP interface
+This was built to resolve conflicts in full page test screenshots where auxilary content may have changed (e.g. navigation). We prefer full page screenshots over ignored content/component based screenshots as it is less brittle and catches unexpected issues.
+
+**Features:**
+
+- Find/resolve common image changes via overlay selection
 
 ## Getting Started
-Install the module with: `npm install multi-image-mergetool`
+Install the module via:
 
-```js
-var multiImageMergetool = require('multi-image-mergetool');
-multiImageMergetool(); // 'awesome'
+```bash
+# Install multi-image-mergetool globally
+npm install -g multi-image-mergetool
+
+# Run multi-image-mergetool
+# DEV: Currently only Gemini folder structure is supported
+multi-image-mergetool
+# Comparing images...
+# ✘ gemini/screens/root/default-small/Chrome.png
+# ✘ gemini/screens/root/default-medium/Chrome.png
+# ✓ gemini/screens/root/default-large/Chrome.png
+# ✓ gemini/screens/root/z-default-large2/Chrome.png
+# ✓ gemini/screens/root/z-default-large3/Chrome.png
+# Images matched: 3 of 5
+# Server is listening on http://localhost:2020/
+
+# Browser window will automatically be opened
 ```
 
 ## Donations
@@ -34,13 +37,26 @@ Support this project and [others by twolfson][projects] via [donations][support-
 [support-me]: http://twolfson.com/support-me
 
 ## Documentation
-_(Coming soon)_
+### CLI
+Our CLI supports the following options:
+
+```
+$ multi-image-mergetool --help
+
+  Usage: multi-image-mergetool [options]
+
+  Options:
+
+    -h, --help                 output usage information
+    -V, --version              output the version number
+    -p, --port <port>          Port for server to listen on (default: 2020)
+    -h, --hostname <hostname>  Hostname for server to listen on (default: localhost)
+    --verbose                  Enable verbose logging
+    --no-browser-open          Prevent browser window from opening automatically
+```
 
 ### Architecture choices
 We chose to use a server/browser implementation over a desktop application (e.g. Electron) for more flexibility with little development cost. It allows us to support virtualized environments (e.g. Vagrant, Docker) without asking our users to bend over backwards.
-
-## Examples
-_(Coming soon)_
 
 ## Contributing
 In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint via `npm run lint` and test via `npm test`.
