@@ -70,7 +70,7 @@
   "validateIndentation": 2,
   "validateParameterSeparator": ", ",
   "safeContextKeyword": [
-    "cls",
-    "that"
+    "that",
+    "cls"
   ]
 }

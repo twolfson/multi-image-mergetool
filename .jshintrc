@@ -15,7 +15,8 @@
     "beforeEach": true,
     "after": true,
     "afterEach": true,
-    "it": true
+    "it": true,
+    "gemini": true
   },
   "curly": true,
   "indent": 2,
