@@ -24,6 +24,7 @@
   "newcap": true,
   "noarg": true,
   "quotmark": "single",
+  "scripturl": true,
   "unused": "vars",
   "maxparams": 4,
   "maxdepth": 5
