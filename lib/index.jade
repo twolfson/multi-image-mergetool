@@ -518,7 +518,11 @@ html
 
           // Generate and append our results
           var resultsEl = D.DIV({class: 'results'}, [
-            D.H4('Similar images:')
+            D.H4([
+              'Similar images',
+              D.SPAN({class: 'results__count'}, ''),
+              ':'
+            ])
           ]);
           // TODO: Delete results element upon resolution
           expectedImgSetCollapseEl.appendChild(resultsEl);
@@ -626,7 +630,8 @@ html
               return;
             }
 
-            // Otherwise, append our buttons
+            // Otherwise, update our count and append our buttons
+            resultsEl.querySelector('.results__count').textContent = ' (' + matchingImageSetInfos.length + ')';
             resultsEl.appendChild(D.DIV([
               D.BUTTON({
                 class: 'btn btn-default',
