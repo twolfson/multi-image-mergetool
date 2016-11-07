@@ -49,12 +49,12 @@
     "tmp": "0.0.29"
   },
   "devDependencies": {
-    "gemini": "~4.12.2",
     "foundry": "~4.0.3",
     "foundry-release-git": "~2.0.2",
     "foundry-release-npm": "~2.0.2",
-    "jscs": "~1.7.3",
-    "jshint": "~2.5.10",
+    "gemini": "~4.12.2",
+    "jscs": "~3.0.7",
+    "jshint": "~2.9.4",
     "mocha": "~1.11.0",
     "twolfson-style": "~1.6.0",
     "webdriver-manager": "~10.2.4"
