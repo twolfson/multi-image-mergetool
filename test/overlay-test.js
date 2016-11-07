@@ -1,11 +1,16 @@
 // Load in our dependencies
 var assert = require('assert');
+var D = require('domo');
 var Overlay = require('../lib/js/overlay');
 
 // Start our tests
-describe.skip('An overlay over an image', function () {
+describe.skip('An overlay over an element', function () {
   it('is visible', function () {
     // Test visibility, maybe with a screenshot
+    var el = D.DIV({style: 'width: 300px; height: 200px; color: navy'});
+    var overlay = new Overlay(el);
+    assert(overlay);
+    // Need to simulate mouse movements via something like `simulant`
   });
 });
 
