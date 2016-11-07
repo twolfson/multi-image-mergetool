@@ -518,13 +518,7 @@ html
 
           // Generate and append our results
           var resultsEl = D.DIV({class: 'results'}, [
-            D.H4('Similar images:'),
-            D.DIV([
-              D.BUTTON({
-                class: 'btn btn-default',
-                'data-action': 'update-similar-images'
-              }, '✓ Update selected images'),
-            ])
+            D.H4('Similar images:')
           ]);
           // TODO: Delete results element upon resolution
           expectedImgSetCollapseEl.appendChild(resultsEl);
@@ -624,6 +618,21 @@ html
 
             // End our performance check
             console.timeEnd('findSelectionMatches');
+
+            // If we have no matching image sets
+            // assert.notEqual(matchingImageSetInfos.length, 0, 'Something went horribly wrong when matching images; not even the original is equal to itself');
+            if (matchingImageSetInfos.length === 1) {
+              resultsEl.appendChild(D.DIV('No similar images found'));
+              return;
+            }
+
+            // Otherwise, append our buttons
+            resultsEl.appendChild(D.DIV([
+              D.BUTTON({
+                class: 'btn btn-default',
+                'data-action': 'update-similar-images'
+              }, '✓ Update selected images'),
+            ]));
 
             // Pass through matching sets to `bulkUpdateSelection`
             bulkUpdateSelection(matchingImageSetInfos);
