@@ -59,6 +59,23 @@ $ multi-image-mergetool --help
 We chose to use a server/browser implementation over a desktop application (e.g. Electron) for more flexibility with little development cost. It allows us to support virtualized environments (e.g. Vagrant, Docker) without asking our users to bend over backwards.
 
 ## Development
+### Setup
+To get a local copy of `multi-image-mergetool` set up, run the following steps:
+
+```bash
+# Clone the repository
+git clone https://github.com/twolfson/multi-image-mergetool
+cd multi-image-mergetool
+
+# Install our dependencies
+# DEV: This will automatically compile JS as well via `prepublish`
+npm install
+
+# Start our local multi-image-mergetool
+npm start
+# or bin/multi-image-mergetool
+```
+
 ### Building files
 We use [gulp][] and [browserify][] to compile assets. These can be run once via:
 
@@ -77,6 +94,15 @@ npm run develop
 [gulp]: https://github.com/gulpjs/gulp
 [browserify]: https://github.com/substack/node-browserify
 [LiveReload]: http://livereload.com/extensions/
+
+### Releasing
+Our release process has a bunch of steps so we use [foundry][] to make them reproducable. To perform a new release, run the following:
+
+- Update `CHANGELOG.md` with new release version
+- Run `foundry release <version>`
+    - This will take care of compiling `dist`, updating `.npmignore` to match `.gitignore`, tagging repository, updating `package.json`, pushing commit/tag to GitHub, and publishing to `npm`
+
+[foundry]: https://github.com/twolfson/foundry
 
 ## Contributing
 In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint via `npm run lint` and test via `npm test`.
