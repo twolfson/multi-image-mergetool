@@ -58,6 +58,26 @@ $ multi-image-mergetool --help
 ### Architecture choices
 We chose to use a server/browser implementation over a desktop application (e.g. Electron) for more flexibility with little development cost. It allows us to support virtualized environments (e.g. Vagrant, Docker) without asking our users to bend over backwards.
 
+## Development
+### Building files
+We use [gulp][] and [browserify][] to compile assets. These can be run once via:
+
+```bash
+npm run build
+```
+
+or continuously via:
+
+```bash
+npm run develop
+```
+
+`npm run develop` will additionally start a [LiveReload][] server
+
+[gulp]: https://github.com/gulpjs/gulp
+[browserify]: https://github.com/substack/node-browserify
+[LiveReload]: http://livereload.com/extensions/
+
 ## Contributing
 In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint via `npm run lint` and test via `npm test`.
 
