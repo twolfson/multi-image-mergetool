@@ -1,4 +1,6 @@
 # multi-image-mergetool changelog
+1.3.0 - Moved CSS to standalone files
+
 1.2.2 - Added .npmignore to .gitignore
 
 1.2.1 - Removed redundant build step from release
