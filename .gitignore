@@ -8,4 +8,6 @@ npm-debug.log
 /gemini-report-bak/
 
 # Repository files
+# DEV: .npmignore is automatically generated on release
 /dist/
+.npmignore
