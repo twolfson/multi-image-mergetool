@@ -24,6 +24,8 @@
   },
   "license": "Unlicense",
   "scripts": {
+    "build": "gulp build",
+    "develop": "gulp develop",
     "gemini-update": "npm run verify-webdriver-running && gemini update gemini.js",
     "gemini-test": "npm run verify-webdriver-running && gemini test --reporter html --reporter flat gemini.js",
     "lint": "twolfson-style lint lib/ test/",

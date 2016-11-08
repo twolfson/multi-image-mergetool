@@ -26,7 +26,7 @@ gulp.task('build-clean', function clean (done) {
 var browserifyObj = browserify({
   cache: {}, packageCache: {},
   debug: true, // Enable source maps
-  entries: __dirname + '/public/js/index.js'
+  entries: __dirname + '/lib/js/index.js'
 });
 gulp.task('build-js', function buildJs () {
   // Bundle browserify content
@@ -73,11 +73,11 @@ gulp.task('develop', ['build'], function develop () {
   browserifyObj.plugin(watchify);
   browserifyObj.on('update', function handleBUpdate () {
     // DEV: At some point `gulp.run` will be deprecated, move to `gulp.series` when it does
-    gulp.run('build-js');
+    gulp.start('build-js');
   });
   // DEV: Trigger a browserify build to make watchify start watching files
   browserifyObj.bundle().on('data', function () {});
 
   // When one of our src files changes, re-run its corresponding task
-  gulp.watch('lib/**/*', ['livereload-update']);
+  gulp.watch(['lib/**/*', '!lib/js/**/*'], ['livereload-update']);
 });

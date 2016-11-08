@@ -6,3 +6,6 @@ npm-debug.log
 /gemini/
 /gemini-report/
 /gemini-report-bak/
+
+# Repository files
+/dist/
