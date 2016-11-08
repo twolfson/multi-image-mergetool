@@ -27,6 +27,7 @@
     "gemini-update": "npm run verify-webdriver-running && gemini update gemini.js",
     "gemini-test": "npm run verify-webdriver-running && gemini test --reporter html --reporter flat gemini.js",
     "lint": "twolfson-style lint lib/ test/",
+    "prepublish": "echo \"Set up prepublish step -- should build and include build results in publish\" 1>&2 && exit 1",
     "start": "node bin/multi-image-mergetool",
     "test": "npm run test-karma-single && npm run lint",
     "test-karma-continuous": "karma start --no-single-run",
