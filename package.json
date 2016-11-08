@@ -93,6 +93,11 @@
   "foundry": {
     "releaseCommands": [
       {
+        "comment": "Run build before performing any other commands as a precaution",
+        "type": "customCommand",
+        "updateFiles": "npm run build"
+      },
+      {
         "type": "customCommand",
         "updateFiles": "cat .gitignore | grep --invert-match dist > .npmignore"
       },
