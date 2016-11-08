@@ -68,8 +68,10 @@ git clone https://github.com/twolfson/multi-image-mergetool
 cd multi-image-mergetool
 
 # Install our dependencies
-# DEV: This will automatically compile JS as well via `prepublish`
 npm install
+
+# Compile our latest assets
+npm run build
 
 # Start our local multi-image-mergetool
 npm start

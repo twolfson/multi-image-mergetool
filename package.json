@@ -29,7 +29,6 @@
     "gemini-update": "npm run verify-webdriver-running && gemini update gemini.js",
     "gemini-test": "npm run verify-webdriver-running && gemini test --reporter html --reporter flat gemini.js",
     "lint": "twolfson-style lint lib/ test/",
-    "prepublish": "npm run build",
     "start": "node bin/multi-image-mergetool",
     "test": "npm run test-karma-single && npm run lint && npm run build",
     "test-karma-continuous": "karma start --no-single-run",
@@ -93,7 +92,6 @@
   "foundry": {
     "releaseCommands": [
       {
-        "comment": "Run build before performing any other commands as a precaution",
         "type": "customCommand",
         "updateFiles": "npm run build"
       },
