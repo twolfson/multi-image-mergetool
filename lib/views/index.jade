@@ -2,61 +2,8 @@ doctype html
 html
   head
     title multi-image-mergetool
-    link(rel="stylesheet", href="https://cdn.rawgit.com/twbs/bootstrap/v3.3.7/dist/css/bootstrap.min.css", text="text/css")
-    style.
-      ul {
-        /* Same width as `container-fluid` */
-        padding-left: 15px;
-      }
-
-      /* Images equal styles */
-      .image-set__title[data-images-equal="false"] {
-        color: red;
-      }
-      .image-set__title[data-images-equal="loading"] {
-        color: black;
-        opacity: 0.3;
-      }
-      .image-set__title[data-images-equal="true"] {
-        color: green;
-      }
-
-      /* Overlay styles */
-      .overlay-bound {
-        /* http://chrisnager.github.io/cursors/ */
-        cursor: crosshair;
-      }
-      .overlay {
-        position: absolute;
-        width: 50px;
-        height: 50px;
-        background: #33CC33;
-        border: 2px solid #00FF00;
-        opacity: 0.5;
-
-        /* Allow click through for new selection */
-        /* TODO: Depending on configuration, this could be a drag action on the overlay */
-        pointer-events: none;
-      }
-
-      /* Built on http://codepen.io/twolfson/pen/XjQdKL */
-      .loading {
-        /* Default to low opacity for browsers without keyframe support */
-        opacity: 0.3;
-
-        /* Add our animation */
-        /* https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Animations/Using_CSS_animations */
-        animation-duration: 0.5s;
-        animation-name: loading;
-        animation-iteration-count: infinite;
-        animation-direction: alternate;
-        animation-timing-function: linear;
-      }
-
-      @keyframes loading {
-        from { opacity: 0.3; }
-        to { opacity: 0.4; }
-      }
+    link(rel="stylesheet", href="/dist/css/bootstrap.css", text="text/css")
+    link(rel="stylesheet", href="/dist/css/index.css", text="text/css")
   body
     //- Expose our data directly to `window`
     script

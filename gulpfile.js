@@ -20,6 +20,13 @@ gulp.task('build-clean', function clean (done) {
   rimraf(__dirname + '/dist/', done);
 });
 
+gulp.task('build-css', function buildJs () {
+  var bootstrapPath = require.resolve('bootstrap/dist/css/bootstrap.css');
+  return gulp.src([bootstrapPath, __dirname + '/lib/css/*.css'])
+    .pipe(gulp.dest('dist/css'))
+    .pipe(gulpLivereload());
+});
+
 // Create a browserify instance
 // https://github.com/gulpjs/gulp/blob/v3.9.1/docs/recipes/browserify-uglify-sourcemap.md
 // https://github.com/substack/watchify/tree/v3.7.0#watchifyb-opts
@@ -54,7 +61,7 @@ gulp.task('build-js', function buildJs () {
     .pipe(gulpLivereload());
 });
 
-gulp.task('build', ['build-js']);
+gulp.task('build', ['build-css', 'build-js']);
 
 // Define our development tasks
 gulp.task('livereload-update', function livereloadUpdate () {
@@ -79,5 +86,6 @@ gulp.task('develop', ['build'], function develop () {
   browserifyObj.bundle().on('data', function () {});
 
   // When one of our src files changes, re-run its corresponding task
-  gulp.watch(['lib/**/*', '!lib/js/**/*'], ['livereload-update']);
+  gulp.watch(['lib/**/*', '!lib/{css,js}/**/*'], ['livereload-update']);
+  gulp.watch(['lib/css/**/*'], ['build-css']);
 });
