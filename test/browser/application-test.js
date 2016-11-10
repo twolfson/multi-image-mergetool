@@ -90,6 +90,7 @@ describe('When an image set title is clicked', function () {
   });
 });
 
+// Define our edge case tests
 describe.skip('An overlay in a collapsed image set', function () {
   it('is not visible', function () {
     // Test me
