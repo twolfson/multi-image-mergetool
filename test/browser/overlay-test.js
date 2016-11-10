@@ -4,13 +4,6 @@ var D = require('domo');
 var Overlay = require('../../browser/js/overlay');
 
 // Start our tests
-// TODO: Remove placeholder test (here so Karma initially passes)
-describe('Overlay', function () {
-  it('is a constructor', function () {
-    expect(Overlay).to.not.equal(undefined);
-  });
-});
-
 describe.skip('An overlay over an element', function () {
   it('is visible', function () {
     // Test visibility, maybe with a screenshot
