@@ -92,7 +92,7 @@ ImageSet.prototype = {
   },
   // DEV: We could use `toJSON` but there is a trust issue of it always being used/not
   serialize: function () {
-    return _.pick(this, ['currentImg', 'diffImg', 'imageEqual', 'refImg']);
+    return _.pick(this, ['currentImg', 'diffImg', 'imagesEqual', 'refImg']);
   },
   updateRef: function (refBuff, cb) {
     // Update our reference image
