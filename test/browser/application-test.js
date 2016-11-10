@@ -2,37 +2,47 @@
 var expect = require('chai').expect;
 var Application = require('../../browser/js/application');
 
+// Define our application utils
+var applicationUtils = {
+  init: function () {
+    before(function createApplication () {
+      this.containerEl = document.createElement('div');
+      document.body.appendChild(this.containerEl);
+      this.app = new Application(this.containerEl, [{
+        currentImg: 'data:image/png;base64,mock-current-img-equal',
+        diffImg: 'data:image/png;base64,mock-diff-img-equal',
+        refImg: 'data:image/png;base64,mock-ref-img-equal',
+        imagesEqual: true
+      }, {
+        currentImg: 'data:image/png;base64,mock-current-img-not-equal',
+        diffImg: 'data:image/png;base64,mock-diff-img-not-equal',
+        refImg: 'data:image/png;base64,mock-ref-img-not-equal',
+        imagesEqual: false
+      }]);
+    });
+    after(function cleanup () {
+      // If we are on the debug page and only 1 test is running, expose everything
+      if (window.location.pathname === '/debug.html' && window.mocha.options.hasOnly) {
+        console.info('/debug.html and `hasOnly` detected, ' +
+          'exposing `window.app` and `window.containerEl`');
+        window.app = this.app;
+        window.containerEl = this.containerEl;
+      // Otherwise, cleanup
+      } else {
+        document.body.removeChild(this.containerEl);
+        delete this.app;
+        delete this.containerEl;
+      }
+    });
+  }
+};
+
 // Start our tests
 describe('An application with images', function () {
-  before(function createApplication () {
-    this.containerEl = document.createElement('div');
-    document.body.appendChild(this.containerEl);
-    this.app = new Application(this.containerEl, [{
-      currentImg: 'data:image/png;base64,mock-current-img-equal',
-      diffImg: 'data:image/png;base64,mock-diff-img-equal',
-      refImg: 'data:image/png;base64,mock-ref-img-equal',
-      imagesEqual: true
-    }, {
-      currentImg: 'data:image/png;base64,mock-current-img-not-equal',
-      diffImg: 'data:image/png;base64,mock-diff-img-not-equal',
-      refImg: 'data:image/png;base64,mock-ref-img-not-equal',
-      imagesEqual: false
-    }]);
-  });
-  after(function cleanup () {
-    // If we are on the debug page, expose everything
-    if (window.location.pathname === '/debug.html') {
-      console.debug('/debug.html detected, exposing `window.app` and `window.containerEl`');
-      window.app = this.app;
-      window.containerEl = this.containerEl;
-    // Otherwise, cleanup
-    } else {
-      document.body.removeChild(this.containerEl);
-      delete this.app;
-      delete this.containerEl;
-    }
-  });
+  // Create our application
+  applicationUtils.init();
 
+  // Assert about our application
   it('lists images by reference images', function () {
     var imageSetTitleEls = this.containerEl.querySelectorAll('.image-set__title');
     expect(imageSetTitleEls).to.have.length(2);
@@ -53,16 +63,16 @@ describe('An application with images', function () {
     expect([].slice.call(imageSetCollapseEl.classList)).to.not.include('in');
   });
 
-  it('collapses non-matching image sets', function () {
+  it('expands non-matching image sets', function () {
     var imageSetCollapseEl = this.containerEl.querySelector(
       '[data-image-set$="mock-ref-img-not-equal"] .image-set__collapse');
     expect([].slice.call(imageSetCollapseEl.classList)).to.include('in');
   });
 });
 
-describe.skip('When an image set title is clicked', function () {
-  it('collapses/reveals its contents', function () {
-    // Test me
+describe('When an image set title is clicked', function () {
+  it('collapses/expands its contents', function () {
+    // DEV: We don't test this thoroughly as it's Bootstrap's responsibility
   });
 });
 
