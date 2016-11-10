@@ -4,6 +4,8 @@ var expect = require('chai').expect;
 var Application = require('../../browser/js/application');
 
 // Define our application utils
+// DEV: If `applicationUtils` needs to be reused, place it into a `utils` folder,
+//   add `(imageSets)` as an option, and define constants of `imageSets` for us to use in utils
 var applicationUtils = {
   init: function () {
     before(function createApplication () {
