@@ -108,10 +108,6 @@ function generateServer(imageSets, options) {
       });
     }
   ]);
-  // TODO: Remove `/overlay` as it should be its own repo entirely
-  server.get('/overlay', function overlayShow (req, res, next) {
-    res.render('overlay.jade');
-  });
 
   // Return our server
   return server;
