@@ -1,7 +1,7 @@
 // Load in our dependencies
 var expect = require('chai').expect;
 var D = require('domo');
-var Overlay = require('../lib/js/overlay');
+var Overlay = require('../../browser/js/overlay');
 
 // Start our tests
 // TODO: Remove placeholder test (here so Karma initially passes)
