@@ -1,4 +1,5 @@
 // Load in our dependencies
+var $ = require('jquery');
 var expect = require('chai').expect;
 var Application = require('../../browser/js/application');
 
@@ -71,8 +72,21 @@ describe('An application with images', function () {
 });
 
 describe('When an image set title is clicked', function () {
+  applicationUtils.init();
+
   it('collapses/expands its contents', function () {
     // DEV: We don't test this thoroughly as it's Bootstrap's responsibility
+    // Assert our initial state is open
+    var imageSetEl = this.containerEl.querySelector('[data-image-set$="mock-ref-img-not-equal"]');
+    var imageSetTitleEl = imageSetEl.querySelector('.image-set__title');
+    var imageSetCollapseEl = imageSetEl.querySelector('.image-set__collapse');
+    expect([].slice.call(imageSetCollapseEl.classList)).to.include('in');
+
+    // Click our element
+    $(imageSetTitleEl).click();
+
+    // Assert our element is closed
+    expect([].slice.call(imageSetCollapseEl.classList)).to.not.include('in');
   });
 });
 
