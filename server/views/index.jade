@@ -5,6 +5,8 @@ html
     link(rel="stylesheet", href="/browser-dist/css/bootstrap.css", text="text/css")
     link(rel="stylesheet", href="/browser-dist/css/index.css", text="text/css")
   body
+    <div id="container" class="container-fluid"></div>
+
     //- Expose our data directly to `window`
     script
       //- TODO: Make sure there are no XSS holes like `</script><script>alert(1)`
@@ -13,5 +15,7 @@ html
     //- Load our script and initialize it
     script(src="/browser-dist/js/index.js")
     script.
-      window.application = new Application(window.imageSets);
-      Application.bind();
+      document.addEventListener('DOMContentLoaded', function handleDOMContentLoaded () {
+        window.application = new Application(document.body, window.imageSets);
+        Application.bind();
+      });

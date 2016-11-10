@@ -10,12 +10,14 @@ var Overlay = require('./overlay');
 // TODO: Consider magnifying glass zoom on images (e.g. like in ecommerce sites)
 
 // Define our application
-function Application(imageSets) {
-  // Generate our container element
-  // DEV: We use a container element instead of the DOM directly to prevent redrawing elements on each append
-  var containerEl = D.DIV({
-    class: 'container-fluid'
-  });
+function Application(_containerEl, imageSets) {
+  // Save our container element for later
+  // TODO: Add a `destroy` method which removes element as well as any bindings
+  this.containerEl = _containerEl;
+
+  // Generate our document fragment
+  // DEV: We use a document fragment instead of the DOM directly to prevent redrawing elements on each append
+  var imageSetsDocFrag = D.FRAGMENT();
 
   // Expose our images
   // TODO: Expose images in tree list like gemini-gui, maybe even simplified variants like GitHub
@@ -108,11 +110,11 @@ function Application(imageSets) {
     imgSetEl.imgOverlay = imgOverlay;
 
     // Append our element to the container element
-    containerEl.appendChild(imgSetEl);
+    imageSetsDocFrag.appendChild(imgSetEl);
   });
 
   // Apppend our container element
-  document.body.appendChild(containerEl);
+  document.body.appendChild(imageSetsDocFrag);
 }
 
 // Define our button bindings
