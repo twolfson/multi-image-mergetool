@@ -1,4 +1,6 @@
 # multi-image-mergetool changelog
+1.4.0 - Relocated browser and server files to separate folders for clearer intent/testing
+
 1.3.0 - Moved CSS to standalone files
 
 1.2.2 - Added .npmignore to .gitignore
