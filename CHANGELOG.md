@@ -1,4 +1,6 @@
 # multi-image-mergetool changelog
+1.5.0 - Added basic application tests for titles, statuses, and collapses
+
 1.4.1 - Repaired broken test due to path change
 
 1.4.0 - Relocated browser and server files to separate folders for clearer intent/testing
