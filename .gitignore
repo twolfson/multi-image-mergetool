@@ -9,5 +9,5 @@ npm-debug.log
 
 # Repository files
 # DEV: .npmignore is automatically generated on release
-/dist/
+/browser-dist/
 .npmignore

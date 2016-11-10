@@ -2,8 +2,8 @@ doctype html
 html
   head
     title multi-image-mergetool
-    link(rel="stylesheet", href="/dist/css/bootstrap.css", text="text/css")
-    link(rel="stylesheet", href="/dist/css/index.css", text="text/css")
+    link(rel="stylesheet", href="/browser-dist/css/bootstrap.css", text="text/css")
+    link(rel="stylesheet", href="/browser-dist/css/index.css", text="text/css")
   body
     //- Expose our data directly to `window`
     script
@@ -11,7 +11,7 @@ html
       | window.imageSets = !{JSON.stringify(image_sets)};
 
     //- Load our script and initialize it
-    script(src="/dist/js/index.js")
+    script(src="/browser-dist/js/index.js")
     script.
       window.application = new Application(window.imageSets);
       Application.bind();

@@ -102,7 +102,7 @@ Our release process has a bunch of steps so we use [foundry][] to make them repr
 
 - Update `CHANGELOG.md` with new release version
 - Run `foundry release <version>`
-    - This will take care of compiling `dist`, updating `.npmignore` to match `.gitignore`, tagging repository, updating `package.json`, pushing commit/tag to GitHub, and publishing to `npm`
+    - This will take care of compiling `browser-dist`, updating `.npmignore` to match `.gitignore`, tagging repository, updating `package.json`, pushing commit/tag to GitHub, and publishing to `npm`
 
 [foundry]: https://github.com/twolfson/foundry
 

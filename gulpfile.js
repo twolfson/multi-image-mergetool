@@ -16,14 +16,14 @@ var config = {
 
 // Define our build tasks
 gulp.task('build-clean', function clean (done) {
-  // Remove all compiled files in `dist/`
-  rimraf(__dirname + '/dist/', done);
+  // Remove all compiled files in `browser-dist/`
+  rimraf(__dirname + '/browser-dist/', done);
 });
 
 gulp.task('build-css', function buildJs () {
   var bootstrapPath = require.resolve('bootstrap/dist/css/bootstrap.css');
-  return gulp.src([bootstrapPath, __dirname + '/lib/css/*.css'])
-    .pipe(gulp.dest('dist/css'))
+  return gulp.src([bootstrapPath, __dirname + '/browser/css/*.css'])
+    .pipe(gulp.dest('browser-dist/css'))
     .pipe(gulpLivereload());
 });
 
@@ -33,7 +33,7 @@ gulp.task('build-css', function buildJs () {
 var browserifyObj = browserify({
   cache: {}, packageCache: {},
   debug: true, // Enable source maps
-  entries: __dirname + '/lib/js/index.js'
+  entries: __dirname + '/browser/js/index.js'
 });
 gulp.task('build-js', function buildJs () {
   // Bundle browserify content
@@ -57,7 +57,7 @@ gulp.task('build-js', function buildJs () {
 
   // Return our stream
   return jsStream
-    .pipe(gulp.dest('dist/js'))
+    .pipe(gulp.dest('browser-dist/js'))
     .pipe(gulpLivereload());
 });
 
@@ -86,6 +86,6 @@ gulp.task('develop', ['build'], function develop () {
   browserifyObj.bundle().on('data', function () {});
 
   // When one of our src files changes, re-run its corresponding task
-  gulp.watch(['lib/**/*', '!lib/{css,js}/**/*'], ['livereload-update']);
-  gulp.watch(['lib/css/**/*'], ['build-css']);
+  gulp.watch(['server/**/*'], ['livereload-update']);
+  gulp.watch(['browser/css/**/*'], ['build-css']);
 });

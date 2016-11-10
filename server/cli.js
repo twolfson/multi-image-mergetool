@@ -4,7 +4,7 @@ var chalk = require('chalk');
 var glob = require('glob');
 var program = require('commander');
 var opener = require('opener');
-var generateServer = require('./server');
+var generateServer = require('./index');
 var ImageSet = require('./image-set');
 var logger = require('./logger');
 

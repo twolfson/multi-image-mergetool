@@ -18,7 +18,7 @@
   "bin": {
     "multi-image-mergetool": "bin/multi-image-mergetool"
   },
-  "main": "lib/server",
+  "main": "server/index.js",
   "engines": {
     "node": ">= 4.0.0"
   },
@@ -28,7 +28,7 @@
     "develop": "gulp develop",
     "gemini-update": "npm run verify-webdriver-running && gemini update gemini.js",
     "gemini-test": "npm run verify-webdriver-running && gemini test --reporter html --reporter flat gemini.js",
-    "lint": "twolfson-style lint lib/ test/",
+    "lint": "twolfson-style lint browser/ server/ test/",
     "start": "node bin/multi-image-mergetool",
     "test": "npm run test-karma-single && npm run lint && npm run build",
     "test-karma-continuous": "karma start --no-single-run",
@@ -97,7 +97,7 @@
       },
       {
         "type": "customCommand",
-        "updateFiles": "cat .gitignore | grep --invert-match dist > .npmignore"
+        "updateFiles": "cat .gitignore | grep --invert-match browser-dist > .npmignore"
       },
       "foundry-release-git",
       "foundry-release-npm"

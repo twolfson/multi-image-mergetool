@@ -10,9 +10,9 @@ module.exports = function (config) {
     frameworks: ['browserify', 'mocha'],
 
     // list of files / patterns to load in the browser
-    // DEV: `lib` files will be loaded via `require`
+    // DEV: Non-test `browser` files will be loaded via `require`
     files: [
-      'test/*.js'
+      'test/browser/*.js'
     ],
 
     // list of files to exclude
@@ -22,7 +22,7 @@ module.exports = function (config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-        'test/**/*.js': ['browserify']
+      'test/browser/**/*.js': ['browserify']
     },
 
     // configure browserify

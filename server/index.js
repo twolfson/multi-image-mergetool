@@ -17,7 +17,7 @@ function generateServer(imageSets, options) {
   server.set('view engine', 'jade');
 
   // Statically host our JS files
-  server.use('/dist', express.static(__dirname + '/../dist'));
+  server.use('/browser-dist', express.static(__dirname + '/../browser-dist'));
 
   // Set up body handling support
   // DEV: We are setting high limit with 1MB but we'll see if people exceed that...
