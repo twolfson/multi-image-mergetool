@@ -114,7 +114,7 @@ function Application(_containerEl, imageSets) {
   });
 
   // Apppend our container element
-  document.body.appendChild(imageSetsDocFrag);
+  this.containerEl.appendChild(imageSetsDocFrag);
 }
 
 // Define our button bindings
