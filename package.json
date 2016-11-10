@@ -74,7 +74,7 @@
     "karma-browserify": "~5.1.0",
     "karma-mocha": "~1.2.0",
     "karma-phantomjs-launcher": "~1.0.2",
-    "mocha": "~1.11.0",
+    "mocha": "~3.1.2",
     "rimraf": "~2.5.4",
     "twolfson-style": "~1.6.0",
     "unidragger": "~2.1.0",
