@@ -1,9 +1,28 @@
 // Load in our dependencies
 var expect = require('chai').expect;
-var Application = require('../../browser/js/overlay');
+var Application = require('../../browser/js/application');
 
 // Start our tests
 describe('An application with images', function () {
+  before(function createApplication () {
+    this.container = document.createElement('div');
+    this.app = new Application(this.container, [{
+      currentImg: 'data:image/png;base64,mock-current-img-1',
+      diffImg: 'data:image/png;base64,mock-diff-img-1',
+      refImg: 'data:image/png;base64,mock-ref-img-1',
+      imagesEqual: true
+    }, {
+      currentImg: 'data:image/png;base64,mock-current-img-2',
+      diffImg: 'data:image/png;base64,mock-diff-img-2',
+      refImg: 'data:image/png;base64,mock-ref-img-2',
+      imagesEqual: false
+    }]);
+  });
+  after(function cleanup () {
+    delete this.app;
+    delete this.container;
+  });
+
   it('lists images by reference images', function () {
 
   });
@@ -18,6 +37,18 @@ describe('An application with images', function () {
 
   it('collapses non-matching image sets', function () {
 
+  });
+});
+
+describe.skip('When an image set title is clicked', function () {
+  it('collapses/reveals its contents', function () {
+    // Test me
+  });
+});
+
+describe.skip('An overlay in a collapsed image set', function () {
+  it('is not visible', function () {
+    // Test me
   });
 });
 
