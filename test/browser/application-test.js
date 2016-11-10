@@ -8,14 +8,14 @@ describe('An application with images', function () {
     this.containerEl = document.createElement('div');
     document.body.appendChild(this.containerEl);
     this.app = new Application(this.containerEl, [{
-      currentImg: 'data:image/png;base64,mock-current-img-0',
-      diffImg: 'data:image/png;base64,mock-diff-img-0',
-      refImg: 'data:image/png;base64,mock-ref-img-0',
+      currentImg: 'data:image/png;base64,mock-current-img-equal',
+      diffImg: 'data:image/png;base64,mock-diff-img-equal',
+      refImg: 'data:image/png;base64,mock-ref-img-equal',
       imagesEqual: true
     }, {
-      currentImg: 'data:image/png;base64,mock-current-img-1',
-      diffImg: 'data:image/png;base64,mock-diff-img-1',
-      refImg: 'data:image/png;base64,mock-ref-img-1',
+      currentImg: 'data:image/png;base64,mock-current-img-not-equal',
+      diffImg: 'data:image/png;base64,mock-diff-img-not-equal',
+      refImg: 'data:image/png;base64,mock-ref-img-not-equal',
       imagesEqual: false
     }]);
   });
@@ -36,14 +36,14 @@ describe('An application with images', function () {
   it('lists images by reference images', function () {
     var imageSetTitleEls = this.containerEl.querySelectorAll('.image-set__title');
     expect(imageSetTitleEls).to.have.length(2);
-    expect(imageSetTitleEls[0].textContent).to.match(/mock-ref-img-0$/);
-    expect(imageSetTitleEls[1].textContent).to.match(/mock-ref-img-1$/);
+    expect(imageSetTitleEls[0].textContent).to.match(/mock-ref-img-equal$/);
+    expect(imageSetTitleEls[1].textContent).to.match(/mock-ref-img-not-equal$/);
   });
 
   it('indicates matching/non-matching image sets', function () {
-    var imageSetTitleEl = this.containerEl.querySelector('[data-image-set$="mock-ref-img-0"] .image-set__title');
+    var imageSetTitleEl = this.containerEl.querySelector('[data-image-set$="mock-ref-img-equal"] .image-set__title');
     expect(imageSetTitleEl.getAttribute('data-images-equal')).to.equal('true');
-    imageSetTitleEl = this.containerEl.querySelector('[data-image-set$="mock-ref-img-1"] .image-set__title');
+    imageSetTitleEl = this.containerEl.querySelector('[data-image-set$="mock-ref-img-not-equal"] .image-set__title');
     expect(imageSetTitleEl.getAttribute('data-images-equal')).to.equal('false');
   });
 
