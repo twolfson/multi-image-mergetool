@@ -48,11 +48,15 @@ describe('An application with images', function () {
   });
 
   it('collapses matching image sets', function () {
-
+    var imageSetCollapseEl = this.containerEl.querySelector(
+      '[data-image-set$="mock-ref-img-equal"] .image-set__collapse');
+    expect([].slice.call(imageSetCollapseEl.classList)).to.not.include('in');
   });
 
   it('collapses non-matching image sets', function () {
-
+    var imageSetCollapseEl = this.containerEl.querySelector(
+      '[data-image-set$="mock-ref-img-not-equal"] .image-set__collapse');
+    expect([].slice.call(imageSetCollapseEl.classList)).to.include('in');
   });
 });
 
