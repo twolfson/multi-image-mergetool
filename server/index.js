@@ -71,7 +71,11 @@ function generateServer(imageSets, options) {
 
   // Define our application's page
   server.get('/', function rootShow (req, res, next) {
-    res.render('index.jade', {image_sets: imageSets});
+    res.render('index.jade', {
+      image_sets: imageSets.map(function serializeImageSet (imageSet) {
+        return imageSet.serialize();
+      })
+    });
   });
 
   // Define our image update route

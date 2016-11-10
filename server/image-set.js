@@ -1,6 +1,7 @@
 // Load in our dependencies
 var fs = require('fs');
 var path = require('path');
+var _ = require('underscore');
 var mkdirp = require('mkdirp');
 var tmp = require('tmp');
 var looksSameComparator = require('./image-comparators/looks-same');
@@ -12,6 +13,7 @@ function ImageSet(currentImg, refImg, options) {
   // Save our options for later
   this.currentImg = currentImg;
   this.refImg = refImg;
+  // TODO: Define `diffImg` and `imagesEqual` here as well as set `imagesEqual` in `diff`
 
   // Log image set generation
   logger.verbose.info('Image set generated with current image "' + currentImg + '" and ' +
@@ -87,6 +89,10 @@ ImageSet.prototype = {
       // TODO: Support multiple image comparators (e.g. `image-diff`)
       looksSameComparator(that, cb);
     }
+  },
+  // DEV: We could use `toJSON` but there is a trust issue of it always being used/not
+  serialize: function () {
+    return _.pick(this, ['currentImg', 'diffImg', 'imageEqual', 'refImg']);
   },
   updateRef: function (refBuff, cb) {
     // Update our reference image

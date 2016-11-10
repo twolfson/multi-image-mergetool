@@ -50,7 +50,8 @@
     "looks-same": "~3.0.0",
     "mkdirp": "~0.5.1",
     "opener": "~1.4.2",
-    "tmp": "0.0.29"
+    "tmp": "0.0.29",
+    "underscore": "~1.8.3"
   },
   "devDependencies": {
     "bootstrap": "~3.3.7",
