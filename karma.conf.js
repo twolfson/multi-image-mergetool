@@ -66,10 +66,10 @@ module.exports = function (config) {
             if (data.type === 'render') {
               // Prevent us from writing to any absolute paths or ones that go up a directory
               // DEV: Unforuntately, this throw will be silent
-              if (data.filepath.indexOf('/') !== -1 || data.filepath.indexOf('..') !== -1) {
-                throw new Error('Malicious filepath found: ' + data.filepath);
+              if (data.filename.indexOf('/') !== -1 || data.filename.indexOf('..') !== -1) {
+                throw new Error('Malicious filename found: ' + data.filename);
               }
-              page.render('test/browser/actual-screenshots/' + data.filepath + '.png');
+              page.render('test/browser/actual-screenshots/' + data.filename + '.png');
             }
           }
         }

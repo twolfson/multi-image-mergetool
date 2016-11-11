@@ -47,6 +47,15 @@ var applicationUtils = {
       delete this.app;
       delete this.containerEl;
     });
+  },
+  _screenshot: function (filename) {
+    // Call our to `onCallback` handler
+    window.top.callPhantom({type: 'render', filename: filename);
+  },
+  screenshot: function (filename) {
+    before(function screenshotFn () {
+      applicationUtils._screenshot.call(this, filename);
+    });
   }
 };
 
@@ -54,11 +63,11 @@ var applicationUtils = {
 describe('An application with images', function () {
   // Create our application
   applicationUtils.init();
+  applicationUtils.screenshot('generic');
 
   // Assert about our application
   it('lists images by reference images', function () {
     var imageSetTitleEls = this.containerEl.querySelectorAll('.image-set__title');
-    window.top.callPhantom({type: 'render', filepath: 'generic'});
     expect(imageSetTitleEls).to.have.length(2);
     expect(imageSetTitleEls[0].textContent).to.match(/mock-ref-img-equal$/);
     expect(imageSetTitleEls[1].textContent).to.match(/mock-ref-img-not-equal$/);
@@ -100,6 +109,7 @@ describe('When an image set title is clicked', function () {
 
     // Assert our element is closed
     expect([].slice.call(imageSetCollapseEl.classList)).to.not.include('in');
+    applicationUtils._screenshot('after-collapse');
   });
 });
 
