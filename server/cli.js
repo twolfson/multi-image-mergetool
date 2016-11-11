@@ -17,25 +17,41 @@ var ICON_FAIL = chalk.red('✘');
 // https://github.com/yargs/yargs/tree/v6.3.0#optionkey-opt
 // DEV: We don't support skipping initial diff as it requires persisting results between process reboots
 //   which isn't cost effective for maintenance at the moment
+// DEV: Image loaders explored in https://gist.github.com/twolfson/cd225d49b4b8a3ad51fbc8cd52433dcd
 parser
   .usage('$0 [options] --ref-images <ref-images...> --current-images <current-images...>')
-  .example('$0 --ref-images ref1.png ref2.png --current-images current1.png current2.png')
-  .example('$0 --ref-images ref1.png ref2.png --current-images current1.png current2.png ' +
+  .example('Standard loading:')
+  .example('  $0 --ref-images ref1.png ref2.png --current-images current1.png current2.png')
+  .example('  $0 --ref-images ref1.png ref2.png --current-images current1.png current2.png ' +
     '--diff-images diff1.png diff2.png')
+  .example('Load from `gemini` and `gemini-report` folders:')
+  .example('  $0 --loader gemini')
+  // jscs:disable maximumLineLength
+  // Look for files with same paths from their root folders
+  // - `--loader separate-folders --ref-folder path/to/expected_screenshots --current-folder path/to/actual_screenshots`
+  //     - Folder parameters would be required
+  //     - `--loader separate-folders --ref-folder path/to/expected_screenshots --current-folder path/to/actual_screenshots --diff-folder path/to/diff_screenshots`
+  // Look for leaf folders in `--folder` and uses images matching `--ref-pattern` and `--current-pattern`
+  // - `--loader same-folders --folder path/to/screenshots --ref-pattern 'ref.png' --current-pattern 'current.png'`
+  //     - Requires all parameters `--folder`, `--ref-pattern`, `--current-pattern` (maybe use `*ref*` and `*current*` as defaults but prob not for now)
+  //     - `--loader same-folders --folder path/to/screenshots --ref-pattern 'ref.png' --current-pattern 'current.png' --diff-pattern 'diff.png'`
+  // jscs:enable maximumLineLength
   .option('ref-images', {
-    describe: 'Reference images for comparison',
-    require: true,
+    describe: 'Reference images for comparison (required if no --loader)',
     type: 'array'
   })
   .option('current-images', {
-    describe: 'Current images for comparison',
-    require: true,
+    describe: 'Current images for comparison (required if no --loader)',
     type: 'array'
   })
   .option('diff-images', {
     describe: 'Locations to save diff images',
-    require: false,
     type: 'array'
+  })
+  .option('loader', {
+    choices: ['gemini'/*, 'separate-folders', 'same-folders'*/],
+    describe: 'Loading mechanism to find images',
+    type: 'string'
   })
   .option('port', {
     alias: 'p',
@@ -77,18 +93,6 @@ exports.parse = function (argv) {
   logger.verbose.log('CLI arguments received', argv);
 
   // Add in development constants
-  // jscs:disable maximumLineLength
-  // TODO: We need to derive `refImages` from `currentImages` to support new images
-  //   We explored possibilities here: https://gist.github.com/twolfson/cd225d49b4b8a3ad51fbc8cd52433dcd
-  //   Currently thinking 4 solutions (starting with glob-less only for now)
-  //    - `--ref-images path/to/ref1.png path/to/ref2.png --current-images path/to/current1.png path/to/current2.png` - See glob-less solution
-  //    - `--loader gemini` - Looks at proper folders and loads from them
-  //    - `--loader separate-folders --ref-folder path/to/expected_screenshots --current-folder path/to/actual_screenshots` - Looks for files with same paths from their root folders
-  //        - Folder parameters would be required
-  //    - `--loader same-folders --folder path/to/screenshots --ref-pattern 'ref.png' --current-pattern 'current.png'` - Looks for leaf folders in `--folder` and uses images matching `--ref-pattern` and `--current-pattern`
-  //        - Requires all parameters `--folder`, `--ref-pattern`, `--current-pattern` (maybe use `*ref*` and `*current*` as defaults but prob not for now)
-  // jscs:enable maximumLineLength
-  //    With these preset variants, we could easily use a `--diff-pattern` as well for non-temporary diff paths
   params.currentImages = glob.sync('gemini-report/images/**/*~current.png');
   // params.currentImages = glob.sync('gemini-report/**/default-large/*~current.png');
   params.refImages = params.currentImages.map(function resolveRefImage (currentImg) {
