@@ -12,14 +12,16 @@ var applicationUtils = {
       this.containerEl = document.createElement('div');
       document.body.appendChild(this.containerEl);
       this.app = new Application(this.containerEl, [{
-        currentImg: 'data:image/png;base64,mock-current-img-equal',
-        diffImg: 'data:image/png;base64,mock-diff-img-equal',
-        refImg: 'data:image/png;base64,mock-ref-img-equal',
+        id: 'mock-ref-img-equal',
+        currentImgUrl: 'data:image/png;base64,mock-current-img-equal',
+        diffImgUrl: 'data:image/png;base64,mock-diff-img-equal',
+        refImgUrl: 'data:image/png;base64,mock-ref-img-equal',
         imagesEqual: true
       }, {
-        currentImg: 'data:image/png;base64,mock-current-img-not-equal',
-        diffImg: 'data:image/png;base64,mock-diff-img-not-equal',
-        refImg: 'data:image/png;base64,mock-ref-img-not-equal',
+        id: 'mock-ref-img-not-equal',
+        currentImgUrl: 'data:image/png;base64,mock-current-img-not-equal',
+        diffImgUrl: 'data:image/png;base64,mock-diff-img-not-equal',
+        refImgUrl: 'data:image/png;base64,mock-ref-img-not-equal',
         imagesEqual: false
       }]);
     });

@@ -24,8 +24,8 @@ function Application(_containerEl, imageSets) {
   //   (e.g. `a/b/c` when only 1 file)
   imageSets.forEach(function createImageSet (imgSet, i) {
     // Create local variables for our image set
-    var imgSetId = imgSet.refImg;
-    var imgSetHumanName = imgSet.refImg;
+    var imgSetId = imgSet.id;
+    var imgSetHumanName = imgSet.id;
 
     // Generate our image set element
     var imgSetEl = D.UL({'data-image-set': imgSetId}, [
@@ -77,21 +77,21 @@ function Application(_containerEl, imageSets) {
                 D.TD({style: 'width: 33%'}, [
                   D.IMG({
                     'data-compare-type': 'current',
-                    src: '/images/' + encodeURIComponent(imgSet.currentImg),
+                    src: imgSet.currentImgUrl,
                     style: 'width: 100%'
                   })
                 ]),
                 D.TD({style: 'width: 33%'}, [
                   D.IMG({
                     'data-compare-type': 'diff',
-                    src: '/images/' + encodeURIComponent(imgSet.diffImg),
+                    src: imgSet.diffImgUrl,
                     style: 'width: 100%'
                   })
                 ]),
                 D.TD({style: 'width: 33%'}, [
                   D.IMG({
                     'data-compare-type': 'ref',
-                    src: '/images/' + encodeURIComponent(imgSet.refImg),
+                    src: imgSet.refImgUrl,
                     style: 'width: 100%'
                   })
                 ])
