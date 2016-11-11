@@ -1,5 +1,8 @@
 // Karma configuration
 // Generated on Mon Nov 07 2016 04:42:50 GMT-0800 (PST)
+
+// Enable PhantomJS global for this page
+/* globals page:false */
 module.exports = function (config) {
   config.set({
     // base path that will be used to resolve all patterns (eg. files, exclude)
@@ -51,7 +54,25 @@ module.exports = function (config) {
 
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-    browsers: ['PhantomJS'],
+    browsers: ['PhantomJSScreenshot'],
+    customLaunchers: {
+      // http://stackoverflow.com/questions/34694765/take-screenshot-from-karma-while-running-tests-in-phantomjs-2/34695107#34695107
+      PhantomJSScreenshot: {
+        base: 'PhantomJS',
+        options: {
+          onCallback: function (data) {
+            if (data.type === 'render') {
+              // Prevent us from writing to any absolute paths or ones that go up a directory
+              // DEV: Unforuntately, this throw will be silent
+              if (data.filepath.indexOf('/') !== -1 || data.filepath.indexOf('..') !== -1) {
+                throw new Error('Malicious filepath found: ' + data.filepath);
+              }
+              page.render('test/browser/actual-screenshots/' + data.filepath + '.png');
+            }
+          }
+        }
+      }
+    },
 
     // Continuous Integration mode
     // if true, Karma captures browsers, runs the tests and exits
