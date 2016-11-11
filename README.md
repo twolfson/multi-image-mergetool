@@ -15,9 +15,8 @@ Install the module via:
 # Install multi-image-mergetool globally
 npm install -g multi-image-mergetool
 
-# Run multi-image-mergetool
-# DEV: Currently only Gemini folder structure is supported
-multi-image-mergetool
+# Run multi-image-mergetool against a Gemini test suite
+multi-image-mergetool --loader gemini
 # Comparing images...
 # ✘ gemini/screens/root/default-small/Chrome.png
 # ✘ gemini/screens/root/default-medium/Chrome.png
@@ -28,6 +27,17 @@ multi-image-mergetool
 # Server is listening on http://localhost:2020/
 
 # Browser window will automatically be opened
+
+# Alternatively compare one-off images by their paths
+multi-image-mergetool \
+    --ref-images path/to/ref1.png path/to/ref2.png \
+    --current-images path/to/current1.png path/to/current2.png
+
+# Optionally define custom diff paths
+multi-image-mergetool \
+    --ref-images path/to/ref1.png path/to/ref2.png \
+    --current-images path/to/current1.png path/to/current2.png \
+    --diff-images path/to/diff1.png path/to/diff2.png
 ```
 
 ## Donations
@@ -42,18 +52,32 @@ Our CLI supports the following options:
 
 ```
 $ multi-image-mergetool --help
+bin/multi-image-mergetool [options] --ref-images <ref-images...> --current-images <current-images...>
 
-  Usage: multi-image-mergetool [options]
+Options:
+  --ref-images       Reference images for comparison (required if no --loader)  [array]
+  --current-images   Current images for comparison (required if no --loader)  [array]
+  --diff-images      Locations to save diff images  [array]
+  --loader           Loading mechanism to find images  [string] [choices: "gemini"]
+  --port, -p         Port for server to listen on  [number] [default: 2020]
+  --hostname, -h     Hostname for server to listen on  [string] [default: "localhost"]
+  --verbose          Enable verbose logging  [boolean]
+  --no-browser-open  Prevent browser window from opening automatically  [boolean]
+  --version          Show version number  [boolean]
+  --help             Show help  [boolean]
 
-  Options:
-
-    -h, --help                 output usage information
-    -V, --version              output the version number
-    -p, --port <port>          Port for server to listen on (default: 2020)
-    -h, --hostname <hostname>  Hostname for server to listen on (default: localhost)
-    --verbose                  Enable verbose logging
-    --no-browser-open          Prevent browser window from opening automatically
+Examples:
+  Load from paths:
+    bin/multi-image-mergetool --ref-images ref1.png ref2.png --current-images current1.png current2.png
+    bin/multi-image-mergetool --ref-images ref1.png ref2.png --current-images current1.png current2.png --diff-images diff1.png diff2.png
+  Load from `gemini` and `gemini-report` folders:
+    bin/multi-image-mergetool --loader gemini
 ```
+
+**Notes:**
+
+- The `--ref-images`, `--current-images`, and `--diff-images` must be the same length and order
+    - It's okay if the ref images and diff images don't exist yet, we will show prompts in the UI to handle new images
 
 ### Architecture choices
 We chose to use a server/browser implementation over a desktop application (e.g. Electron) for more flexibility with little development cost. It allows us to support virtualized environments (e.g. Vagrant, Docker) without asking our users to bend over backwards.

@@ -21,7 +21,7 @@ var ICON_FAIL = chalk.red('✘');
 // DEV: Image loaders explored in https://gist.github.com/twolfson/cd225d49b4b8a3ad51fbc8cd52433dcd
 parser
   .usage('$0 [options] --ref-images <ref-images...> --current-images <current-images...>')
-  .example('Standard loading:')
+  .example('Load from paths:')
   .example('  $0 --ref-images ref1.png ref2.png --current-images current1.png current2.png')
   .example('  $0 --ref-images ref1.png ref2.png --current-images current1.png current2.png ' +
     '--diff-images diff1.png diff2.png')
