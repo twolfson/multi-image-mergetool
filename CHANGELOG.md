@@ -1,4 +1,6 @@
 # multi-image-mergetool changelog
+1.6.0 - Added screenshot recording to tests
+
 1.5.0 - Added basic application tests for titles, statuses, and collapses
 
 1.4.1 - Repaired broken test due to path change
