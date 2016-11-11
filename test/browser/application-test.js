@@ -50,13 +50,15 @@ var applicationUtils = {
   },
   _screenshot: function (filename) {
     // Call our to `onCallback` handler
-    if (window.top && window.top.callPhantom) {
-      window.top.callPhantom({type: 'render', filename: filename});
+    // https://github.com/karma-runner/karma/blob/v1.3.0/context/main.js#L5
+    // DEV: We use `window.opener` as we're in a new window
+    if (window.opener && window.opener.callPhantom) {
+      window.opener.callPhantom({type: 'render', filename: filename});
     }
   },
   screenshot: function (filename) {
     before(function screenshotFn () {
-      applicationUtils._screenshot.call(this, filename);
+      window.opener.callPhantom({type: 'render', filename: filename});
     });
   }
 };
