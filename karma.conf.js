@@ -60,12 +60,22 @@ module.exports = function (config) {
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
     browsers: ['PhantomJSScreenshot'],
     customLaunchers: {
+      // https://github.com/karma-runner/karma-phantomjs-launcher/issues/19
       // http://stackoverflow.com/questions/34694765/take-screenshot-from-karma-while-running-tests-in-phantomjs-2/34695107#34695107
       // http://phantomjs.org/api/webpage/handler/on-page-created.html
       PhantomJSScreenshot: {
         base: 'PhantomJS',
         options: {
           onPageCreated: function (newPage) {
+            // Upscale our viewport
+            // http://phantomjs.org/api/webpage/property/viewport-size.html
+            newPage.viewportSize = {
+              width: 800,
+              height: 600
+            };
+
+            // Define our render hook
+            // http://phantomjs.org/api/webpage/handler/on-callback.html
             newPage.onCallback = function (data) {
               if (data.type === 'render') {
                 // Prevent us from writing to any absolute paths or ones that go up a directory

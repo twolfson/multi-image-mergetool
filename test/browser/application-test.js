@@ -9,7 +9,9 @@ var Application = require('../../browser/js/application');
 var applicationUtils = {
   init: function () {
     before(function createApplication () {
+      // DEV: We add `className` for nicer looking screenshots
       this.containerEl = document.createElement('div');
+      this.containerEl.className = 'container-fluid';
       document.body.appendChild(this.containerEl);
       this.app = new Application(this.containerEl, [{
         id: 'mock-ref-img-equal',
