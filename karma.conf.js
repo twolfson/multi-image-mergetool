@@ -57,6 +57,8 @@ module.exports = function (config) {
     browsers: ['PhantomJSScreenshot'],
     customLaunchers: {
       // http://stackoverflow.com/questions/34694765/take-screenshot-from-karma-while-running-tests-in-phantomjs-2/34695107#34695107
+      // DEV: This works by using `page` variable set in its template
+      //   https://github.com/karma-runner/karma-phantomjs-launcher/blob/v1.0.2/capture.template.js#L2-L12
       PhantomJSScreenshot: {
         base: 'PhantomJS',
         options: {
