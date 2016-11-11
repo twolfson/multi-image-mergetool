@@ -11,3 +11,5 @@ npm-debug.log
 # DEV: .npmignore is automatically generated on release
 /browser-dist/
 .npmignore
+/test/browser/actual-screenshots/
+/test/browser/expected-screenshots/
