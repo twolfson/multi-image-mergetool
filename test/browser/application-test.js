@@ -50,7 +50,9 @@ var applicationUtils = {
   },
   _screenshot: function (filename) {
     // Call our to `onCallback` handler
-    window.top.callPhantom({type: 'render', filename: filename);
+    if (window.top && window.top.callPhantom) {
+      window.top.callPhantom({type: 'render', filename: filename});
+    }
   },
   screenshot: function (filename) {
     before(function screenshotFn () {
