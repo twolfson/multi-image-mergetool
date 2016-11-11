@@ -4,6 +4,7 @@ var $ = require('jquery');
 var expect = require('chai').expect;
 var Application = require('../../browser/js/application');
 var checkerboardBase64 = fs.readFileSync(__dirname + '/../test-files/checkerboard.png', 'base64');
+var checkerboardDotDiffBase64 = fs.readFileSync(__dirname + '/../test-files/checkerboard-dot-diff.png', 'base64');
 var dotBase64 = fs.readFileSync(__dirname + '/../test-files/dot.png', 'base64');
 
 // Define our application utils
@@ -26,9 +27,7 @@ var applicationUtils = {
         id: 'mock-img-not-equal',
         currentImgUrl: 'data:image/png;base64,' + checkerboardBase64,
         diffImgUrl: 'data:image/png;base64,' + dotBase64,
-        // TODO: Add diff image
-        // refImgUrl: 'data:image/png;base64,' + checkerboardDiffBase64,
-        refImgUrl: 'data:image/png;base64,' + checkerboardBase64,
+        refImgUrl: 'data:image/png;base64,' + checkerboardDotDiffBase64,
         imagesEqual: false
       }]);
     });
