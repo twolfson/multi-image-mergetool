@@ -36,6 +36,12 @@ module.exports = function (config) {
       debug: true
     },
 
+    // Require an iframe to be used for screenshots
+    // DEV: If we don't use an iframe and move to `window.opener` then we lose `page.render` for the new window
+    client: {
+      useIframe: true
+    },
+
     // test results reporter to use
     // possible values: 'dots', 'progress'
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
