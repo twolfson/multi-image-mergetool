@@ -14,13 +14,13 @@ var applicationUtils = {
       this.containerEl.className = 'container-fluid';
       document.body.appendChild(this.containerEl);
       this.app = new Application(this.containerEl, [{
-        id: 'mock-ref-img-equal',
+        id: 'mock-img-equal',
         currentImgUrl: 'data:image/png;base64,mock-current-img-equal',
         diffImgUrl: 'data:image/png;base64,mock-diff-img-equal',
         refImgUrl: 'data:image/png;base64,mock-ref-img-equal',
         imagesEqual: true
       }, {
-        id: 'mock-ref-img-not-equal',
+        id: 'mock-img-not-equal',
         currentImgUrl: 'data:image/png;base64,mock-current-img-not-equal',
         diffImgUrl: 'data:image/png;base64,mock-diff-img-not-equal',
         refImgUrl: 'data:image/png;base64,mock-ref-img-not-equal',
@@ -75,26 +75,26 @@ describe('An application with images', function () {
   it('lists images by reference images', function () {
     var imageSetTitleEls = this.containerEl.querySelectorAll('.image-set__title');
     expect(imageSetTitleEls).to.have.length(2);
-    expect(imageSetTitleEls[0].textContent).to.match(/mock-ref-img-equal$/);
-    expect(imageSetTitleEls[1].textContent).to.match(/mock-ref-img-not-equal$/);
+    expect(imageSetTitleEls[0].textContent).to.match(/mock-img-equal$/);
+    expect(imageSetTitleEls[1].textContent).to.match(/mock-img-not-equal$/);
   });
 
   it('indicates matching/non-matching image sets', function () {
-    var imageSetTitleEl = this.containerEl.querySelector('[data-image-set$="mock-ref-img-equal"] .image-set__title');
+    var imageSetTitleEl = this.containerEl.querySelector('[data-image-set="mock-img-equal"] .image-set__title');
     expect(imageSetTitleEl.getAttribute('data-images-equal')).to.equal('true');
-    imageSetTitleEl = this.containerEl.querySelector('[data-image-set$="mock-ref-img-not-equal"] .image-set__title');
+    imageSetTitleEl = this.containerEl.querySelector('[data-image-set="mock-img-not-equal"] .image-set__title');
     expect(imageSetTitleEl.getAttribute('data-images-equal')).to.equal('false');
   });
 
   it('collapses matching image sets', function () {
     var imageSetCollapseEl = this.containerEl.querySelector(
-      '[data-image-set$="mock-ref-img-equal"] .image-set__collapse');
+      '[data-image-set="mock-img-equal"] .image-set__collapse');
     expect([].slice.call(imageSetCollapseEl.classList)).to.not.include('in');
   });
 
   it('expands non-matching image sets', function () {
     var imageSetCollapseEl = this.containerEl.querySelector(
-      '[data-image-set$="mock-ref-img-not-equal"] .image-set__collapse');
+      '[data-image-set="mock-img-not-equal"] .image-set__collapse');
     expect([].slice.call(imageSetCollapseEl.classList)).to.include('in');
   });
 });
@@ -105,7 +105,7 @@ describe('When an image set title is clicked', function () {
   it('collapses/expands its contents', function () {
     // DEV: We don't test this thoroughly as it's Bootstrap's responsibility
     // Assert our initial state is open
-    var imageSetEl = this.containerEl.querySelector('[data-image-set$="mock-ref-img-not-equal"]');
+    var imageSetEl = this.containerEl.querySelector('[data-image-set="mock-img-not-equal"]');
     var imageSetTitleEl = imageSetEl.querySelector('.image-set__title');
     var imageSetCollapseEl = imageSetEl.querySelector('.image-set__collapse');
     expect([].slice.call(imageSetCollapseEl.classList)).to.include('in');
