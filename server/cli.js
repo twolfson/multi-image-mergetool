@@ -74,17 +74,48 @@ parser
     type: 'boolean'
   });
 
-// Set up our package and disable line wrapping
+// Set up our package, only allow valid arguments, and disable line wrapping
 // DEV: We set up `version` and `help` at end since they are less important and order matters to yargs
 parser
   .version(pkg.version)
   .help(true)
+  .strict()
   .wrap(null);
+
+// Define normalization for loaders/directories/patterns
+parser.check({
+  if (params.loader === 'gemini') {
+
+  }
+});
 
 // Expose our parse method
 exports.parse = function (argv) {
   // Parse our arguments
   var params = parser.parse(argv);
+
+  // If we have no loader, verify we have
+  var currentImages, refImages, diffImages;
+  if (params.loader === undefined) {
+    currentImages = params.currentImages || [];
+    refImages = params.refImages || [];
+    if (currentImages.length === 0 || refImages.length === 0) {
+
+    }
+    // assert(currentImages && currentImages.length, 'No `--loader` was specified nor were `--current-images);
+  // Otherwise, if our loader is Gemini, resolve its references
+  } else if (params.loader === 'gemini') {
+    params.currentImages = glob.sync('gemini-report/images/**/*~current.png');
+    params.refImages = params.currentImages.map(function resolveRefImage (currentImg) {
+      // gemini-report/images/root/default-large/Chrome~current.png ->
+      //  gemini/screens/root/default-large/Chrome.png
+      return currentImg.replace('gemini-report/images', 'gemini/screens')
+        .replace('~current.png', '.png');
+    });
+  // Otherwise, complain about an invalid loader
+  } else {
+    throw new Error('Unexpected loader: ' + params.loader);
+  }
 
   // Configure our logger singleton
   logger.configure(params);
@@ -92,15 +123,6 @@ exports.parse = function (argv) {
   // Log CLI info to user
   logger.verbose.log('CLI arguments received', argv);
 
-  // Add in development constants
-  params.currentImages = glob.sync('gemini-report/images/**/*~current.png');
-  // params.currentImages = glob.sync('gemini-report/**/default-large/*~current.png');
-  params.refImages = params.currentImages.map(function resolveRefImage (currentImg) {
-    // gemini-report/images/root/default-large/Chrome~current.png ->
-    //  gemini/screens/root/default-large/Chrome.png
-    return currentImg.replace('gemini-report/images', 'gemini/screens')
-      .replace('~current.png', '.png');
-  });
 
   // Generate our image sets
   var imageSets = ImageSet.generateSets(params.currentImages, params.refImages, params);
