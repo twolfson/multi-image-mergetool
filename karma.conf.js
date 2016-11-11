@@ -15,7 +15,9 @@ module.exports = function (config) {
     // list of files / patterns to load in the browser
     // DEV: Non-test `browser` files will be loaded via `require`
     files: [
-      'test/browser/*.js'
+      'test/browser/*.js',
+      // Host but don't include CSS
+      {pattern: 'browser-dist/css/*.css', watched: false, included: true}
     ],
 
     // list of files to exclude
