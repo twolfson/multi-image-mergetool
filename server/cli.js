@@ -16,6 +16,25 @@ var ICON_FAIL = chalk.red('✘');
 // Set up our options
 // https://github.com/yargs/yargs/tree/v6.3.0#optionkey-opt
 parser
+  .usage('$0 [options] --ref-images <ref-images...> --current-images <current-images...>')
+  .example('$0 --ref-images ref1.png ref2.png --current-images current1.png current2.png')
+  .example('$0 --ref-images ref1.png ref2.png --current-images current1.png current2.png ' +
+    '--diff-images diff1.png diff2.png')
+  .option('ref-images', {
+    describe: 'Reference images for comparison',
+    require: true,
+    type: 'array'
+  })
+  .option('current-images', {
+    describe: 'Current images for comparison',
+    require: true,
+    type: 'array'
+  })
+  .option('diff-images', {
+    describe: 'Locations to save diff images',
+    require: false,
+    type: 'array'
+  })
   .option('port', {
     alias: 'p',
     describe: 'Port for server to listen on',
