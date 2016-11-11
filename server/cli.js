@@ -21,11 +21,7 @@ program
   .option('-p, --port <port>', 'Port for server to listen on (default: 2020)', 2020)
   .option('-h, --hostname <hostname>', 'Hostname for server to listen on (default: localhost)', 'localhost')
   .option('--verbose', 'Enable verbose logging')
-  .option('--no-browser-open', 'Prevent browser window from opening automatically')
-  // TODO: Update our README with new options
-  .option('--ref-images <images...>', 'References images for comparison (required)')
-  .option('--current-images <images...>', 'Current images for comparison (required)')
-  .option('--diff-images <images...>', 'Diff images for comparison (optional)');
+  .option('--no-browser-open', 'Prevent browser window from opening automatically');
 
 // Override parse to start listening immediately
 // https://github.com/tj/commander.js/blob/v2.9.0/index.js#L438-L443
