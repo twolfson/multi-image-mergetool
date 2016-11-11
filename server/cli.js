@@ -20,10 +20,11 @@ var ICON_FAIL = chalk.red('✘');
 //   which isn't cost effective for maintenance at the moment
 // DEV: Image loaders explored in https://gist.github.com/twolfson/cd225d49b4b8a3ad51fbc8cd52433dcd
 parser
-  .usage('$0 [options] --ref-images <ref-images...> --current-images <current-images...>')
+  // DEV: Order of usage/example options follow the same order as options themself
+  .usage('$0 [options] --current-images <current-images...> --ref-images <ref-images...>')
   .example('Load from paths:')
-  .example('  $0 --ref-images ref1.png ref2.png --current-images current1.png current2.png')
-  .example('  $0 --ref-images ref1.png ref2.png --current-images current1.png current2.png ' +
+  .example('  $0 --current-images current1.png current2.png --ref-images ref1.png ref2.png')
+  .example('  $0 --current-images current1.png current2.png --ref-images ref1.png ref2.png ' +
     '--diff-images diff1.png diff2.png')
   .example('Load from `gemini` and `gemini-report` folders:')
   .example('  $0 --loader gemini')
@@ -37,12 +38,12 @@ parser
   //     - Requires all parameters `--folder`, `--ref-pattern`, `--current-pattern` (maybe use `*ref*` and `*current*` as defaults but prob not for now)
   //     - `--loader same-folders --folder path/to/screenshots --ref-pattern 'ref.png' --current-pattern 'current.png' --diff-pattern 'diff.png'`
   // jscs:enable maximumLineLength
-  .option('ref-images', {
-    describe: 'Reference images for comparison (required if no --loader)',
-    type: 'array'
-  })
   .option('current-images', {
     describe: 'Current images for comparison (required if no --loader)',
+    type: 'array'
+  })
+  .option('ref-images', {
+    describe: 'Locations to load/save reference images (required if no --loader)',
     type: 'array'
   })
   .option('diff-images', {
@@ -86,9 +87,9 @@ parser
 // Define normalization for loaders/directories/patterns
 function checkFn(params) {
   if (params.loader === undefined) {
-    // DEV: We specify `ref` first to match order of examples/options
-    assert(params.refImages, 'Expected `--ref-images` or `--loader` to be defined but they weren\'t');
-    assert(params.currentImages, 'Expected `--current-images` to be defined but it wasn\'t');
+    // DEV: We specify `current` first to match order of examples/options
+    assert(params.currentImages, 'Expected `--current-images` or `--loader` to be defined but they weren\'t');
+    assert(params.refImages, 'Expected `--ref-images` to be defined but it wasn\'t');
   }
   return true;
 }

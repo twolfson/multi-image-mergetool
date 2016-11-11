@@ -30,13 +30,13 @@ multi-image-mergetool --loader gemini
 
 # Alternatively compare one-off images by their paths
 multi-image-mergetool \
-    --ref-images path/to/ref1.png path/to/ref2.png \
-    --current-images path/to/current1.png path/to/current2.png
+    --current-images path/to/current1.png path/to/current2.png \
+    --ref-images path/to/ref1.png path/to/ref2.png
 
 # Optionally define custom diff paths
 multi-image-mergetool \
-    --ref-images path/to/ref1.png path/to/ref2.png \
     --current-images path/to/current1.png path/to/current2.png \
+    --ref-images path/to/ref1.png path/to/ref2.png \
     --diff-images path/to/diff1.png path/to/diff2.png
 ```
 
@@ -52,11 +52,11 @@ Our CLI supports the following options:
 
 ```
 $ multi-image-mergetool --help
-bin/multi-image-mergetool [options] --ref-images <ref-images...> --current-images <current-images...>
+multi-image-mergetool [options] --current-images <current-images...> --ref-images <ref-images...>
 
 Options:
-  --ref-images       Reference images for comparison (required if no --loader)  [array]
   --current-images   Current images for comparison (required if no --loader)  [array]
+  --ref-images       Locations to load/save reference images (required if no --loader)  [array]
   --diff-images      Locations to save diff images  [array]
   --loader           Loading mechanism to find images  [string] [choices: "gemini"]
   --port, -p         Port for server to listen on  [number] [default: 2020]
@@ -68,15 +68,14 @@ Options:
 
 Examples:
   Load from paths:
-    bin/multi-image-mergetool --ref-images ref1.png ref2.png --current-images current1.png current2.png
-    bin/multi-image-mergetool --ref-images ref1.png ref2.png --current-images current1.png current2.png --diff-images diff1.png diff2.png
+    multi-image-mergetool --current-images current1.png current2.png --ref-images ref1.png ref2.png
+    multi-image-mergetool --current-images current1.png current2.png --ref-images ref1.png ref2.png --diff-images diff1.png diff2.png
   Load from `gemini` and `gemini-report` folders:
-    bin/multi-image-mergetool --loader gemini
-```
+    multi-image-mergetool --loader gemini```
 
 **Notes:**
 
-- The `--ref-images`, `--current-images`, and `--diff-images` must be the same length and order
+- The `--current-images`, `--ref-images`, and `--diff-images` must be the same length and order
     - It's okay if the ref images and diff images don't exist yet, we will show prompts in the UI to handle new images
 
 ### Architecture choices

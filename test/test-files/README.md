@@ -12,8 +12,8 @@ We have generated the following images via our library itself:
 ```bash
 cd test/test-files
 multi-image-mergetool \
-    --ref-images checkerboard.png \
     --current-images dot.png \
+    --ref-images checkerboard.png \
     --diff-images checkerboard-dot-diff.png \
     --no-browser-open
 pngcrush checkerboard-dot-{diff,diff2}.png
