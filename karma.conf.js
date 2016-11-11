@@ -16,7 +16,7 @@ module.exports = function (config) {
     // DEV: Non-test `browser` files will be loaded via `require`
     files: [
       'test/browser/*.js',
-      // Host but don't include CSS
+      // Include CSS for better screenshots
       {pattern: 'browser-dist/css/*.css', watched: false, included: true}
     ],
 
@@ -53,11 +53,6 @@ module.exports = function (config) {
 
     // enable / disable watching file and executing tests whenever any file changes
     autoWatch: true,
-
-    // Set up custom context/debug files for better screenshots
-    // http://karma-runner.github.io/1.0/config/configuration-file.html
-    customContextFile: __dirname + '/test/browser/test-files/context.html',
-    customDebugFile: __dirname + '/test/browser/test-files/debug.html',
 
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
