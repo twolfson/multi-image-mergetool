@@ -1,7 +1,6 @@
 // Load in our dependencies
 var fs = require('fs');
 var path = require('path');
-var _ = require('underscore');
 var mkdirp = require('mkdirp');
 var tmp = require('tmp');
 var looksSameComparator = require('./image-comparators/looks-same');
