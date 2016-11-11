@@ -26,18 +26,26 @@ var applicationUtils = {
       }]);
     });
     after(function cleanup () {
-      // If we are on the debug page and only 1 test is running, expose everything
-      if (window.location.pathname === '/debug.html' && window.mocha.options.hasOnly) {
-        console.info('/debug.html and `hasOnly` detected, ' +
-          'exposing `window.app` and `window.containerEl`');
-        window.app = this.app;
-        window.containerEl = this.containerEl;
-      // Otherwise, cleanup
-      } else {
-        document.body.removeChild(this.containerEl);
-        delete this.app;
-        delete this.containerEl;
+      // If we are on the debug page, expose everything
+      if (window.location.pathname === '/debug.html')  {
+        // If only 1 test is running, expose everything and stop
+        if (window.mocha.options.hasOnly) {
+          console.info('/debug.html and `hasOnly` detected, ' +
+            'exposing `window.app` and `window.containerEl`');
+          window.app = this.app;
+          window.containerEl = this.containerEl;
+          return;
+        }
+
+        // Notify user about debugging
+        console.info('/debug.html detected but no `.only`. ' +
+          'To visually debug tests/stop cleanup, add a `.only` to a test suite');
       }
+
+      // Perform our cleanup
+      document.body.removeChild(this.containerEl);
+      delete this.app;
+      delete this.containerEl;
     });
   }
 };
