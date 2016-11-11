@@ -2,36 +2,50 @@
 var async = require('async');
 var chalk = require('chalk');
 var glob = require('glob');
-var program = require('commander');
 var opener = require('opener');
+var parser = require('yargs');
 var generateServer = require('./index');
 var ImageSet = require('./image-set');
 var logger = require('./logger');
-
-// Set up our application
-program.name = require('../package').name;
-program.version(require('../package').version);
+var pkg = require('../package.json');
 
 // Define our constants
 var ICON_SUCCESS = chalk.green('✓');
 var ICON_FAIL = chalk.red('✘');
 
 // Set up our options
-program
-  .option('-p, --port <port>', 'Port for server to listen on (default: 2020)', 2020)
-  .option('-h, --hostname <hostname>', 'Hostname for server to listen on (default: localhost)', 'localhost')
-  .option('--verbose', 'Enable verbose logging')
-  .option('--no-browser-open', 'Prevent browser window from opening automatically');
+// https://github.com/yargs/yargs/tree/v6.3.0#optionkey-opt
+parser
+  .option('port', {
+    alias: 'p',
+    describe: 'Port for server to listen on',
+    default: 2020,
+    type: 'number'
+  })
+  .option('hostname', {
+    alias: 'h',
+    describe: 'Hostname for server to listen on',
+    default: 'localhost',
+    type: 'string'
+  })
+  .option('verbose', {
+    describe: 'Enable verbose logging',
+    type: 'boolean'
+  })
+  .option('no-browser-open', {
+    describe: 'Prevent browser window from opening automatically',
+    type: 'boolean'
+  })
+  .version(pkg.version)
+  .help(true);
 
-// Override parse to start listening immediately
-// https://github.com/tj/commander.js/blob/v2.9.0/index.js#L438-L443
-var _parse = program.parse;
-program.parse = function (argv) {
-  // Call our normal parse
-  _parse.call(this, argv);
+// Expose our parse method
+exports.parse = function (argv) {
+  // Parse our arguments
+  var params = parser.parse(argv);
 
   // Configure our logger singleton
-  logger.configure(program);
+  logger.configure(params);
 
   // Log CLI info to user
   logger.verbose.log('CLI arguments received', argv);
@@ -55,9 +69,9 @@ program.parse = function (argv) {
   //        - Requires all parameters `--folder`, `--ref-pattern`, `--current-pattern` (maybe use `*ref*` and `*current*` as defaults but prob not for now)
   // jscs:enable maximumLineLength
   //    With these preset variants, we could easily use a `--diff-pattern` as well for non-temporary diff paths
-  program.currentImages = glob.sync('gemini-report/images/**/*~current.png');
-  // program.currentImages = glob.sync('gemini-report/**/default-large/*~current.png');
-  program.refImages = program.currentImages.map(function resolveRefImage (currentImg) {
+  params.currentImages = glob.sync('gemini-report/images/**/*~current.png');
+  // params.currentImages = glob.sync('gemini-report/**/default-large/*~current.png');
+  params.refImages = params.currentImages.map(function resolveRefImage (currentImg) {
     // gemini-report/images/root/default-large/Chrome~current.png ->
     //  gemini/screens/root/default-large/Chrome.png
     return currentImg.replace('gemini-report/images', 'gemini/screens')
@@ -65,7 +79,7 @@ program.parse = function (argv) {
   });
 
   // Generate our image sets
-  var imageSets = ImageSet.generateSets(program.currentImages, program.refImages, program);
+  var imageSets = ImageSet.generateSets(params.currentImages, params.refImages, params);
 
   // Run our image comparisons
   var imagesEqualCount = 0;
@@ -108,14 +122,14 @@ program.parse = function (argv) {
     }
 
     // Generate our server with our image sets
-    var server = generateServer(imageSets, program);
+    var server = generateServer(imageSets, params);
 
     // Start listening on our server
-    server.listen(program.port, program.hostname);
+    server.listen(params.port, params.hostname);
 
     // Save our server URL
     // DEV: We could use `url` but this is simpler
-    var url = 'http://' + program.hostname + ':' + program.port + '/';
+    var url = 'http://' + params.hostname + ':' + params.port + '/';
 
     // Notify user our server is running
     // DEV: `--help` and `--version` will exit the process early
@@ -123,11 +137,8 @@ program.parse = function (argv) {
     logger.info('Server is listening on ' + url);
 
     // Open browser window if requested
-    if (program.browserOpen) {
+    if (params.browserOpen) {
       opener(url);
     }
   });
 };
-
-// Export our CLI bindings
-module.exports = program;
