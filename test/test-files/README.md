@@ -1,6 +1,6 @@
 # multi-image-mergetool test-files
 ## Images
-We have generated the following images via Pinta:
+We have generated the following images via Pinta and `pngcrush`:
 
 - checkerboard.png
 - dot.png
@@ -19,4 +19,6 @@ looksSameComparator({
   diffImg: './test/test-files/checkerboard-dot-diff.png',
 }, console.log);
 "
+pngcrush ./test/test-files/checkerboard-dot-{diff,diff2}.png
+mv ./test/test-files/checkerboard-dot-{diff2,diff}.png
 ```
