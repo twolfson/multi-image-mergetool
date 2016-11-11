@@ -1,7 +1,10 @@
 // Load in our dependencies
+var fs = require('fs');
 var $ = require('jquery');
 var expect = require('chai').expect;
 var Application = require('../../browser/js/application');
+var checkerboardBase64 = fs.readFileSync(__dirname + '/../test-files/checkerboard.png', 'base64');
+var dotBase64 = fs.readFileSync(__dirname + '/../test-files/dot.png', 'base64');
 
 // Define our application utils
 // DEV: If `applicationUtils` needs to be reused, place it into a `utils` folder,

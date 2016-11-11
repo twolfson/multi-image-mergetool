@@ -55,13 +55,13 @@
   },
   "devDependencies": {
     "bootstrap": "~3.3.7",
+    "brfs": "~1.4.3",
     "browserify": "~13.1.1",
     "chai": "~3.5.0",
     "domo": "~0.5.9",
     "foundry": "~4.0.3",
     "foundry-release-git": "~2.0.2",
     "foundry-release-npm": "~2.0.2",
-    "gemini": "~4.12.2",
     "gulp": "~3.9.1",
     "gulp-buffer": "0.0.2",
     "gulp-livereload": "~3.8.1",
@@ -79,8 +79,7 @@
     "twolfson-style": "~1.6.0",
     "unidragger": "~2.1.0",
     "vinyl-source-stream": "~1.1.0",
-    "watchify": "~3.7.0",
-    "webdriver-manager": "~10.2.4"
+    "watchify": "~3.7.0"
   },
   "keywords": [
     "image",

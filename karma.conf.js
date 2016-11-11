@@ -30,7 +30,8 @@ module.exports = function (config) {
     // configure browserify
     // https://github.com/nikku/karma-browserify/tree/v5.1.0#browserify-config
     browserify: {
-      debug: true
+      debug: true,
+      transform: ['brfs']
     },
 
     // Use a separate window for better screenshots (no Karma header)
