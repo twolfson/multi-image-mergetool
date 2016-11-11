@@ -15,6 +15,8 @@ var ICON_FAIL = chalk.red('✘');
 
 // Set up our options
 // https://github.com/yargs/yargs/tree/v6.3.0#optionkey-opt
+// DEV: We don't support skipping initial diff as it requires persisting results between process reboots
+//   which isn't cost effective for maintenance at the moment
 parser
   .usage('$0 [options] --ref-images <ref-images...> --current-images <current-images...>')
   .example('$0 --ref-images ref1.png ref2.png --current-images current1.png current2.png')
@@ -73,12 +75,6 @@ exports.parse = function (argv) {
 
   // Log CLI info to user
   logger.verbose.log('CLI arguments received', argv);
-
-  // TODO: Add skipping initial comparison as a GitHub issue maybe?
-  // DEV: We don't support skipping initial comparison
-  //   The reason is we would have to persist approval/disapprovals in case of any process reboots
-  //   as well as guarantee initial diff images
-  //   Maybe this is possible with a custom JSON reporter for Gemini, it needs exploration and cost analysis
 
   // Add in development constants
   // jscs:disable maximumLineLength
