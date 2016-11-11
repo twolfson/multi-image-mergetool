@@ -1,8 +1,5 @@
 // Karma configuration
 // Generated on Mon Nov 07 2016 04:42:50 GMT-0800 (PST)
-
-// Enable PhantomJS global for this page
-/* globals page:false */
 module.exports = function (config) {
   config.set({
     // base path that will be used to resolve all patterns (eg. files, exclude)
@@ -36,10 +33,9 @@ module.exports = function (config) {
       debug: true
     },
 
-    // Require an iframe to be used for screenshots
-    // DEV: If we don't use an iframe and move to `window.opener` then we lose `page.render` for the new window
+    // Use a separate window for better screenshots (no Karma header)
     client: {
-      useIframe: true
+      useIframe: false
     },
 
     // test results reporter to use
@@ -65,20 +61,21 @@ module.exports = function (config) {
     browsers: ['PhantomJSScreenshot'],
     customLaunchers: {
       // http://stackoverflow.com/questions/34694765/take-screenshot-from-karma-while-running-tests-in-phantomjs-2/34695107#34695107
-      // DEV: This works by using `page` variable set in its template
-      //   https://github.com/karma-runner/karma-phantomjs-launcher/blob/v1.0.2/capture.template.js#L2-L12
+      // http://phantomjs.org/api/webpage/handler/on-page-created.html
       PhantomJSScreenshot: {
         base: 'PhantomJS',
         options: {
-          onCallback: function (data) {
-            if (data.type === 'render') {
-              // Prevent us from writing to any absolute paths or ones that go up a directory
-              // DEV: Unforuntately, this throw will be silent
-              if (data.filename.indexOf('/') !== -1 || data.filename.indexOf('..') !== -1) {
-                throw new Error('Malicious filename found: ' + data.filename);
+          onPageCreated: function (newPage) {
+            newPage.onCallback = function (data) {
+              if (data.type === 'render') {
+                // Prevent us from writing to any absolute paths or ones that go up a directory
+                // DEV: Unforuntately, this throw will be silent
+                if (data.filename.indexOf('/') !== -1 || data.filename.indexOf('..') !== -1) {
+                  throw new Error('Malicious filename found: ' + data.filename);
+                }
+                newPage.render('test/browser/actual-screenshots/' + data.filename + '.png');
               }
-              page.render('test/browser/actual-screenshots/' + data.filename + '.png');
-            }
+            };
           }
         }
       }
