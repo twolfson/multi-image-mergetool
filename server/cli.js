@@ -35,9 +35,14 @@ parser
   .option('no-browser-open', {
     describe: 'Prevent browser window from opening automatically',
     type: 'boolean'
-  })
+  });
+
+// Set up our package and disable line wrapping
+// DEV: We set up `version` and `help` at end since they are less important and order matters to yargs
+parser
   .version(pkg.version)
-  .help(true);
+  .help(true)
+  .wrap(null);
 
 // Expose our parse method
 exports.parse = function (argv) {
@@ -137,7 +142,7 @@ exports.parse = function (argv) {
     logger.info('Server is listening on ' + url);
 
     // Open browser window if requested
-    if (params.browserOpen) {
+    if (!params.noBrowserOpen) {
       opener(url);
     }
   });
