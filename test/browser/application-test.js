@@ -18,15 +18,17 @@ var applicationUtils = {
       document.body.appendChild(this.containerEl);
       this.app = new Application(this.containerEl, [{
         id: 'mock-img-equal',
-        currentImgUrl: 'data:image/png;base64,mock-current-img-equal',
-        diffImgUrl: 'data:image/png;base64,mock-diff-img-equal',
-        refImgUrl: 'data:image/png;base64,mock-ref-img-equal',
+        currentImgUrl: 'data:image/png;base64,' + checkerboardBase64,
+        diffImgUrl: 'data:image/png;base64,' + checkerboardBase64,
+        refImgUrl: 'data:image/png;base64,' + checkerboardBase64,
         imagesEqual: true
       }, {
         id: 'mock-img-not-equal',
-        currentImgUrl: 'data:image/png;base64,mock-current-img-not-equal',
-        diffImgUrl: 'data:image/png;base64,mock-diff-img-not-equal',
-        refImgUrl: 'data:image/png;base64,mock-ref-img-not-equal',
+        currentImgUrl: 'data:image/png;base64,' + checkerboardBase64,
+        diffImgUrl: 'data:image/png;base64,' + dotBase64,
+        // TODO: Add diff image
+        // refImgUrl: 'data:image/png;base64,' + checkerboardDiffBase64,
+        refImgUrl: 'data:image/png;base64,' + checkerboardBase64,
         imagesEqual: false
       }]);
     });

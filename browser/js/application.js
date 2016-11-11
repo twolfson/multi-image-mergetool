@@ -78,21 +78,21 @@ function Application(_containerEl, imageSets) {
                   D.IMG({
                     'data-compare-type': 'current',
                     src: imgSet.currentImgUrl,
-                    style: 'width: 100%'
+                    style: 'max-width: 100%'
                   })
                 ]),
                 D.TD({style: 'width: 33%'}, [
                   D.IMG({
                     'data-compare-type': 'diff',
                     src: imgSet.diffImgUrl,
-                    style: 'width: 100%'
+                    style: 'max-width: 100%'
                   })
                 ]),
                 D.TD({style: 'width: 33%'}, [
                   D.IMG({
                     'data-compare-type': 'ref',
                     src: imgSet.refImgUrl,
-                    style: 'width: 100%'
+                    style: 'max-width: 100%'
                   })
                 ])
               ])
