@@ -27,7 +27,7 @@
     "build": "gulp build",
     "develop": "gulp develop",
     "lint": "twolfson-style lint browser/ server/ test/",
-    "start": "node bin/multi-image-mergetool",
+    "start-gemini": "node bin/multi-image-mergetool --loader gemini",
     "test": "npm run test-karma-single && npm run lint && npm run build",
     "test-karma-continuous": "karma start --no-single-run",
     "test-karma-single": "karma start"

@@ -1,5 +1,6 @@
 // Load in our dependencies
 var async = require('async');
+var assert = require('assert');
 var chalk = require('chalk');
 var glob = require('glob');
 var opener = require('opener');
@@ -83,34 +84,43 @@ parser
   .wrap(null);
 
 // Define normalization for loaders/directories/patterns
-parser.check({
-  if (params.loader === 'gemini') {
-
+function checkFn(params) {
+  if (params.loader === undefined) {
+    // DEV: We specify `ref` first to match order of examples/options
+    assert(params.refImages, 'Expected `--ref-images` or `--loader` to be defined but they weren\'t');
+    assert(params.currentImages, 'Expected `--current-images` to be defined but it wasn\'t');
   }
-});
+}
+parser.check(checkFn);
 
 // Expose our parse method
 exports.parse = function (argv) {
   // Parse our arguments
   var params = parser.parse(argv);
 
+  // Re-run checkFn for sanity (already run by `yargs`)
+  // DEV: Sanity edge case would be someone directly calling `cli`
+  checkFn(params);
+
   // If we have no loader, verify we have
   var currentImages, refImages, diffImages;
   if (params.loader === undefined) {
-    currentImages = params.currentImages || [];
-    refImages = params.refImages || [];
-    if (currentImages.length === 0 || refImages.length === 0) {
-
-    }
-    // assert(currentImages && currentImages.length, 'No `--loader` was specified nor were `--current-images);
+    currentImages = params.currentImages;
+    refImages = params.refImages;
+    diffImages = params.diffImages;
   // Otherwise, if our loader is Gemini, resolve its references
   } else if (params.loader === 'gemini') {
-    params.currentImages = glob.sync('gemini-report/images/**/*~current.png');
-    params.refImages = params.currentImages.map(function resolveRefImage (currentImg) {
+    currentImages = glob.sync('gemini-report/images/**/*~current.png');
+    refImages = currentImages.map(function resolveRefImage (currentImg) {
       // gemini-report/images/root/default-large/Chrome~current.png ->
       //  gemini/screens/root/default-large/Chrome.png
       return currentImg.replace('gemini-report/images', 'gemini/screens')
         .replace('~current.png', '.png');
+    });
+    diffImages = currentImages.map(function resolveRefImage (currentImg) {
+      // gemini-report/images/root/default-large/Chrome~current.png ->
+      //   gemini-report/images/root/default-large/Chrome~diff.png
+      return currentImg.replace('~current.png', '~diff.png');
     });
   // Otherwise, complain about an invalid loader
   } else {
@@ -123,9 +133,8 @@ exports.parse = function (argv) {
   // Log CLI info to user
   logger.verbose.log('CLI arguments received', argv);
 
-
   // Generate our image sets
-  var imageSets = ImageSet.generateSets(params.currentImages, params.refImages, params);
+  var imageSets = ImageSet.generateSets(currentImages, refImages, params);
 
   // Run our image comparisons
   var imagesEqualCount = 0;
