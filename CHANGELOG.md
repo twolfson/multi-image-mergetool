@@ -1,4 +1,6 @@
 # multi-image-mergetool changelog
+1.7.0 - Added support for `--ref-images`, `--current-images`, `--diff-images`, and `--loader`
+
 1.6.0 - Added screenshot recording to tests
 
 1.5.0 - Added basic application tests for titles, statuses, and collapses
