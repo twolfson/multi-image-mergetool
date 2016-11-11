@@ -97,7 +97,7 @@ npm install
 npm run build
 
 # Start our local multi-image-mergetool
-npm start
+npm run start-gemini
 # or bin/multi-image-mergetool
 ```
 
