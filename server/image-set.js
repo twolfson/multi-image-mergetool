@@ -7,16 +7,16 @@ var looksSameComparator = require('./image-comparators/looks-same');
 var logger = require('./logger');
 
 // Define our constructor
-// TODO: Ditch `options` or keep it...
 function ImageSet(currentImg, refImg, options) {
   // Save our options for later
   this.currentImg = currentImg;
   this.refImg = refImg;
-  // TODO: Define `diffImg` and `imagesEqual` here as well as set `imagesEqual` in `diff`
+  this.diffImg = options.diffImg || null;
+  // TODO: Define `imagesEqual` here as well as set `imagesEqual` in `diff`
 
   // Log image set generation
-  logger.verbose.info('Image set generated with current image "' + currentImg + '" and ' +
-    'reference image "' + refImg + '"');
+  logger.verbose.info('Image set generated with current image "' + this.currentImg + '", ' +
+    'reference image "' + this.refImg + '", and diff image "' + this.diffImg + '"');
 }
 
 // Define class methods/properties
@@ -24,14 +24,25 @@ ImageSet.generateSets = function (currentImgArr, refImgArr, options) {
   // Verify we have equal sets of images
   if (currentImgArr.length !== refImgArr.length) {
     throw new Error(currentImgArr.length + ' current images ' +
-      'and ' + refImgArr.length + ' reference images were received. We expect these numbers to line up, please check ' +
-      'path resolution (it\'s possible reference image doesn\'t exist yet as it\'s new)');
+      'and ' + refImgArr.length + ' reference images were received. We expect these numbers to line up, ' +
+      'please check path resolution (it\'s possible reference image doesn\'t exist yet as it\'s new)');
+  }
+
+  // If there are diff images, then verify they are equal as well
+  var diffImgArr = options.diffImages;
+  if (diffImgArr) {
+    if (diffImgArr.length !== currentImgArr.length) {
+      throw new Error(diffImgArr.length + ' diff images ' +
+        'and ' + currentImgArr.length + ' current images were received. We expect these numbers to line up, ' +
+        'please check path resolution (it\'s possible diff image doesn\'t exist yet as it\'s new)');
+    }
   }
 
   // Generate new sets of images
   var imageSets = currentImgArr.map(function createImgSet (currentImg, i) {
-    var refImg = refImgArr[i];
-    return new ImageSet(currentImg, refImg, options);
+    return new ImageSet(currentImg, refImgArr[i], {
+      diffImg: diffImgArr ? diffImgArr[i] : null
+    });
   });
 
   // Return our image sets

@@ -90,6 +90,7 @@ function checkFn(params) {
     assert(params.refImages, 'Expected `--ref-images` or `--loader` to be defined but they weren\'t');
     assert(params.currentImages, 'Expected `--current-images` to be defined but it wasn\'t');
   }
+  return true;
 }
 parser.check(checkFn);
 
@@ -134,7 +135,9 @@ exports.parse = function (argv) {
   logger.verbose.log('CLI arguments received', argv);
 
   // Generate our image sets
-  var imageSets = ImageSet.generateSets(currentImages, refImages, params);
+  var imageSets = ImageSet.generateSets(currentImages, refImages, {
+    diffImages: diffImages
+  });
 
   // Run our image comparisons
   var imagesEqualCount = 0;
