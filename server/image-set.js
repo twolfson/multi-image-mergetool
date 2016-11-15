@@ -76,17 +76,6 @@ ImageSet.prototype = {
       // DEV: We use `current` as we assume these are volatile whereas `ref` could be in version control
       var ext = path.extname(this.currentImg); // .png
       this.diffImg = path.join(temporaryDirectory, this.currentImg + '.diff' + ext);
-
-      // Create our diff image's directory
-      mkdirp(path.dirname(this.diffImg), function handleMkdirp (err) {
-        // If there was an error, callback with it
-        if (err) {
-          return cb(err);
-        }
-
-        // Otherwise, continue
-        next();
-      });
     // Otherwise, in a split second continue to next part
     } else {
       // DEV: We use `setImmediate` to avoid zalgo (i.e. we expect async behavior)
@@ -94,10 +83,19 @@ ImageSet.prototype = {
     }
 
     function next() { // jshint ignore:line
-      // Compare our imges
-      // https://github.com/gemini-testing/gemini/blob/v4.13.0/lib/image/index.js#L79-L104
-      // TODO: Support multiple image comparators (e.g. `image-diff`)
-      looksSameComparator(that, cb);
+      // Create our diff image's directory
+      // DEV: We could have a custom diff path that doesn't yet exist
+      mkdirp(path.dirname(that.diffImg), function handleMkdirp (err) {
+        // If there was an error, callback with it
+        if (err) {
+          return cb(err);
+        }
+
+        // Compare our imges
+        // https://github.com/gemini-testing/gemini/blob/v4.13.0/lib/image/index.js#L79-L104
+        // TODO: Support multiple image comparators (e.g. `image-diff`)
+        looksSameComparator(that, cb);
+      });
     }
   },
   // DEV: We could use `toJSON` but there is a trust issue of it always being used/not
