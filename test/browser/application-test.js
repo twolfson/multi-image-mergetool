@@ -130,7 +130,7 @@ describe('When an image set title is clicked', function () {
   });
 });
 
-describe.only('When we click/drag on a diff image', function () {
+describe('When we click/drag on a diff image', function () {
   applicationUtils.init();
   before(function assertNoOverlay () {
     expect(document.body.querySelector('.overlay')).to.equal(null);
