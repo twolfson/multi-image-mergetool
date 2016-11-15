@@ -135,7 +135,7 @@ describe.only('When we click/drag on a diff image', function () {
     var diffImgBounds = diffImg.getBoundingClientRect();
     mouseUtils.moveMouse({
       targetEl: diffImg,
-      startCoords: {x: diffImgBounds.left + 1, y: diffImgBounds.top + 1},
+      startCoords: {x: diffImgBounds.left, y: diffImgBounds.top},
       endCoords: {x: diffImgBounds.left + 10, y: diffImgBounds.top + 10},
       duration: 100 // ms
     }, done);
