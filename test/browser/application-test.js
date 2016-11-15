@@ -142,6 +142,7 @@ describe.only('When we click/drag on a diff image', function () {
   });
 
   it('generates an overlay', function () {
+    // TODO: PhantomJS screenshot has overlay not directly on image yet Firefox is fine. Explore moving to Electron
     applicationUtils._screenshot('overlay-generated');
     expect(document.body.querySelector('.overlay')).to.not.equal(null);
   });
