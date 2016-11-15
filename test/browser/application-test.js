@@ -160,6 +160,7 @@ describe('When we click/drag on a diff image', function () {
     });
     before(function collapseImageSet (done) {
       // DEV: Wait for animation in Travis CI (not necessary locally)
+      // https://docs.travis-ci.com/user/environment-variables#Default-Environment-Variables
       var imageSetEl = this.containerEl.querySelector('[data-image-set="mock-img-not-equal"]');
       var imageSetTitleEl = imageSetEl.querySelector('.image-set__title');
       var imageSetCollapseEl = imageSetEl.querySelector('.image-set__collapse');
