@@ -8,6 +8,12 @@ var checkerboardBase64 = fs.readFileSync(__dirname + '/../test-files/checkerboar
 var checkerboardDotDiffBase64 = fs.readFileSync(__dirname + '/../test-files/checkerboard-dot-diff.png', 'base64');
 var dotBase64 = fs.readFileSync(__dirname + '/../test-files/dot.png', 'base64');
 
+// Disable transitions for Bootstrap
+// https://github.com/twbs/bootstrap/blob/v3.3.7/js/transition.js#L45-L46
+$(function handleReady () {
+  $.support.transition = false;
+});
+
 // Define our application utils
 // DEV: If `applicationUtils` needs to be reused, place it into a `utils` folder,
 //   add `(imageSets)` as an option, and define constants of `imageSets` for us to use in utils
@@ -146,12 +152,26 @@ describe.only('When we click/drag on a diff image', function () {
     applicationUtils._screenshot('overlay-generated');
     expect(document.body.querySelector('.overlay')).to.not.equal(null);
   });
-});
 
-// Define our edge case tests
-describe.skip('An overlay in a collapsed image set', function () {
-  it('is not visible', function () {
-    // Test me
+  describe('when the image set is collapsed', function () {
+    before(function assertOverlayVisible () {
+      var $overlay = $(document.body.querySelector('.overlay'));
+      expect($overlay.filter(':visible').length).to.equal(1);
+    });
+
+    it('makes the overlay no longer visible', function () {
+      // Click our title element
+      var imageSetEl = this.containerEl.querySelector('[data-image-set="mock-img-not-equal"]');
+      var imageSetTitleEl = imageSetEl.querySelector('.image-set__title');
+      var imageSetCollapseEl = imageSetEl.querySelector('.image-set__collapse');
+      $(imageSetTitleEl).click();
+      expect([].slice.call(imageSetCollapseEl.classList)).to.not.include('in');
+
+      // Assert overlay is hidden
+      applicationUtils._screenshot('overlay-hidden');
+      var $overlay = $(document.body.querySelector('.overlay'));
+      expect($overlay.filter(':visible').length).to.equal(0);
+    });
   });
 });
 
