@@ -159,14 +159,17 @@ describe('When we click/drag on a diff image', function () {
       expect($overlay.filter(':visible').length).to.equal(1);
     });
     before(function collapseImageSet (done) {
-      // DEV: We need an async trigger for Travis CI =(
+      // DEV: Wait for animation in Travis CI (not necessary locally)
       var imageSetEl = this.containerEl.querySelector('[data-image-set="mock-img-not-equal"]');
       var imageSetTitleEl = imageSetEl.querySelector('.image-set__title');
       var imageSetCollapseEl = imageSetEl.querySelector('.image-set__collapse');
       $(imageSetTitleEl).click();
       expect([].slice.call(imageSetCollapseEl.classList)).to.not.include('in');
-      console.log('hmmm', $.support.transition);
-      requestAnimationFrame(function handleRAF () { done(); });
+      if (process.env.CI) {
+        setTimeout(done, 500);
+      } else {
+        process.nextTick(done);
+      }
     });
 
     it('makes the overlay no longer visible', function () {
