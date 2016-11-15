@@ -28,9 +28,11 @@
     "develop": "gulp develop",
     "lint": "twolfson-style lint browser/ server/ test/",
     "start-gemini": "node bin/multi-image-mergetool --loader gemini",
+    "pretest": "rm -r test/browser/actual-screenshots &> /dev/null || true",
     "test": "npm run test-karma-single && npm run lint && npm run build",
     "test-karma-continuous": "karma start --no-single-run",
-    "test-karma-single": "karma start"
+    "test-karma-single": "karma start",
+    "test-karma-assert-screenshots": "bin/test-browser-assert-screenshots.sh"
   },
   "dependencies": {
     "async": "~2.1.2",

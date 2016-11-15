@@ -120,6 +120,22 @@ npm run develop
 [browserify]: https://github.com/substack/node-browserify
 [LiveReload]: http://livereload.com/extensions/
 
+### Testing
+We have test suites set up on [Mocha][] and [Karma][]. They can be run via:
+
+```bash
+npm test
+```
+
+[Mocha]: https://github.com/mochajs/mocha
+[Karma]: https://github.com/karma-runner/karma
+
+Additionally, during testing we generate screenshots. We can assert they are as expected via:
+
+```bash
+npm run test-karma-assert-screenshots
+```
+
 ### Releasing
 Our release process has a bunch of steps so we use [foundry][] to make them reproducable. To perform a new release, run the following:
 
