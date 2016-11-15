@@ -168,6 +168,7 @@ describe('When we click/drag on a diff image', function () {
       expect([].slice.call(imageSetCollapseEl.classList)).to.not.include('in');
 
       // Assert overlay is hidden
+      console.log('wtf', $.support.transition);
       setTimeout(function () {
         applicationUtils._screenshot('overlay-hidden');
         var $overlay = $(document.body.querySelector('.overlay'));
