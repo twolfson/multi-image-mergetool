@@ -12,4 +12,5 @@ npm-debug.log
 /browser-dist/
 .npmignore
 /test/browser/actual-screenshots/
+/test/browser/diff-screenshots/
 /test/browser/expected-screenshots/
