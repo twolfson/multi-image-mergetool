@@ -173,7 +173,7 @@ describe('When we click/drag on a diff image', function () {
         applicationUtils._screenshot('overlay-hidden');
         var $overlay = $(document.body.querySelector('.overlay'));
         expect($overlay.filter(':visible').length).to.equal(0);
-      }, 500);
+      }, 0);
     });
   });
 });
