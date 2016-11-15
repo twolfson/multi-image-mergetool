@@ -165,7 +165,7 @@ describe('When we click/drag on a diff image', function () {
       var imageSetCollapseEl = imageSetEl.querySelector('.image-set__collapse');
       $(imageSetTitleEl).click();
       expect([].slice.call(imageSetCollapseEl.classList)).to.not.include('in');
-      process.nextTick(done);
+      setTimeout(done, 0);
     });
 
     it('makes the overlay no longer visible', function () {
