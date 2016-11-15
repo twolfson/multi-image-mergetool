@@ -71,6 +71,8 @@
     "karma-phantomjs-launcher": "~1.0.2",
     "mocha": "~3.1.2",
     "rimraf": "~2.5.4",
+    "simulant": "~0.2.2",
+    "tween.js": "~16.3.5",
     "twolfson-style": "~1.6.0",
     "unidragger": "~2.1.0",
     "vinyl-source-stream": "~1.1.0",
