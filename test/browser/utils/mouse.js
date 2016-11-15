@@ -8,16 +8,17 @@ var TWEEN = require('tween.js');
 exports.moveMouse = function (options, cb) {
   // Assert all our options
   var startCoords = options.startCoords;
-  assert(options.startCoords, '`mouseUtils.mousemove` expected `options.startCoords` to be defined but it wasn\'t');
+  var targetEl = options.targetEl;
+  assert(startCoords, '`mouseUtils.mousemove` expected `options.startCoords` to be defined but it wasn\'t');
   assert(options.endCoords, '`mouseUtils.mousemove` expected `options.endCoords` to be defined but it wasn\'t');
   assert(options.duration, '`mouseUtils.mousemove` expected `options.duration` to be defined but it wasn\'t');
+  assert(targetEl, '`mouseUtils.mousemove` expected `options.targetEl` to be defined but it wasn\'t');
   assert(cb, '`mouseUtils.mousemove` expected a callback function but there was none');
 
   // Immediately click our mouse down
   // https://developer.mozilla.org/en-US/docs/Web/API/Document/elementFromPoint
   // https://github.com/metafizzy/unipointer/blob/v2.1.0/unipointer.js#L94-L101
-  var startingTargetEl = document.elementFromPoint(startCoords.x, startCoords.y);
-  simulant.fire(startingTargetEl, 'mousedown', {button: 0, clientX: startCoords.x, clientY: startCoords.y});
+  simulant.fire(targetEl, 'mousedown', {button: 0, clientX: startCoords.x, clientY: startCoords.y});
 
   // Over the course of the next 2 seconds, drag it across to the workspace
   // https://github.com/metafizzy/unipointer/blob/v2.1.0/unipointer.js#L173-L175
@@ -25,13 +26,11 @@ exports.moveMouse = function (options, cb) {
     .to(options.endCoords, options.duration)
     .easing(TWEEN.Easing.Exponential.Out)
     .onUpdate(function handleUpdate () {
-      var targetEl = document.elementFromPoint(this.x, this.y);
       simulant.fire(targetEl, 'mousemove', {clientX: this.x, clientY: this.y});
     });
 
   // When our drag completes, release our mouse
   tween.onComplete(function handleComplete () {
-    var targetEl = document.elementFromPoint(this.x, this.y);
     simulant.fire(targetEl, 'mouseup', {clientX: this.x, clientY: this.y});
   });
 

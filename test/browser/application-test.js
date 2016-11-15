@@ -124,25 +124,26 @@ describe('When an image set title is clicked', function () {
   });
 });
 
-describe('When we click/drag on a diff image', function () {
+describe.only('When we click/drag on a diff image', function () {
   applicationUtils.init();
   before(function assertNoOverlay () {
-    expect(this.containerEl.querySelector('.overlay')).to.equal(null);
+    expect(document.body.querySelector('.overlay')).to.equal(null);
   });
   before(function mouseMoveOnDiffImage (done) {
     // DEV: We use an expanded image set so we can click/drag
     var diffImg = this.containerEl.querySelector('[data-image-set="mock-img-not-equal"] img[data-compare-type=diff]');
     var diffImgBounds = diffImg.getBoundingClientRect();
     mouseUtils.moveMouse({
-      startCoords: {x: diffImgBounds.top + 1, y: diffImgBounds.left + 1},
-      endCoords: {x: diffImgBounds.top + 10, y: diffImgBounds.left + 10},
+      targetEl: diffImg,
+      startCoords: {x: diffImgBounds.left + 1, y: diffImgBounds.top + 1},
+      endCoords: {x: diffImgBounds.left + 10, y: diffImgBounds.top + 10},
       duration: 100 // ms
     }, done);
   });
 
   it('generates an overlay', function () {
     applicationUtils._screenshot('overlay-generated');
-    expect(this.containerEl.querySelector('.overlay')).to.not.equal(null);
+    expect(document.body.querySelector('.overlay')).to.not.equal(null);
   });
 });
 
