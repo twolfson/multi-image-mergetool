@@ -1,4 +1,6 @@
 # multi-image-mergetool changelog
+1.8.0 - Repaired overlay hiding on image set collapse
+
 1.7.0 - Added support for `--ref-images`, `--current-images`, `--diff-images`, and `--loader`
 
 1.6.0 - Added screenshot recording to tests
