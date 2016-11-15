@@ -158,22 +158,20 @@ describe('When we click/drag on a diff image', function () {
       var $overlay = $(document.body.querySelector('.overlay'));
       expect($overlay.filter(':visible').length).to.equal(1);
     });
-
-    it('makes the overlay no longer visible', function () {
-      // Click our title element
+    before(function collapseImageSet (done) {
+      // DEV: We need an async trigger for Travis CI =(
       var imageSetEl = this.containerEl.querySelector('[data-image-set="mock-img-not-equal"]');
       var imageSetTitleEl = imageSetEl.querySelector('.image-set__title');
       var imageSetCollapseEl = imageSetEl.querySelector('.image-set__collapse');
       $(imageSetTitleEl).click();
       expect([].slice.call(imageSetCollapseEl.classList)).to.not.include('in');
+      process.nextTick(done);
+    });
 
-      // Assert overlay is hidden
-      console.log('wtf', $.support.transition);
-      setTimeout(function () {
-        applicationUtils._screenshot('overlay-hidden');
-        var $overlay = $(document.body.querySelector('.overlay'));
-        expect($overlay.filter(':visible').length).to.equal(0);
-      }, 0);
+    it('makes the overlay no longer visible', function () {
+      applicationUtils._screenshot('overlay-hidden');
+      var $overlay = $(document.body.querySelector('.overlay'));
+      expect($overlay.filter(':visible').length).to.equal(0);
     });
   });
 });
