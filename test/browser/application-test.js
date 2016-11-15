@@ -165,6 +165,7 @@ describe('When we click/drag on a diff image', function () {
       var imageSetCollapseEl = imageSetEl.querySelector('.image-set__collapse');
       $(imageSetTitleEl).click();
       expect([].slice.call(imageSetCollapseEl.classList)).to.not.include('in');
+      console.log('hmmm', $.support.transition);
       requestAnimationFrame(function handleRAF () { done(); });
     });
 
