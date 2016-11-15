@@ -2,11 +2,14 @@
 var Unidragger = require('unidragger');
 
 // Define our overlay class
-function Overlay(targetEl) {
+function Overlay(targetEl, options) {
   // Bind our overlay to the element
   this.targetEl = targetEl;
   this.handles = [targetEl];
   this.bindHandles();
+
+  // Resolve our container
+  this.containerEl = options.containerEl || document.body;
 
   // Add an overlay binding class to our element
   targetEl.className += ' overlay-bound';
@@ -18,7 +21,7 @@ Overlay.prototype.dragStart = function (evt, pointer) {
   if (!this.overlayEl) {
     this.overlayEl = document.createElement('div');
     this.overlayEl.className = 'overlay';
-    document.body.appendChild(this.overlayEl);
+    this.containerEl.appendChild(this.overlayEl);
   }
 
   // Calculate target dimensions

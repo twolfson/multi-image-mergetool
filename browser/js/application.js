@@ -104,7 +104,10 @@ function Application(_containerEl, imageSets) {
 
     // Bind an overlay to diff image
     // TODO: Explore binding overlay to each of images (that jumps between them)
-    var imgOverlay = new Overlay(imgSetEl.querySelector('img[data-compare-type=diff]'));
+    // DEV: We use imgSetEl's collapse as a container so it hides on collapse
+    var imgOverlay = new Overlay(imgSetEl.querySelector('img[data-compare-type=diff]'), {
+      containerEl: imgSetEl.querySelector('.image-set__collapse')
+    });
 
     // Save imgOverlay directly to imgSetEl
     imgSetEl.imgOverlay = imgOverlay;
