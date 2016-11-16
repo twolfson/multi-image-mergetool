@@ -31,8 +31,8 @@
     "pretest": "rm -r test/browser/actual-screenshots &> /dev/null || true",
     "_test-comment": "We must run `npm build` before `npm run test-karma-single` so CSS is compiled for visibility tests",
     "test": "npm run build && npm run test-karma-single && npm run lint",
-    "test-karma-continuous": "karma start --no-single-run",
-    "test-karma-single": "karma start",
+    "test-karma-continuous": "xvfb-run karma start --no-single-run",
+    "test-karma-single": "xvfb-run karma start",
     "test-karma-assert-screenshots": "bin/test-browser-assert-screenshots.sh"
   },
   "dependencies": {
