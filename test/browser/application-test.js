@@ -158,22 +158,16 @@ describe('When we click/drag on a diff image', function () {
       var $overlay = $(document.body.querySelector('.overlay'));
       expect($overlay.filter(':visible').length).to.equal(1);
     });
-    before(function collapseImageSet (done) {
-      // DEV: Wait for animation in Travis CI (not necessary locally)
-      // https://docs.travis-ci.com/user/environment-variables#Default-Environment-Variables
+
+    it('makes the overlay no longer visible', function () {
+      // Click our title element
       var imageSetEl = this.containerEl.querySelector('[data-image-set="mock-img-not-equal"]');
       var imageSetTitleEl = imageSetEl.querySelector('.image-set__title');
       var imageSetCollapseEl = imageSetEl.querySelector('.image-set__collapse');
       $(imageSetTitleEl).click();
       expect([].slice.call(imageSetCollapseEl.classList)).to.not.include('in');
-      if (process.env.CI) {
-        setTimeout(done, 500);
-      } else {
-        process.nextTick(done);
-      }
-    });
 
-    it('makes the overlay no longer visible', function () {
+      // Assert overlay is hidden
       applicationUtils._screenshot('overlay-hidden');
       var $overlay = $(document.body.querySelector('.overlay'));
       expect($overlay.filter(':visible').length).to.equal(0);
