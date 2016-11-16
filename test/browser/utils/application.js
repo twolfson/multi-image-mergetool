@@ -1,6 +1,7 @@
 // Load in our dependencies
-var $ = require('jquery');
 var fs = require('fs');
+var $ = require('jquery');
+var _ = require('underscore');
 var Application = require('../../../browser/js/application');
 var checkerboardBase64 = fs.readFileSync(__dirname + '/../../test-files/checkerboard.png', 'base64');
 var checkerboardDotDiffBase64 = fs.readFileSync(__dirname + '/../../test-files/checkerboard-dot-diff.png', 'base64');
@@ -13,28 +14,39 @@ $(function handleReady () {
   $.support.transition = false;
 });
 
+// Define various image set configurations
+exports.IMAGE_SET_EQUAL = {
+  id: 'mock-img-equal',
+  currentImgUrl: 'data:image/png;base64,' + checkerboardBase64,
+  diffImgUrl: 'data:image/png;base64,' + checkerboardBase64,
+  refImgUrl: 'data:image/png;base64,' + checkerboardBase64,
+  imagesEqual: true
+};
+exports.IMAGE_SET_NOT_EQUAL = {
+  id: 'mock-img-not-equal',
+  currentImgUrl: 'data:image/png;base64,' + checkerboardBase64,
+  diffImgUrl: 'data:image/png;base64,' + dotBase64,
+  refImgUrl: 'data:image/png;base64,' + checkerboardDotDiffBase64,
+  imagesEqual: false
+};
+exports.IMAGE_SET_NOT_EQUAL2 = _.defaults({
+  id: 'mock-img-not-equal2'
+}, exports.IMAGE_SET_NOT_EQUAL);
+exports.IMAGE_SETS = {
+  DEFAULT: [exports.IMAGE_SET_EQUAL, exports.IMAGE_SET_NOT_EQUAL],
+  MULTIPLE_NOT_EQUAL: [exports.IMAGE_SET_EQUAL, exports.IMAGE_SET_NOT_EQUAL, exports.IMAGE_SET_NOT_EQUAL2]
+};
+
 // Define our application utils
 // DEV: If `applicationUtils` needs to be reused, place it into a `utils` folder,
 //   add `(imageSets)` as an option, and define constants of `imageSets` for us to use in utils
-exports.init = function () {
+exports.init = function (imageSetInfoArr) {
   before(function createApplication () {
     // DEV: We add `className` for nicer looking screenshots
     this.containerEl = document.createElement('div');
     this.containerEl.className = 'container-fluid';
     document.body.appendChild(this.containerEl);
-    this.app = new Application(this.containerEl, [{
-      id: 'mock-img-equal',
-      currentImgUrl: 'data:image/png;base64,' + checkerboardBase64,
-      diffImgUrl: 'data:image/png;base64,' + checkerboardBase64,
-      refImgUrl: 'data:image/png;base64,' + checkerboardBase64,
-      imagesEqual: true
-    }, {
-      id: 'mock-img-not-equal',
-      currentImgUrl: 'data:image/png;base64,' + checkerboardBase64,
-      diffImgUrl: 'data:image/png;base64,' + dotBase64,
-      refImgUrl: 'data:image/png;base64,' + checkerboardDotDiffBase64,
-      imagesEqual: false
-    }]);
+    this.app = new Application(this.containerEl, imageSetInfoArr || exports.IMAGE_SETS.DEFAULT);
   });
   after(function cleanup () {
     // If we are on the debug page, expose everything
