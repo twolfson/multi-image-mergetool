@@ -533,9 +533,9 @@ Application.bindOnce = function () {
         var updatedDiffCanvasEl = createUpdatedCanvas(diffImg, {class: 'updated-diff'});
         var updatedRefCanvasEl = createUpdatedCanvas(refImg, {class: 'updated-ref'});
         // Shrink all canvases/images for output
-        currentImgClone.style.width = '100%';
-        updatedDiffCanvasEl.style.width = '100%';
-        updatedRefCanvasEl.style.width = '100%';
+        currentImgClone.style.maxWidth = '100%';
+        updatedDiffCanvasEl.style.maxWidth = '100%';
+        updatedRefCanvasEl.style.maxWidth = '100%';
 
         // Generate and append result content
         // DEV: We use a document fragment to avoid `n` DOM edits -- instead it's 1
