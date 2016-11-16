@@ -25,7 +25,7 @@ function clickFindSimilarImages() {
 }
 
 // Start our tests
-describe.only('An application with similarly failing images', function () {
+describe('An application with similarly failing images', function () {
   // Create our application
   applicationUtils.init(applicationUtils.IMAGE_SETS.MULTIPLE_NOT_EQUAL);
 
@@ -35,7 +35,10 @@ describe.only('An application with similarly failing images', function () {
     applicationUtils.screenshot('find-similar-matching');
 
     it('lists similarly failing images in results', function () {
-
+      var resultsEl = this.containerEl.querySelector('.results');
+      expect(resultsEl.textContent).to.not.contain('watNo similar images found');
+      var similarImageSetEls = resultsEl.querySelectorAll('[data-similar-image-set]');
+      expect(similarImageSetEls).to.have.length(2);
     });
   });
 });
@@ -50,7 +53,10 @@ describe('An application with no similarly failing images', function () {
     applicationUtils.screenshot('find-similar-no-matching');
 
     it('lists no similarly failing images in results', function () {
-
+      var resultsEl = this.containerEl.querySelector('.results');
+      expect(resultsEl.textContent).to.contain('No similar images found');
+      var similarImageSetEls = resultsEl.querySelectorAll('[data-similar-image-set]');
+      expect(similarImageSetEls).to.have.length(0);
     });
   });
 });
