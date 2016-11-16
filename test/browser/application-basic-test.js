@@ -106,9 +106,6 @@ describe('When we click/drag on a diff image', function () {
 // TODO: These are probably ImageSet tests directly
 //   Test out acceptance behavior (hits endpoint, approval/error)
 //   Test out using overlay enables "Find similar" button
-//   Test out select overlay area (either via events or mocking) and finding similar images
-//      - No matches found
-//      - Matches found
 //   Test out overlay selection with different values, verify it's cleared out and not appended to
 //   Test out accepting all images (hits endpoint, approval/error)
 //      Verify each image set is listed
