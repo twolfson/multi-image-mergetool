@@ -88,3 +88,22 @@ exports.screenshot = function (filename) {
     exports._screenshot.call(this, filename);
   });
 };
+
+// DEV: This uses the same technique as our application so we can do direct comparisons
+// DEV: We could do pixel based comparisons but that's overkill
+exports.getBase64Content = function (imgEl) {
+  // Create our elements
+  var base64CanvasEl = document.createElement('canvas');
+  var base64Context = base64CanvasEl.getContext('2d');
+
+  // Resize our canvas to target size
+  base64CanvasEl.width = imgEl.naturalWidth;
+  base64CanvasEl.height = imgEl.naturalHeight;
+
+  // Draw our image and return its data URL
+  // https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/drawImage
+  // https://developer.mozilla.org/en-US/docs/Web/API/HTMLCanvasElement/toDataURL
+  // DEV: We use `image/png` for lossless encoding which is necessary for visual comparison
+  base64Context.drawImage(imgEl, 0, 0);
+  return base64CanvasEl.toDataURL('image/png');
+};

@@ -17,12 +17,6 @@ function mockXHR(responses) {
     this.sinonServer.autoRespond = true;
     this.sinonServer.autoRespondAfter = 100;
 
-    // Save incoming requests for later assertion
-    var requests = this.requests = [];
-    this.sinonServer.onCreate = function (request) {
-      requests.push(request);
-    };
-
     // Bind our responses
     responses.forEach(function bindResponse (response) {
       sinonServer.respondWith(response.method, response.url, [
@@ -33,7 +27,6 @@ function mockXHR(responses) {
   after(function cleanup () {
     this.sinonServer.restore();
     delete this.sinonServer;
-    delete this.requests;
   });
 }
 
@@ -69,7 +62,16 @@ describe.only('A user accepting failing images is successful', function () {
   });
 
   it('sends XHR to update image to server', function () {
-
+    var requests = this.sinonServer.requests;
+    expect(requests).to.have.length(1);
+    // DEV: We don't exclusively compare to the original mock data as they could both be null or similar
+    expect(requests[0].requestBody).to.contain('ref=data');
+    var currentImgEl = this.containerEl.querySelector(
+      '[data-image-set="mock-img-not-equal"] img[data-compare-type=current]');
+    var expectedBase64 = applicationUtils.getBase64Content(currentImgEl);
+    console.log('1', requests[0].requestBody);
+    console.log('2', expectedBase64);
+    expect(requests[0].requestBody).to.equal('ref=' + encodeURIComponent(expectedBase64));
   });
 
   it('cachebusts diff and reference images', function () {
@@ -82,6 +84,7 @@ describe.only('A user accepting failing images is successful', function () {
     expect([].slice.call(refImgEl.classList)).to.not.contain('loading');
 
     // Assert new URLs
+    // DEV: We don't exclusively compare to the original mock data as they could both be null or similar
     expect(diffImgEl.src).to.match(/\?1/);
     expect(refImgEl.src).to.match(/\?1/);
   });
