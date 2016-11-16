@@ -25,7 +25,7 @@ for filepath in actual-screenshots/*.png; do
   content_type="image/png"
   result="$(curl -X POST "http://imgur.com/upload" \
     -H "Referer: http://imgur.com/upload" \
-    -F "Filedata=@\"$filepath\";filename=$filename;type=$content_type")"
+    -F "Filedata=@$filepath;filename=$filename;type=$content_type")"
   # result='{"data":{"hashes":["Jaq8ROu"],"hash":"Jaq8ROu","deletehash":"RjCdxTOatwK0UF1","album":false,"edit":false,"gallery":null,"animated":false,"height":10,"width":10,"ext":".png"},"success":true,"status":200}'
   if test "$(echo "$result" | underscore extract 'success')" != "true"; then
     echo "There was a problem uploading \"$filepath\"" 1>&2
