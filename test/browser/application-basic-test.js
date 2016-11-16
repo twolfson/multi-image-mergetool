@@ -63,6 +63,12 @@ describe('When we click/drag on a diff image', function () {
   before(function assertNoOverlay () {
     expect(document.body.querySelector('.overlay')).to.equal(null);
   });
+  // TODO: Disable "Find similar images" button on initial render
+  // before(function assertFindSimilarImagesDisabled () {
+  //   var buttonEl = this.containerEl.querySelector(
+  //     '[data-image-set="mock-img-not-equal"] button[data-action=find-similar-images]');
+  //   expect(buttonEl.getAttribute('disabled')).to.equal('disabled');
+  // });
   before(function mouseMoveOnDiffImage (done) {
     // DEV: We use an expanded image set so we can click/drag
     var diffImg = this.containerEl.querySelector('[data-image-set="mock-img-not-equal"] img[data-compare-type=diff]');
@@ -74,11 +80,18 @@ describe('When we click/drag on a diff image', function () {
       duration: 100 // ms
     }, done);
   });
+  applicationUtils.screenshot('overlay-generated');
 
   it('generates an overlay', function () {
     // TODO: PhantomJS screenshot has overlay not directly on image yet Firefox is fine. Explore moving to Electron
-    applicationUtils._screenshot('overlay-generated');
     expect(document.body.querySelector('.overlay')).to.not.equal(null);
+  });
+
+  it.skip('enables the "Find similar images" button', function () {
+    var buttonEl = this.containerEl.querySelector(
+      '[data-image-set="mock-img-not-equal"] button[data-action=find-similar-images]');
+    // TODO: Verify `getAttribute` is proper method and `disabled` is proper value for assertion
+    expect(buttonEl.getAttribute('disabled')).to.not.equal('disabled');
   });
 
   describe('when the image set is collapsed', function () {
@@ -86,17 +99,16 @@ describe('When we click/drag on a diff image', function () {
       var $overlay = $(document.body.querySelector('.overlay'));
       expect($overlay.filter(':visible').length).to.equal(1);
     });
-
-    it('makes the overlay no longer visible', function () {
-      // Click our title element
+    before(function collapseImageSet () {
       var imageSetEl = this.containerEl.querySelector('[data-image-set="mock-img-not-equal"]');
       var imageSetTitleEl = imageSetEl.querySelector('.image-set__title');
       var imageSetCollapseEl = imageSetEl.querySelector('.image-set__collapse');
       $(imageSetTitleEl).click();
       expect([].slice.call(imageSetCollapseEl.classList)).to.not.include('in');
+    });
+    applicationUtils.screenshot('overlay-hidden');
 
-      // Assert overlay is hidden
-      applicationUtils._screenshot('overlay-hidden');
+    it('makes the overlay no longer visible', function () {
       var $overlay = $(document.body.querySelector('.overlay'));
       expect($overlay.filter(':visible').length).to.equal(0);
     });
