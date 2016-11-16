@@ -31,7 +31,12 @@ for filepath in test/test-files/dot.png; do
     echo "There was a problem uploading \"$filepath\"" 1>&2
     echo "$result" 1>&2
   else
-    download_cmds="${download_cmds}wget -O \"$output_dir/$filepath\" $(echo "$result" | underscore extract 'data.hash')\n"
+    # {data: ...} -> Jaq8ROu
+    filehash="$(echo "$result" | underscore extract --outfmt text 'data.hash')"
+    # Jaq8ROu -> http://i.imgur.com/Jaq8ROu.png
+    url="http://i.imgur.com/${filehash}.png"
+    # wget "tmp/travis/1234/overlay-hidden.png" "http://i.imgur.com/Jaq8ROu.png"
+    download_cmds="${download_cmds}wget -O \"$output_dir/$filepath\" \"$url\" \n"
   fi
 done
 
