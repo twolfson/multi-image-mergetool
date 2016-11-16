@@ -1,4 +1,6 @@
 # multi-image-mergetool changelog
+1.9.1 - Added screenshot uploading for Travis CI and repaired CI tests via compiling first
+
 1.9.0 - Fixed mkdirp for custom diff screenshots and added script to assert local screenshots
 
 1.8.0 - Repaired overlay hiding on image set collapse
