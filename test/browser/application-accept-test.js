@@ -5,24 +5,49 @@ var expect = require('chai').expect;
 var sinon = require('sinon');
 var applicationUtils = require('./utils/application');
 
+// Define test helper
+// TODO: Use common fixture as response (so we can reuse it in server tests -- should do that first...)
+function mockXHR(responses) {
+  before(function enableSinonXHR () {
+    // Create our server
+    // http://sinonjs.org/docs/#fakeServer
+    var sinonServer = this.sinonServer = sinon.fakeServer.create();
+
+    // Set up auto-responses
+    this.sinonServer.autoRespond = true;
+    this.sinonServer.autoRespondAfter = 100;
+
+    // Save incoming requests for later assertion
+    var requests = this.requests = [];
+    this.sinonServer.onCreate = function (request) {
+      requests.push(request);
+    };
+
+    // Bind our responses
+    responses.forEach(function bindResponse (response) {
+      sinonServer.respondWith(response.method, response.url, [
+        response.statusCode, response.headers || {}, response.body
+      ]);
+    });
+  });
+  after(function cleanup () {
+    this.sinonServer.restore();
+    delete this.sinonServer;
+    delete this.requests;
+  });
+}
+
 // Start our tests
 describe.only('A user accepting failing images is successful', function () {
   // Create our application, set up our XHR mocks, and click our button
   applicationUtils.init();
-  before(function enableSinonXHR () {
-    // http://sinonjs.org/docs/#fakeServer
-    this.sinonXHR = sinon.useFakeXMLHttpRequest();
-    var requests = this.requests = [];
-    this.sinonXHR.autoRespondAfter = 100;
-    this.sinonXHR.onCreate = function (request) {
-      requests.push(request);
-    };
-  });
-  after(function cleanup () {
-    this.sinonXHR.restore();
-    delete this.sinonXHR;
-    delete this.requests;
-  });
+  mockXHR([{
+    method: 'POST',
+    url: /\/update-image-set\/[^\/]+/,
+    statusCode: 200,
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({imagesEqual: true})
+  }]);
   before(function assertBadStatus () {
     var imageSetTitleEl = this.containerEl.querySelector('[data-image-set="mock-img-not-equal"] .image-set__title');
     expect(imageSetTitleEl.getAttribute('data-images-equal')).to.equal('false');
@@ -57,8 +82,8 @@ describe.only('A user accepting failing images is successful', function () {
     expect([].slice.call(refImgEl.classList)).to.not.contain('loading');
 
     // Assert new URLs
-    expect(diffImgEl.href).to.equal('wat');
-    expect(refImgEl.href).to.equal('wat');
+    expect(diffImgEl.src).to.match(/\?1/);
+    expect(refImgEl.src).to.match(/\?1/);
   });
 });
 
