@@ -109,7 +109,7 @@ describe('A user accepting failing images is successful', function () {
   });
 });
 
-describe.only('A user accepting failing images has an error', function () {
+describe('A user accepting failing images has an error', function () {
   // Create our application, silence errors, set up our XHR mocks, and click our button
   applicationUtils.init();
   sinonUtils.stub(console, 'error');
