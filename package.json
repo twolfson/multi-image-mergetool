@@ -75,6 +75,7 @@
     "mocha": "~3.1.2",
     "rimraf": "~2.5.4",
     "simulant": "~0.2.2",
+    "sinon": "~1.17.6",
     "tween.js": "~16.3.5",
     "twolfson-style": "~1.6.0",
     "unidragger": "~2.1.0",
