@@ -120,3 +120,5 @@ describe('When we click/drag on a diff image', function () {
 //   Test out approving entire image for all similar images (hits endpoint, approval/failure/error)
 //      Verify we receive fully updated image at endpoint (not partial)
 //   Test out approving entire image for some similar images (doesn't hit endpoint for all images)
+//   Test out we don't oversize small images (both in normal and similar results)
+//   Test out we don't let big images be too big (both in normal and similar results)
