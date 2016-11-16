@@ -39,6 +39,8 @@ describe('An application with similarly failing images', function () {
       expect(resultsEl.textContent).to.not.contain('No similar images found');
       var similarImageSetEls = resultsEl.querySelectorAll('[data-similar-image-set]');
       expect(similarImageSetEls).to.have.length(2);
+      expect(similarImageSetEls[0].getAttribute('data-similar-image-set')).to.equal('mock-img-not-equal');
+      expect(similarImageSetEls[1].getAttribute('data-similar-image-set')).to.equal('mock-img-not-equal2');
     });
   });
 });
