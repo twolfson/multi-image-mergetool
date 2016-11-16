@@ -119,8 +119,7 @@ describe('When we click/drag on a diff image', function () {
 //   Test out acceptance behavior (hits endpoint, approval/error)
 //   Test out overlay selection with different values, verify it's cleared out and not appended to
 //   Test out accepting all images (hits endpoint, approval/error)
-//      Verify each image set is listed
-//      Add TODOs about cleaning results and collapsing section and disabling "Find similar" button
+//      Add TODOs about cleaning results, collapsing section, and disabling "Find similar" button
 //   Test out accepting some images (doesn't hit endpoint for all images)
 //   Test out approving selection for all similar images (hits endpoint, approval/failure/error)
 //      Verify we receive partially updated image at endpoint (not full)
