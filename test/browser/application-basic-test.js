@@ -114,5 +114,9 @@ describe('When we click/drag on a diff image', function () {
 //      Verify each image set is listed
 //      Add TODOs about cleaning results and collapsing section and disabling "Find similar" button
 //   Test out accepting some images (doesn't hit endpoint for all images)
-//   Test out approving selection for all images (hits endpoint, approval/failure/error)
-//   Test out approving selection for some images (doesn't hit endpoint for all images)
+//   Test out approving selection for all similar images (hits endpoint, approval/failure/error)
+//      Verify we receive partially updated image at endpoint (not full)
+//   Test out approving selection for some similar images (doesn't hit endpoint for all images)
+//   Test out approving entire image for all similar images (hits endpoint, approval/failure/error)
+//      Verify we receive fully updated image at endpoint (not partial)
+//   Test out approving entire image for some similar images (doesn't hit endpoint for all images)
