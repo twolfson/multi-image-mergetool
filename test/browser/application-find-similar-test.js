@@ -36,7 +36,7 @@ describe('An application with similarly failing images', function () {
 
     it('lists similarly failing images in results', function () {
       var resultsEl = this.containerEl.querySelector('.results');
-      expect(resultsEl.textContent).to.not.contain('watNo similar images found');
+      expect(resultsEl.textContent).to.not.contain('No similar images found');
       var similarImageSetEls = resultsEl.querySelectorAll('[data-similar-image-set]');
       expect(similarImageSetEls).to.have.length(2);
     });
