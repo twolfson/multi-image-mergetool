@@ -10,7 +10,7 @@ if ! which underscore &> /dev/null; then
 fi
 
 # Navigate to pereceptual-test directory
-# cd test/browser
+cd test/browser
 
 # Prepare location to collect delete commands
 if test "$TRAVIS_BUILD_NUMBER" = ""; then
@@ -20,7 +20,7 @@ output_dir="tmp/travis/$TRAVIS_BUILD_NUMBER"
 download_cmds=""
 delete_cmds=""
 
-for filepath in test/test-files/dot.png; do
+for filepath in actual-screenshots/*.png; do
   filename="$(basename filepath)"
   content_type="image/png"
   result="$(curl -X POST "http://imgur.com/upload" \
