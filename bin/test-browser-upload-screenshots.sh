@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-# Taken from https://github.com/twolfson/twolfson.com/blob/3.102.0/test/perceptual-tests/upload-screenshots.sh
+# Based on https://github.com/twolfson/twolfson.com/blob/3.102.0/test/perceptual-tests/upload-screenshots.sh
+#   and https://gist.github.com/twolfson/ad9084fb286e1baee969bbe5eabebe5f
 # Exit on first error
 set -e
 
@@ -9,7 +10,7 @@ if ! which underscore &> /dev/null; then
 fi
 
 # Navigate to pereceptual-test directory
-cd test/browser
+# cd test/browser
 
 # Prepare location to collect delete commands
 if test "$TRAVIS_BUILD_NUMBER" = ""; then
@@ -19,19 +20,18 @@ output_dir="tmp/travis/$TRAVIS_BUILD_NUMBER"
 download_cmds=""
 delete_cmds=""
 
-# curl from http://imgur.com/tools/imgurbash.sh via http://imgur.com/tools
-# Documentation: http://code.google.com/p/imgur-api/source/browse/wiki/ImageUploading.wiki?r=82
-api_key="b3625162d3418ac51a9ee805b1840452"
-
-for filepath in actual-screenshots/*.png; do
-  result="$(curl http://imgur.com/api/upload.json -H "Expect: " -F "key=$api_key" -F "image=@$filepath" )"
-  # result='{"rsp":{"stat":"ok","image":{"image_hash":"dKZ0YK9","delete_hash":"r0MsZp11K9vawLf","original_image":"http:\/\/i.imgur.com\/dKZ0YK9.png","large_thumbnail":"http:\/\/i.imgur.com\/dKZ0YK9l.jpg","small_thumbnail":"http:\/\/i.imgur.com\/dKZ0YK9s.jpg","imgur_page":"http:\/\/imgur.com\/dKZ0YK9","delete_page":"http:\/\/imgur.com\/delete\/r0MsZp11K9vawLf"}}}'
-  if test "$(echo "$result" | underscore extract 'rsp.stat')" != '"ok"'; then
+for filepath in test/test-files/dot.png; do
+  filename="$(basename filepath)"
+  content_type="image/png"
+  result="$(curl -X POST "http://imgur.com/upload" \
+    -H "Referer: http://imgur.com/upload" \
+    -F "Filedata=@\"$filepath\";filename=$filename;type=$content_type")"
+  # result='{"data":{"hashes":["Jaq8ROu"],"hash":"Jaq8ROu","deletehash":"RjCdxTOatwK0UF1","album":false,"edit":false,"gallery":null,"animated":false,"height":10,"width":10,"ext":".png"},"success":true,"status":200}'
+  if test "$(echo "$result" | underscore extract 'success')" != "true"; then
     echo "There was a problem uploading \"$filepath\"" 1>&2
     echo "$result" 1>&2
   else
-    download_cmds="${download_cmds}wget -O \"$output_dir/$filepath\" $(echo "$result" | underscore extract 'rsp.image.original_image')\n"
-    delete_cmds="${delete_cmds}curl http://imgur.com/api/delete/$(echo "$result" | underscore extract 'rsp.image.delete_hash' --outfmt text).json;"
+    download_cmds="${download_cmds}wget -O \"$output_dir/$filepath\" $(echo "$result" | underscore extract 'data.hash')\n"
   fi
 done
 
@@ -41,5 +41,3 @@ echo "Download via:"
 echo "    mkdir -p $output_dir/actual-screenshots"
 # DEV: `echo -e` processes line feeds
 echo -e "    $download_cmds"
-echo "Delete via:"
-echo -e "    $delete_cmds"
