@@ -62,15 +62,22 @@ describe.only('A user accepting failing images is successful', function () {
   });
 
   it('sends XHR to update image to server', function () {
+    // Complete initial XHR assertion
     var requests = this.sinonServer.requests;
     expect(requests).to.have.length(1);
     // DEV: We don't exclusively compare to the original mock data as they could both be null or similar
     expect(requests[0].requestBody).to.contain('ref=data');
+
+    // Skip PhantomJS' strange canvas support
+    // DEV: Canvas is returning `data:,` only
+    if (window.callPhantom) {
+      return;
+    }
+
+    // Continue deep assertions
     var currentImgEl = this.containerEl.querySelector(
       '[data-image-set="mock-img-not-equal"] img[data-compare-type=current]');
     var expectedBase64 = applicationUtils.getBase64Content(currentImgEl);
-    console.log('1', requests[0].requestBody);
-    console.log('2', expectedBase64);
     expect(requests[0].requestBody).to.equal('ref=' + encodeURIComponent(expectedBase64));
   });
 
