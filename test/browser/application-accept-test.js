@@ -101,3 +101,9 @@ describe('A user accepting failing images has an error', function () {
     // TODO: Do we want to cache bust on error?
   });
 });
+
+describe('Placeholder for TODOs in this file', function () {
+  it('tmp', function () {
+    expect(false).to.equal(true);
+  });
+});
