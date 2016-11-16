@@ -121,7 +121,7 @@ function Application(_containerEl, imageSets) {
 }
 
 // Define our button bindings
-Application.bind = function () {
+Application.bindOnce = function () {
   // Define cache busting helper
   function cachebustImg($img) {
     var originalSrc = $img.attr('src');

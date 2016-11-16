@@ -14,6 +14,9 @@ $(function handleReady () {
   $.support.transition = false;
 });
 
+// Run our DOM bindings once
+Application.bindOnce();
+
 // Define various image set configurations
 exports.IMAGE_SET_EQUAL = {
   id: 'mock-img-equal',
