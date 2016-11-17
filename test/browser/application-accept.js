@@ -1,12 +1,14 @@
 // Load in our dependencies
+var fs = require('fs');
 var $ = require('jquery');
 var assert = require('assert');
 var expect = require('chai').expect;
 var sinon = require('sinon');
 var applicationUtils = require('./utils/application');
+var updateImageSetFilepathResponse = fs.readFileSync(
+  __dirname + '/../test-files/http-responses/update-image-set-filepath.json', 'utf8');
 
 // Define test helpers
-// TODO: Use common fixture as response (so we can reuse it in server tests -- should do that first...)
 var sinonUtils = {
   mockXHR: function (responses) {
     before(function enableSinonXHR () {
@@ -51,7 +53,7 @@ describe('A user accepting failing images is successful', function () {
     url: /\/update-image-set\/[^\/]+/,
     statusCode: 200,
     headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify({imagesEqual: true})
+    body: updateImageSetFilepathResponse // {imagesEqual: true}
   }]);
   before(function assertBadStatus () {
     var imageSetTitleEl = this.containerEl.querySelector('[data-image-set="mock-img-not-equal"] .image-set__title');
@@ -158,11 +160,5 @@ describe('A user accepting failing images has an error', function () {
     // DEV: We don't exclusively compare to the original mock data as they could both be null or similar
     expect(diffImgEl.src).to.match(/\?1/);
     expect(refImgEl.src).to.match(/\?1/);
-  });
-});
-
-describe('Placeholder for TODOs in this file', function () {
-  it('tmp', function () {
-    expect(false).to.equal(true);
   });
 });
