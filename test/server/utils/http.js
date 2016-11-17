@@ -1,4 +1,6 @@
 // Taken from https://gist.github.com/twolfson/3af2ed0a016f877d676d
+// Even more options available here:
+//   https://github.com/twolfson/multi-image-mergetool/blob/180343e7d595b295c4138fbb763a38d990833600/test/server/utils/http.js
 // Load in our dependencies
 var assert = require('assert');
 var request = require('request');
