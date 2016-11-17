@@ -2,6 +2,7 @@
 var fs = require('fs');
 var $ = require('jquery');
 var _ = require('underscore');
+var async = require('async');
 var Application = require('../../../browser/js/application');
 var checkerboardBase64 = fs.readFileSync(__dirname + '/../../test-files/checkerboard.png', 'base64');
 var checkerboardDotDiffBase64 = fs.readFileSync(__dirname + '/../../test-files/checkerboard-dot-diff.png', 'base64');
@@ -15,11 +16,22 @@ $(function handleReady () {
 });
 
 // Pre-fetch our images to avoid issues
-// DEV: Ideally this would be in a `before`/`done` hook via `async.forEach` but it's overkill for images
 var base64Prefix = 'data:image/png;base64,';
-[checkerboardBase64, checkerboardDotDiffBase64, dotBase64].forEach(function preloadImages (imgBase64) {
-  var img = new Image();
-  img.src = base64Prefix + imgBase64;
+before(function preloadImages (done) {
+  var imgBase64Arr = [checkerboardBase64, checkerboardDotDiffBase64, dotBase64];
+  async.forEach(imgBase64Arr, function preloadImage (imgBase64, cb) {
+    // Set up image and its onload/onerror bindings
+    var img = new Image();
+    img.onload = function () {
+      document.body.removeChild(img);
+      cb(null);
+    };
+    img.onerror = cb;
+
+    // Load our image
+    img.src = base64Prefix + imgBase64;
+    document.body.appendChild(img);
+  }, done);
 });
 
 // Run our DOM bindings once
