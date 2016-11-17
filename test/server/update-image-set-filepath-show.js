@@ -43,6 +43,7 @@ describe('A request to POST /update-image-set/:filepath', function () {
     });
 
     it('replies with imagesEqual info', function () {
+      // DEV: We use a contract to guarantee consistency between browser/server tests
       // Set via: echo -n '{"imagesEqual":true}' > test/test-files/http-responses/update-image-set-filepath.json
       var expectedResponse = fs.readFileSync(
         __dirname + '/../http-responses/update-image-set-filepath.json', 'utf8');
