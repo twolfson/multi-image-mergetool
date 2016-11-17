@@ -133,7 +133,7 @@ npm test
 Additionally, during testing we generate screenshots. We can assert they are as expected via:
 
 ```bash
-npm run test-karma-assert-screenshots
+npm run test-browser-assert-screenshots
 ```
 
 ### Releasing
