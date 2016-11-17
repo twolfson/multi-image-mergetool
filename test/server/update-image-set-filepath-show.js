@@ -1,6 +1,5 @@
 // Load in our dependencies
 var fs = require('fs');
-var tmp = require('tmp');
 var expect = require('chai').expect;
 var ImageSet = require('../../server/image-set');
 var httpUtils = require('./utils/http');
@@ -9,44 +8,32 @@ var serverUtils = require('./utils/server');
 // Start our tests
 describe('A request to POST /update-image-set/:filepath', function () {
   describe('for an existent filepath', function () {
-    // Create a temporary file, start our server, and make our request
-    var srcFile = __dirname + '/../test-files/dot.png';
-    before(function createTmpFile () {
-      // Copy image to a temporary location
-      // https://github.com/raszi/node-tmp/tree/v0.0.30#synchronous-file-creation
-      this.tmpFile = tmp.fileSync();
-      this.tmpFilepath = this.tmpFile.name;
-      fs.writeFileSync(this.tmpFile, fs.readFileSync(srcFile));
-    });
-    after(function cleanupTmpFile () {
-      this.tmpFile.removeCallback();
-      delete this.tmpFile;
-      delete this.tmpFilepath;
-    });
-    before(function runServer () {
-      // Run a server with our temporary file
-      serverUtils.run(ImageSet.generateSets([
-        this.tmpFilepath
-      ], [
-        this.tmpFilepath
-      ], {
-        diffImages: ['mock-image-1/diff.png']
-      }));
-    });
-    after(serverUtils._runAfter());
+    // Run a server with our temporary file
+    var srcFilepath = __dirname + '/../test-files/checkerboard.png';
+    serverUtils.run(ImageSet.generateSets([
+      'mock-image-1/current.png'
+    ], [
+      'mock-image-1/ref.png'
+    ], {
+      diffImages: ['mock-image-1/diff.png']
+    }));
     before(function makeRequest (done) {
+      var base64Contents = 'data:image/png,base64;' + fs.readFileSync(srcFilepath).toString('base64');
       httpUtils._save({
-        method: 'POST', url: serverUtils.getUrl('/update-image-set/' + encodeURIComponent(this.tmpFilepath)),
+        method: 'POST', url: serverUtils.getUrl('/update-image-set/' + encodeURIComponent('mock-image-1/ref.png')),
         form: {
-          ref: fs.readFileSync(updatedFile)
+          ref: base64Contents
         },
         expectedStatusCode: 200
       }).call(this, done);
     });
 
-    it('receives our image', function () {
-      var expectedContents = fs.readFileSync(existentFilepath);
-      expect(this.body).to.deep.equal(expectedContents);
+    it('updated reference image with new contents', function () {
+      expect(JSON.parse(this.body)).to.deep.equal({imagesEqual: 'mocked'});
+    });
+
+    it('replies with imagesEqual info', function () {
+      expect(JSON.parse(this.body)).to.deep.equal({imagesEqual: 'mocked'});
     });
   });
 
