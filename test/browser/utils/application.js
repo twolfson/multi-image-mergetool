@@ -15,34 +15,11 @@ $(function handleReady () {
   $.support.transition = false;
 });
 
-// Pre-fetch our images to avoid issues
-var base64Prefix = 'data:image/png;base64,';
-before(function preloadImages (done) {
-  var imgBase64Arr = [checkerboardBase64, checkerboardDotDiffBase64, dotBase64];
-  async.forEach(imgBase64Arr, function preloadImage (imgBase64, cb) {
-    // Set up image and its onload/onerror bindings
-    var img = new Image();
-    img.onload = function () {
-      document.body.removeChild(img);
-      cb(null);
-    };
-    img.onerror = cb;
-
-    // Load our image
-    img.src = base64Prefix + imgBase64;
-    document.body.appendChild(img);
-  }, function handleError (err) {
-    // For good measure (i.e. screenshots are being finnicky), wait 100ms
-    setTimeout(function handleSetTimeout () {
-      done(err);
-    }, 100);
-  });
-});
-
 // Run our DOM bindings once
 Application.bindOnce();
 
 // Define various image set configurations
+var base64Prefix = 'data:image/png;base64,';
 exports.IMAGE_SET_EQUAL = {
   id: 'mock-img-equal',
   currentImgUrl: base64Prefix + checkerboardBase64,
@@ -75,6 +52,23 @@ exports.init = function (imageSetInfoArr) {
     this.containerEl.className = 'container-fluid';
     document.body.appendChild(this.containerEl);
     this.app = new Application(this.containerEl, imageSetInfoArr || exports.IMAGE_SETS.DEFAULT);
+  });
+  before(function waitForImagesToLoad (done) {
+    // Wait for images to load to prevent canvas and screenshot issues
+    var imgElArr = this.containerEl.querySelectorAll('img');
+    async.forEach(imgElArr, function waitForImageToLoad (imgEl, cb) {
+      // If the image is already loaded, then callback in a second (prevent zalgo)
+      // https://developer.mozilla.org/en-US/docs/Web/API/HTMLImageElement
+      if (imgEl.complete) {
+        return process.nextTick(cb);
+      }
+
+      // Set up onload/onerror bindings
+      imgEl.onload = _.once(function () {
+        cb(null);
+      });
+      imgEl.onerror = cb;
+    }, done);
   });
   after(function cleanup () {
     // If we are on the debug page, expose everything
