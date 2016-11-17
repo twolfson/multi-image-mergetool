@@ -15,21 +15,28 @@ exports.config = {
   }
 };
 
-exports.run = function (imageSets) {
-  var _server = null;
-  before(function createServer () {
-    assert.strictEqual(_server, null, 'A server is already running, ' +
+exports._runBefore = function (imageSets) {
+  return function _runBeforeFn () {
+    // Start a server witht the image sets
+    assert.strictEqual(this._server, null, 'A server is already running, ' +
       'please only use `serverUtils.run` once per test suite');
     var server = generateServer(imageSets);
     // https://nodejs.org/api/http.html#http_server_listen_port_hostname_backlog_callback
     var urlConfig = exports.config.url.internal;
-    _server = server.listen(urlConfig.port, urlConfig.hostname);
-  });
-  after(function cleanup (done) {
+    this._server = server.listen(urlConfig.port, urlConfig.hostname);
+  };
+};
+exports._runAfter = function () {
+  return function _runAfterFn (done) {
+    // Clean up the server
     // https://nodejs.org/api/http.html#http_server_close_callback
-    _server.close(done);
-    _server = null;
-  });
+    this._server.close(done);
+    delete this._server;
+  };
+};
+exports.run = function (imageSets) {
+  before(exports._runBefore(imageSets));
+  after(exports._runAfter());
 };
 
 /**
