@@ -17,8 +17,8 @@ exports.config = {
 
 exports._runBefore = function (imageSets) {
   return function _runBeforeFn () {
-    // Start a server witht the image sets
-    assert.strictEqual(this._server, null, 'A server is already running, ' +
+    // Start a server with the image sets
+    assert.strictEqual(this._server, undefined, 'A server is already running, ' +
       'please only use `serverUtils.run` once per test suite');
     var server = generateServer(imageSets);
     // https://nodejs.org/api/http.html#http_server_listen_port_hostname_backlog_callback
