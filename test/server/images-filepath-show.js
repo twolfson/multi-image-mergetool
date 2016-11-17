@@ -1,5 +1,6 @@
 // Load in our dependencies
 var fs = require('fs');
+var path = require('path');
 var expect = require('chai').expect;
 var ImageSet = require('../../server/image-set');
 var httpUtils = require('./utils/http');
@@ -9,8 +10,7 @@ var serverUtils = require('./utils/server');
 describe('An request to GET /images/:filepath', function () {
   describe('for an existent absolute filepath', function () {
     // Create our server and make our request
-    var existentFilepath = __dirname + '/../test-files/dot.png';
-    console.log(__dirname + '/../test-files/dot.png');
+    var existentFilepath = path.resolve(__dirname, '../test-files/dot.png');
     serverUtils.run(ImageSet.generateSets([
       existentFilepath
     ], [
@@ -20,6 +20,7 @@ describe('An request to GET /images/:filepath', function () {
     }));
     httpUtils.save({
       method: 'GET', url: serverUtils.getUrl('/images/' + encodeURIComponent(existentFilepath)),
+      encoding: null, // Load response as a buffer
       expectedStatusCode: 200
     });
 
