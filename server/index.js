@@ -86,7 +86,7 @@ function generateServer(imageSets) {
     function updateImageSetSave (req, res, next) {
       // Verify we got our input
       // DEV: We could use `body-parser-multidict` but it's not always compatible (i.e. different API)
-      if (!req.body.hasOwnProperty('ref')) {
+      if (req.body.ref === undefined) {
         return next(new HttpError.BadRequest('Missing "ref" key on request'));
       }
 
