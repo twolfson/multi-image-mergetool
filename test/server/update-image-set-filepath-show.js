@@ -34,7 +34,7 @@ describe('A request to POST /update-image-set/:filepath', function () {
       ], [
         this.refFilepath
       ], {
-        diffImages: ['mock-image-1/diff.png']
+        diffImages: ['/dev/null']
       })).call(this);
     });
     after(serverUtils._runAfter());
