@@ -59,7 +59,7 @@ module.exports = function (config) {
 
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-    browsers: ['Chrome', 'PhantomJSScreenshot'],
+    browsers: ['Firefox', 'PhantomJSScreenshot'],
     customLaunchers: {
       // https://github.com/karma-runner/karma-phantomjs-launcher/issues/19
       // http://stackoverflow.com/questions/34694765/take-screenshot-from-karma-while-running-tests-in-phantomjs-2/34695107#34695107
