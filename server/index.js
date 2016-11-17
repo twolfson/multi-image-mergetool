@@ -7,7 +7,7 @@ var express = require('express');
 var path = require('path');
 
 // Define our server builder
-function generateServer(imageSets, options) {
+function generateServer(imageSets) {
   // Create our server
   var server = express();
 
