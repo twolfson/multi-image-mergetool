@@ -1,4 +1,6 @@
 # multi-image-mergetool changelog
+1.12.2 - Repaired Travis CI by adding image preloading to browser tests and fixing Node.js req.body call
+
 1.12.1 - Added browser tests for "Accept changes" button
 
 1.12.0 - Added server tests for /update-image-set/:filepath
