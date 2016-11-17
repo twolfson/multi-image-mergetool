@@ -7,7 +7,7 @@ var httpUtils = require('./utils/http');
 var serverUtils = require('./utils/server');
 
 // Start our tests
-describe('An request to GET /images/:filepath', function () {
+describe('A request to GET /images/:filepath', function () {
   describe('for an existent absolute filepath', function () {
     // Create our server and make our request
     var existentFilepath = path.resolve(__dirname, '../test-files/dot.png');

@@ -21,9 +21,12 @@ exports.run = function (imageSets) {
     assert.strictEqual(_server, null, 'A server is already running, ' +
       'please only use `serverUtils.run` once per test suite');
     var server = generateServer(imageSets);
-    _server = server.listen(exports.config.url.internal);
+    // https://nodejs.org/api/http.html#http_server_listen_port_hostname_backlog_callback
+    var urlConfig = exports.config.url.internal;
+    _server = server.listen(urlConfig.port, urlConfig.hostname);
   });
   after(function cleanup (done) {
+    // https://nodejs.org/api/http.html#http_server_close_callback
     _server.close(done);
     _server = null;
   });

@@ -5,7 +5,7 @@ var httpUtils = require('./utils/http');
 var serverUtils = require('./utils/server');
 
 // Start our tests
-describe('An request to GET /', function () {
+describe('A request to GET /', function () {
   // Create our server and make our request
   serverUtils.run(ImageSet.generateSets([
     'mock-image-1/current.png',
