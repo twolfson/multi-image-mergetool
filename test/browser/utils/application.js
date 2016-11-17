@@ -31,7 +31,12 @@ before(function preloadImages (done) {
     // Load our image
     img.src = base64Prefix + imgBase64;
     document.body.appendChild(img);
-  }, done);
+  }, function handleError (err) {
+    // For good measure (i.e. screenshots are being finnicky), wait 100ms
+    setTimeout(function handleSetTimeout () {
+      done(err);
+    }, 100);
+  });
 });
 
 // Run our DOM bindings once
