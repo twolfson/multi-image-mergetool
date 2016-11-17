@@ -25,9 +25,9 @@ describe('An request to GET /', function () {
   });
 
   it('receives our image sets', function () {
-    expect(this.body).to.contain(encodeURIComponent('mock-image-1/current.png'));
-    expect(this.body).to.contain(encodeURIComponent('mock-image-1/ref.png'));
-    expect(this.body).to.contain(encodeURIComponent('mock-image-1/diff.png'));
+    expect(this.body).to.contain('/images/' + encodeURIComponent('mock-image-1/current.png'));
+    expect(this.body).to.contain('/images/' + encodeURIComponent('mock-image-1/ref.png'));
+    expect(this.body).to.contain('/images/' + encodeURIComponent('mock-image-1/diff.png'));
   });
 
   it('initializes our application', function () {
