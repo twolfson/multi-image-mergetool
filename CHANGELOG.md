@@ -1,4 +1,6 @@
 # multi-image-mergetool changelog
+1.12.1 - Added browser tests for "Accept changes" button
+
 1.12.0 - Added server tests for /update-image-set/:filepath
 
 1.11.1 - Added server tests for /images/:filepath
