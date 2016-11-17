@@ -21,7 +21,7 @@ describe('A request to POST /update-image-set/:filepath', function () {
     sinonUtils.stub(ImageSet.prototype, 'updateRef', function updateRefStub (refBuff, cb)  {
       // Call our callback in a second (prevent zalgo) with mocked result
       process.nextTick(function handleNextTick () {
-        cb(null, 'mocked');
+        cb(null, true);
       });
     });
     before(function makeRequest (done) {
@@ -43,7 +43,10 @@ describe('A request to POST /update-image-set/:filepath', function () {
     });
 
     it('replies with imagesEqual info', function () {
-      expect(JSON.parse(this.body)).to.deep.equal({imagesEqual: 'mocked'});
+      // Set via: echo -n '{"imagesEqual":true}' > test/test-files/http-responses/update-image-set-filepath.json
+      var expectedResponse = fs.readFileSync(
+        __dirname + '/../http-responses/update-image-set-filepath.json', 'utf8');
+      expect(this.body).to.deep.equal(expectedResponse);
     });
   });
 
