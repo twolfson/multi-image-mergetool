@@ -21,6 +21,9 @@ function ImageSet(currentImg, refImg, options) {
 
 // Define class methods/properties
 ImageSet.generateSets = function (currentImgArr, refImgArr, options) {
+  // Fallback our options
+  options = options || {};
+
   // Verify we have equal sets of images
   if (currentImgArr.length !== refImgArr.length) {
     throw new Error(currentImgArr.length + ' current images ' +

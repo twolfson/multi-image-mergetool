@@ -8,6 +8,7 @@ var generateServer = require('../../../server/index.js');
 exports.config = {
   url: {
     internal: {
+      protocol: 'http',
       hostname: '127.0.0.1',
       port: 2021
     }
@@ -26,7 +27,7 @@ exports.run = function (imageSets) {
     _server.close(done);
     _server = null;
   });
-}
+};
 
 /**
  * Retrieve a URL for our running server
@@ -42,5 +43,5 @@ exports.getUrl = function (params) {
   }
 
   // Return our formatted URL
-  return url.format(_.defaults(params, server.config.url.internal));
+  return url.format(_.defaults(params, exports.config.url.internal));
 };

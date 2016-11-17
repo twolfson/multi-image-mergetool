@@ -12,6 +12,7 @@ var serverUtils = require('./server');
 exports._save = function (options) {
   return function _saveFn (done) {
     // If there is a CSRF form to generate, then collect our CSRF token and generate a form
+    var that = this;
     if (options.csrfForm) {
       assert(options.jar, 'Expected `csrfForm` to be used in a `httpUtils.session` context but it was not');
       request({
@@ -40,7 +41,6 @@ exports._save = function (options) {
     }
 
     // Make our request
-    var that = this;
     function next() { // jshint ignore:line
       request(options, function handleRequest (err, res, body) {
         // Save our results to `this` context
