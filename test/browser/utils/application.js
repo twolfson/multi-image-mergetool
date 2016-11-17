@@ -14,22 +14,30 @@ $(function handleReady () {
   $.support.transition = false;
 });
 
+// Pre-fetch our images to avoid issues
+// DEV: Ideally this would be in a `before`/`done` hook via `async.forEach` but it's overkill for images
+var base64Prefix = 'data:image/png;base64,';
+[checkerboardBase64, checkerboardDotDiffBase64, dotBase64].forEach(function preloadImages (imgBase64) {
+  var img = new Image();
+  img.src = base64Prefix + imgBase64;
+});
+
 // Run our DOM bindings once
 Application.bindOnce();
 
 // Define various image set configurations
 exports.IMAGE_SET_EQUAL = {
   id: 'mock-img-equal',
-  currentImgUrl: 'data:image/png;base64,' + checkerboardBase64,
-  diffImgUrl: 'data:image/png;base64,' + checkerboardBase64,
-  refImgUrl: 'data:image/png;base64,' + checkerboardBase64,
+  currentImgUrl: base64Prefix + checkerboardBase64,
+  diffImgUrl: base64Prefix + checkerboardBase64,
+  refImgUrl: base64Prefix + checkerboardBase64,
   imagesEqual: true
 };
 exports.IMAGE_SET_NOT_EQUAL = {
   id: 'mock-img-not-equal',
-  currentImgUrl: 'data:image/png;base64,' + checkerboardBase64,
-  diffImgUrl: 'data:image/png;base64,' + dotBase64,
-  refImgUrl: 'data:image/png;base64,' + checkerboardDotDiffBase64,
+  currentImgUrl: base64Prefix + checkerboardBase64,
+  diffImgUrl: base64Prefix + dotBase64,
+  refImgUrl: base64Prefix + checkerboardDotDiffBase64,
   imagesEqual: false
 };
 exports.IMAGE_SET_NOT_EQUAL2 = _.defaults({
