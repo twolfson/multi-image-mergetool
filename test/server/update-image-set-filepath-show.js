@@ -1,52 +1,67 @@
 // Load in our dependencies
 var fs = require('fs');
 var expect = require('chai').expect;
+var tmp = require('tmp');
 var ImageSet = require('../../server/image-set');
 var httpUtils = require('./utils/http');
 var serverUtils = require('./utils/server');
-var sinonUtils = require('../utils/sinon');
 
 // Start our tests
 describe('A request to POST /update-image-set/:filepath', function () {
   describe('for an existent filepath', function () {
-    // Run a server, stub out updating files, and make our request
-    var srcFilepath = __dirname + '/../test-files/checkerboard.png';
-    serverUtils.run(ImageSet.generateSets([
-      'mock-image-1/current.png'
-    ], [
-      'mock-image-1/ref.png'
-    ], {
-      diffImages: ['mock-image-1/diff.png']
-    }));
-    sinonUtils.stub(ImageSet.prototype, 'updateRef', function updateRefStub (refBuff, cb)  {
-      // Call our callback in a second (prevent zalgo) with mocked result
-      process.nextTick(function handleNextTick () {
-        cb(null, true);
-      });
+    // Create a temporary ref file to update
+    // DEV: We could use mocking for updating the file but this removes one more contract to maintain
+    var currentFilepath = __dirname + '/../test-files/dot.png';
+    var originalRefFilepath = __dirname + '/../test-files/checkerboard.png';
+    before(function createTmpFile () {
+      // Copy image to a temporary location
+      // https://github.com/raszi/node-tmp/tree/v0.0.30#synchronous-file-creation
+      this.tmpFile = tmp.fileSync();
+      this.refFilepath = this.tmpFile.name;
+      fs.writeFileSync(this.refFilepath, fs.readFileSync(originalRefFilepath));
     });
+    after(function cleanupTmpFile () {
+      this.tmpFile.removeCallback();
+      delete this.tmpFile;
+      delete this.refFilepath;
+    });
+
+    // Run a server
+    before(function runServer () {
+      // Run a server with our temporary file
+      serverUtils._runBefore(ImageSet.generateSets([
+        currentFilepath
+      ], [
+        this.refFilepath
+      ], {
+        diffImages: ['mock-image-1/diff.png']
+      })).call(this);
+    });
+    after(serverUtils._runAfter());
+
+    // Make our request
     before(function makeRequest (done) {
-      var base64Contents = 'data:image/png;base64,' + fs.readFileSync(srcFilepath).toString('base64');
+      var currentBase64Contents = 'data:image/png;base64,' + fs.readFileSync(currentFilepath).toString('base64');
       httpUtils._save({
-        method: 'POST', url: serverUtils.getUrl('/update-image-set/' + encodeURIComponent('mock-image-1/ref.png')),
+        method: 'POST', url: serverUtils.getUrl('/update-image-set/' + encodeURIComponent(this.refFilepath)),
         form: {
-          ref: base64Contents
+          ref: currentBase64Contents
         },
         expectedStatusCode: 200
       }).call(this, done);
     });
 
     it('updated reference image with new contents', function () {
-      var updateRefStub = ImageSet.prototype.updateRef;
-      expect(updateRefStub.callCount).to.equal(1);
-      var expectedContents = fs.readFileSync(srcFilepath);
-      expect(updateRefStub.args[0][0]).to.deep.equal(expectedContents);
+      var actualContents = fs.readFileSync(this.refFilepath);
+      var expectedContents = fs.readFileSync(currentFilepath);
+      expect(actualContents).to.deep.equal(expectedContents);
     });
 
     it('replies with imagesEqual info', function () {
       // DEV: We use a contract to guarantee consistency between browser/server tests
       // Set via: echo -n '{"imagesEqual":true}' > test/test-files/http-responses/update-image-set-filepath.json
       var expectedResponse = fs.readFileSync(
-        __dirname + '/../http-responses/update-image-set-filepath.json', 'utf8');
+        __dirname + '/../test-files/http-responses/update-image-set-filepath.json', 'utf8');
       expect(this.body).to.deep.equal(expectedResponse);
     });
   });
