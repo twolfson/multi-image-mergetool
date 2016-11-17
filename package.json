@@ -1,7 +1,7 @@
 {
   "name": "multi-image-mergetool",
   "description": "Resolve multiple image conflicts at the same time",
-  "version": "1.10.0",
+  "version": "1.12.0",
   "homepage": "https://github.com/twolfson/multi-image-mergetool",
   "author": {
     "name": "Todd Wolfson",
@@ -29,11 +29,13 @@
     "lint": "twolfson-style lint browser/ server/ test/",
     "start-gemini": "node bin/multi-image-mergetool --loader gemini",
     "pretest": "rm -r test/browser/actual-screenshots &> /dev/null || true",
-    "_test-comment": "We must run `npm build` before `npm run test-karma-single` so CSS is compiled for visibility tests",
-    "test": "npm run build && npm run test-karma-single && npm run lint",
+    "test": "npm run test-browser && npm run test-server && npm run lint",
+    "_test-browser-comment": "We must run `npm build` before `npm run test-karma-single` so CSS is compiled for visibility tests",
+    "test-browser": "npm run build && npm run test-karma-single",
+    "test-browser-assert-screenshots": "bin/test-browser-assert-screenshots.sh",
     "test-karma-continuous": "xvfb-run karma start --no-single-run",
     "test-karma-single": "xvfb-run karma start",
-    "test-karma-assert-screenshots": "bin/test-browser-assert-screenshots.sh"
+    "test-server": "mocha test/server"
   },
   "dependencies": {
     "async": "~2.1.2",
@@ -74,6 +76,7 @@
     "karma-mocha": "~1.2.0",
     "karma-phantomjs-launcher": "~1.0.2",
     "mocha": "~3.1.2",
+    "request": "~2.78.0",
     "rimraf": "~2.5.4",
     "simulant": "~0.2.2",
     "sinon": "~1.17.6",

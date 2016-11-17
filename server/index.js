@@ -7,7 +7,7 @@ var express = require('express');
 var path = require('path');
 
 // Define our server builder
-function generateServer(imageSets, options) {
+function generateServer(imageSets) {
   // Create our server
   var server = express();
 
@@ -108,6 +108,19 @@ function generateServer(imageSets, options) {
       });
     }
   ]);
+
+  // Silence NotFound errors
+  server.use(function handleNotFoundError (err, req, res, next) {
+    // If the error wasn't a NotFound error, then continue
+    var isNotFoundError = err instanceof HttpError.NotFound;
+    if (isNotFoundError === false) {
+      return next(err);
+    }
+
+    // Otherwise, send a normal 404 response via `next()`
+    // DEV: By default, Express logs the whole NotFound error
+    next();
+  });
 
   // Return our server
   return server;
