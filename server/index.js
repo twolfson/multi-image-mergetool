@@ -66,17 +66,6 @@ function generateServer(imageSets) {
       // Otherwise, send our image
       // DEV: We don't use `send` as we want to avoid caching (e.g. for diffs)
       res.sendFile(requestedFilepath);
-    },
-    function serve404Image (err, req, res, next) {
-      // If the error wasn't a 404, then continue
-      var isNotFoundError = err instanceof HttpError.NotFound;
-      if (isNotFoundError === false) {
-        return next(err);
-      }
-
-      // Otherwise, send a 404 response but don't log it
-      // DEV: By default, Express logs the whole 404 error
-      res.status(404).send('Image not found');
     }
   ]);
 
@@ -119,6 +108,19 @@ function generateServer(imageSets) {
       });
     }
   ]);
+
+  // Silence NotFound errors
+  server.use(function handleNotFoundError (err, req, res, next) {
+    // If the error wasn't a NotFound error, then continue
+    var isNotFoundError = err instanceof HttpError.NotFound;
+    if (isNotFoundError === false) {
+      return next(err);
+    }
+
+    // Otherwise, send a normal 404 response via `next()`
+    // DEV: By default, Express logs the whole NotFound error
+    next();
+  });
 
   // Return our server
   return server;

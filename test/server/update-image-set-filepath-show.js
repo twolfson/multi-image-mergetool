@@ -47,7 +47,7 @@ describe('A request to POST /update-image-set/:filepath', function () {
     });
   });
 
-  describe.skip('for a non-existent filepath', function () {
+  describe('for a non-existent filepath', function () {
     // Create our server and make our request
     serverUtils.run([]);
     httpUtils.save({
