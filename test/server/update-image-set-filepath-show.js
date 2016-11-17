@@ -25,7 +25,7 @@ describe('A request to POST /update-image-set/:filepath', function () {
       });
     });
     before(function makeRequest (done) {
-      var base64Contents = 'data:image/png,base64;' + fs.readFileSync(srcFilepath).toString('base64');
+      var base64Contents = 'data:image/png;base64,' + fs.readFileSync(srcFilepath).toString('base64');
       httpUtils._save({
         method: 'POST', url: serverUtils.getUrl('/update-image-set/' + encodeURIComponent('mock-image-1/ref.png')),
         form: {
@@ -39,9 +39,7 @@ describe('A request to POST /update-image-set/:filepath', function () {
       var updateRefStub = ImageSet.prototype.updateRef;
       expect(updateRefStub.callCount).to.equal(1);
       var expectedContents = fs.readFileSync(srcFilepath);
-      // expect(updateRefStub.args[0][0]).to.deep.equal(expectedContents);
-      console.log(updateRefStub.args[0][0]);
-      console.log(expectedContents);
+      expect(updateRefStub.args[0][0]).to.deep.equal(expectedContents);
     });
 
     it('replies with imagesEqual info', function () {
