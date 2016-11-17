@@ -3,46 +3,10 @@ var fs = require('fs');
 var $ = require('jquery');
 var assert = require('assert');
 var expect = require('chai').expect;
-var sinon = require('sinon');
 var applicationUtils = require('./utils/application');
+var sinonUtils = require('../utils/sinon');
 var updateImageSetFilepathResponse = fs.readFileSync(
   __dirname + '/../test-files/http-responses/update-image-set-filepath.json', 'utf8');
-
-// Define test helpers
-var sinonUtils = {
-  mockXHR: function (responses) {
-    before(function enableSinonXHR () {
-      // Create our server
-      // http://sinonjs.org/docs/#fakeServer
-      var sinonServer = this.sinonServer = sinon.fakeServer.create();
-
-      // Set up auto-responses
-      this.sinonServer.autoRespond = true;
-      this.sinonServer.autoRespondAfter = 100;
-
-      // Bind our responses
-      responses.forEach(function bindResponse (response) {
-        sinonServer.respondWith(response.method, response.url, [
-          response.statusCode, response.headers || {}, response.body
-        ]);
-      });
-    });
-    after(function cleanup () {
-      this.sinonServer.restore();
-      delete this.sinonServer;
-    });
-  },
-  // http://sinonjs.org/docs/#stubs-api
-  stub: function (obj, method/*, func*/) {
-    var args = [].slice.call(arguments);
-    before(function setupStub () {
-      sinon.stub.apply(sinon, args);
-    });
-    after(function cleanup () {
-      obj[method].restore();
-    });
-  }
-};
 
 // Start our tests
 describe('A user accepting failing images is successful', function () {
