@@ -1,4 +1,6 @@
 # multi-image-mergetool changelog
+1.11.1 - Added server tests for /images/:filepath
+
 1.11.0 - Added initial server tests
 
 1.10.0 - Added tests for "Find similar images" and repaired upsizing of small images in similar results
