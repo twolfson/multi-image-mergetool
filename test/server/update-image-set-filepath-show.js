@@ -2,10 +2,10 @@
 var fs = require('fs');
 var path = require('path');
 var expect = require('chai').expect;
-var tmp = require('tmp');
 var ImageSet = require('../../server/image-set');
 var httpUtils = require('./utils/http');
 var serverUtils = require('./utils/server');
+var testFilesUtils = require('./utils/test-files');
 
 // Start our tests
 describe('A request to POST /update-image-set/:filepath', function () {
@@ -14,37 +14,26 @@ describe('A request to POST /update-image-set/:filepath', function () {
     // DEV: We could use mocking for updating the file but this removes one more contract to maintain
     var currentFilepath = __dirname + '/../test-files/dot.png';
     var originalRefFilepath = __dirname + '/../test-files/checkerboard.png';
-    before(function createTmpFile () {
-      // Copy image to a temporary location
-      // https://github.com/raszi/node-tmp/tree/v0.0.30#synchronous-file-creation
-      this.tmpFile = tmp.fileSync();
-      this.refFilepath = this.tmpFile.name;
-      fs.writeFileSync(this.refFilepath, fs.readFileSync(originalRefFilepath));
-    });
-    after(function cleanupTmpFile () {
-      this.tmpFile.removeCallback();
-      delete this.tmpFile;
-      delete this.refFilepath;
+    var refFilepath = __dirname + '/../test-files/tmp/update-image-set-filepath/existent.png';
+    testFilesUtils.tmpFile(refFilepath);
+    before(function copyRefFilepath () {
+      fs.writeFileSync(refFilepath, fs.readFileSync(originalRefFilepath));
     });
 
     // Run a server
-    before(function runServer () {
-      // Run a server with our temporary file
-      serverUtils._runBefore(ImageSet.generateSets([
-        currentFilepath
-      ], [
-        this.refFilepath
-      ], {
-        diffImages: ['/dev/null']
-      })).call(this);
-    });
-    after(serverUtils._runAfter());
+    serverUtils.run(ImageSet.generateSets([
+      currentFilepath
+    ], [
+      refFilepath
+    ], {
+      diffImages: ['/dev/null']
+    }));
 
     // Make our request
     before(function makeRequest (done) {
       var currentBase64Contents = 'data:image/png;base64,' + fs.readFileSync(currentFilepath).toString('base64');
       httpUtils._save({
-        method: 'POST', url: serverUtils.getUrl('/update-image-set/' + encodeURIComponent(this.refFilepath)),
+        method: 'POST', url: serverUtils.getUrl('/update-image-set/' + encodeURIComponent(refFilepath)),
         form: {
           ref: currentBase64Contents
         },
@@ -53,7 +42,7 @@ describe('A request to POST /update-image-set/:filepath', function () {
     });
 
     it('updated reference image with new contents', function () {
-      var actualContents = fs.readFileSync(this.refFilepath);
+      var actualContents = fs.readFileSync(refFilepath);
       var expectedContents = fs.readFileSync(currentFilepath);
       expect(actualContents).to.deep.equal(expectedContents);
     });
