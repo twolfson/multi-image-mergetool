@@ -140,9 +140,14 @@ exports._parse = function (argv, callback) {
   logger.verbose.log('CLI arguments received', argv);
 
   // Generate our image sets
-  var imageSets = ImageSet.generateSets(currentImages, refImages, {
-    diffImages: diffImages
-  });
+  var imageSets;
+  try {
+    imageSets = ImageSet.generateSets(currentImages, refImages, {
+      diffImages: diffImages
+    });
+  } catch (err) {
+    return callback(err);
+  }
 
   // Run our image comparisons
   var imagesEqualCount = 0;
