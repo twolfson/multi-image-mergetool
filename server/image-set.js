@@ -29,16 +29,20 @@ ImageSet.generateSets = function (currentImgArr, refImgArr, options) {
   if (currentImgArr.length !== refImgArr.length) {
     throw new Error(currentImgArr.length + ' current images ' +
       'and ' + refImgArr.length + ' reference images were received. We expect these numbers to line up, ' +
-      'please check path resolution (it\'s possible reference image doesn\'t exist yet as it\'s new)');
+      'please check path resolution. ' +
+      'It\'s possible the reference image doesn\'t exist yet as it\'s new so ' +
+      'please avoid using \'*\' patterns or similar');
   }
 
   // If there are diff images, then verify they are equal as well
   var diffImgArr = options.diffImages;
   if (diffImgArr) {
     if (diffImgArr.length !== currentImgArr.length) {
-      throw new Error(diffImgArr.length + ' diff images ' +
-        'and ' + currentImgArr.length + ' current images were received. We expect these numbers to line up, ' +
-        'please check path resolution (it\'s possible diff image doesn\'t exist yet as it\'s new)');
+      throw new Error(currentImgArr.length + ' current images ' +
+        'and ' + diffImgArr.length + ' diff images were received. We expect these numbers to line up, ' +
+        'please check path resolution. ' +
+        'It\'s possible the reference image doesn\'t exist yet as it\'s new so ' +
+        'please avoid using \'*\' patterns or similar');
     }
   }
 

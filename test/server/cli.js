@@ -4,6 +4,7 @@ var expect = require('chai').expect;
 var childUtils = require('./utils/child');
 var cli = require('../../server/cli');
 var cliUtils = require('./utils/cli');
+var testFilesUtils = require('./utils/test-files');
 var multiImageMergetoolFilepath = __dirname + '/../../bin/multi-image-mergetool';
 var checkerboardFilepath = __dirname + '/../test-files/checkerboard.png';
 var dotFilepath = __dirname + '/../test-files/dot.png';
@@ -72,10 +73,66 @@ describe('An in-process CLI invocation', function () {
     });
   });
 
+  describe('with --diff-images argument', function () {
+    var diffFilepath = __dirname + '/../test-files/tmp/cli/diff-images-argument.png';
+    testFilesUtils.tmpFile(diffFilepath);
+    cliUtils.parse([
+      'node', multiImageMergetoolFilepath,
+      '--current-images', dotFilepath,
+      '--ref-images', checkerboardFilepath,
+      '--diff-images', diffFilepath
+    ], {
+      expectedExitCode: null
+    });
+
+    it('does not exit', function () {
+      expect(this.err).to.equal(null);
+      expect(this.exitCode).to.equal(null);
+    });
+
+    it('uses our custom diff file', function () {
+      var generateServerSpy = cli.generateServer;
+      var imageSets = generateServerSpy.args[0][0];
+      expect(imageSets[0].diffImg).to.equal(diffFilepath);
+      expect(fs.statSync(imageSets[0].diffImg)).to.not.equal(null);
+    });
+  });
+
+  describe('with uneven current/ref images', function () {
+    cliUtils.parse([
+      'node', multiImageMergetoolFilepath,
+      '--current-images', dotFilepath, dotFilepath,
+      '--ref-images', checkerboardFilepath
+    ], {
+      expectedExitCode: null
+    });
+
+    it('calls back with an error', function () {
+      expect(this.err).to.not.equal(null);
+      expect(this.err.message).to.contain(
+        '2 current images and 1 reference images were received. We expect these numbers to line up');
+    });
+  });
+
+  describe('with uneven current/diff images', function () {
+    var diffFilepath = __dirname + '/../test-files/tmp/cli/uneven-current-diff.png';
+    cliUtils.parse([
+      'node', multiImageMergetoolFilepath,
+      '--current-images', dotFilepath, dotFilepath,
+      '--ref-images', checkerboardFilepath, checkerboardFilepath,
+      '--diff-images', diffFilepath
+    ], {
+      expectedExitCode: null
+    });
+
+    it('calls back with an error', function () {
+      expect(this.err).to.not.equal(null);
+      expect(this.err.message).to.contain(
+        '2 current images and 1 diff images were received. We expect these numbers to line up');
+    });
+  });
+
   // TODO: Test --loader gemini
-  // TODO: Test --diff-images
-  // TODO: Test uneven count current/ref
-  // TODO: Test uneven count current/diff
 });
 
 // DEV: These are sanity checks for parse wrapper
