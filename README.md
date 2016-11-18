@@ -9,6 +9,8 @@ This was built to resolve conflicts in full page test screenshots where auxilary
 - Find/resolve common image changes via overlay selection
 - Support for any image configuration (e.g. same directory, same name/different directory, [Gemini][gemini-example], specific names)
 
+**Screenshot:**
+
 ![Screenshot from tests](https://cloud.githubusercontent.com/assets/902488/20429809/bf9345e6-ad45-11e6-98bf-e334808a2de0.png)
 
 [gemini-example]: #gemini
