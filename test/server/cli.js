@@ -1,31 +1,10 @@
 // Load in our dependencies
-var bufferedSpawn = require('buffered-spawn');
 var expect = require('chai').expect;
-
-// Define our test helpers
-var childUtils = {
-  spawn: function (cmd, args) {
-    before(function spawnFn (done) {
-      // Run our process, save its data, and callback
-      var that = this;
-      bufferedSpawn(cmd, args, function handleBufferedSpawn (err, stdout, stderr) {
-        that.err = err;
-        that.stdout = stdout;
-        that.stderr = stderr;
-        done();
-      });
-    });
-    after(function cleanup () {
-      delete this.err;
-      delete this.stdout;
-      delete this.stderr;
-    });
-  }
-};
+var childUtils = require('./utils/child');
+var multiImageMergetoolFilepath = __dirname + '/../../bin/multi-image-mergetool';
 
 // Start our tests
 // DEV: These are sanity checks for parse wrapper
-var multiImageMergetoolFilepath = __dirname + '/../../bin/multi-image-mergetool';
 describe('A CLI invocation', function () {
   describe('with matching images', function () {
     childUtils.spawn('node', [
