@@ -2,27 +2,65 @@
 var expect = require('chai').expect;
 var childUtils = require('./utils/child');
 var sinonUtils = require('../utils/sinon');
-var cliParse = require('../../server/cli').parse;
+var _cliParse = require('../../server/cli')._parse;
 var logger = require('../../server/logger');
 var multiImageMergetoolFilepath = __dirname + '/../../bin/multi-image-mergetool';
 var checkerboardFilepath = __dirname + '/../test-files/checkerboard.png';
 var dotFilepath = __dirname + '/../test-files/dot.png';
 
+// Define our cliParse helper
+var assert = require('assert');
+var mimUtils = {
+  parse: function (argv, options) {
+    // Fallback our options
+    options = options || {};
+
+    // Stub out stdout
+    sinonUtils.stub(process.stdout, 'write', function saveStdout (buff) {
+      this.stdout = (this.stdout || '') + buff.toString() + '\n';
+    });
+    after(function cleanup () {
+      delete this.stdout;
+    });
+
+    // Run our main function
+    before(function runParse (done) {
+      // Run cliParse, save results, and callback
+      var that = this;
+      _cliParse(argv, function handleCliParse (err, exitCode) {
+        that.err = err;
+        that.exitCode = exitCode;
+
+        // If we have an expected exit code
+        var expectedExitCode = options.expectedExitCode !== undefined ? options.expectedExitCode : 0;
+        if (expectedExitCode !== null) {
+          assert.strictEqual(err, null);
+          assert.strictEqual(exitCode, expectedExitCode, 'Expected exit code "' + expectedExitCode + '" ' +
+            'but received "' + exitCode + '" and stdout "' + that.stdout + '"');
+        }
+        done();
+      });
+    });
+    after(function cleanup () {
+      delete this.err;
+      delete this.exitCode;
+    });
+  }
+};
+
 // Start our tests
 describe('An in-process CLI invocation', function () {
-  describe('with matching images', function () {
-    // sinonUtils.stub(logger, 'log'); sinonUtils.stub(logger, 'info');
-    sinonUtils.stub(process, 'exit');
-    cliParse(['node',
-      multiImageMergetoolFilepath,
+  describe.only('with matching images', function () {
+    mimUtils.parse([
+      'node', multiImageMergetoolFilepath,
       '--current-images', dotFilepath, checkerboardFilepath,
       '--ref-images', dotFilepath, checkerboardFilepath
-    ]);
+    ], {
+      expectedExitCode: 0
+    });
 
     it('exits cleanly', function () {
-      var processExitStub = process.exit;
-      expect(processExitStub.callCount).to.equal(1);
-      expect(processExitStub.args[0]).to.deep.equal([0]);
+      // Asserted by expectedExitCode
     });
   });
 });

@@ -27,10 +27,12 @@ exports.mockXHR = function (responses) {
 };
 
 // http://sinonjs.org/docs/#stubs-api
-exports.stub = function (obj, method/*, func*/) {
-  var args = [].slice.call(arguments);
+exports.stub = function (obj, method, func) {
   before(function setupStub () {
-    sinon.stub.apply(sinon, args);
+    if (func) {
+      func = func.bind(this);
+    }
+    sinon.stub.call(sinon, obj, method, func);
   });
   after(function cleanup () {
     obj[method].restore();
