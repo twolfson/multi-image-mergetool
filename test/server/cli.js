@@ -5,7 +5,7 @@ var expect = require('chai').expect;
 var childUtils = require('./utils/child');
 var cli = require('../../server/cli');
 var cliUtils = require('./utils/cli');
-var testFilesUtils = require('./utils/test-files');
+var fsUtils = require('./utils/fs');
 var multiImageMergetoolFilepath = __dirname + '/../../bin/multi-image-mergetool';
 var checkerboardFilepath = __dirname + '/../test-files/checkerboard.png';
 var dotFilepath = __dirname + '/../test-files/dot.png';
@@ -75,8 +75,8 @@ describe('An in-process CLI invocation', function () {
   });
 
   describe('with --diff-images argument', function () {
-    var diffFilepath = __dirname + '/../test-files/tmp/cli/diff-images-argument.png';
-    testFilesUtils.tmpFile(diffFilepath);
+    var diffFilepath = __dirname + '/../test-files/tmp/cli/diff-images-argument/diff.png';
+    fsUtils.rimraf(__dirname + '/../test-files/tmp/cli/diff-images-argument');
     cliUtils.parse([
       'node', multiImageMergetoolFilepath,
       '--current-images', dotFilepath,
@@ -95,6 +95,7 @@ describe('An in-process CLI invocation', function () {
       var generateServerSpy = cli.generateServer;
       var imageSets = generateServerSpy.args[0][0];
       expect(imageSets[0].diffImg).to.equal(diffFilepath);
+      // DEV: This verifies we both create the file's directory and the file itself
       expect(fs.statSync(imageSets[0].diffImg)).to.not.equal(null);
     });
   });
@@ -139,10 +140,12 @@ describe('An in-process CLI invocation', function () {
     var currentFilepath = testDir + '/gemini-report/images/root/default-large/my-browser~current.png';
     var refFilepath = testDir + '/gemini/screens/root/default-large/my-browser.png';
     var diffFilepath = testDir + '/gemini-report/images/root/default-large/my-browser~diff.png';
-    var tmpFilepathArr = [refFilepath, currentFilepath, diffFilepath];
-    testFilesUtils.tmpFiles(tmpFilepathArr);
+    fsUtils.rimraf(testDir);
+    fsUtils.mkdirp(testDir + '/gemini-report/images/root/default-large');
+    fsUtils.mkdirp(testDir + '/gemini/screens/root/default-large');
     before(function copyFileContents (done) {
       var contents = fs.readFileSync(__dirname + '/../test-files/dot.png');
+      var tmpFilepathArr = [currentFilepath, refFilepath, diffFilepath];
       async.forEach(tmpFilepathArr, function writeContents (tmpFilepath, cb) {
         fs.writeFile(tmpFilepath, contents, cb);
       }, done);

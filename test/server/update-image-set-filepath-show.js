@@ -5,7 +5,7 @@ var expect = require('chai').expect;
 var ImageSet = require('../../server/image-set');
 var httpUtils = require('./utils/http');
 var serverUtils = require('./utils/server');
-var testFilesUtils = require('./utils/test-files');
+var fsUtils = require('./utils/fs');
 
 // Start our tests
 describe('A request to POST /update-image-set/:filepath', function () {
@@ -15,7 +15,7 @@ describe('A request to POST /update-image-set/:filepath', function () {
     var currentFilepath = __dirname + '/../test-files/dot.png';
     var originalRefFilepath = __dirname + '/../test-files/checkerboard.png';
     var refFilepath = __dirname + '/../test-files/tmp/update-image-set-filepath/existent.png';
-    testFilesUtils.tmpFile(refFilepath);
+    fsUtils.resetDir(__dirname + '/../test-files/tmp/update-image-set-filepath');
     before(function copyRefFilepath () {
       fs.writeFileSync(refFilepath, fs.readFileSync(originalRefFilepath));
     });
