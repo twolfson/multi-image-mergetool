@@ -63,8 +63,10 @@ describe('An in-process CLI invocation', function () {
     });
 
     it('creates a diff file', function () {
-      // Should be able to resolve from generateServer
-      // Should be able to compare to `checkerboard-dot-diff` if we want
+      var generateServerSpy = cli.generateServer;
+      expect(generateServerSpy.callCount).to.equal(1);
+      var imageSets = generateServerSpy.args[0][0];
+      expect(imageSets[0].diffImg).to.be.a('String');
     });
   });
 
