@@ -70,7 +70,7 @@ ImageSet.prototype = {
     // If there is no diff image path yet
     var that = this;
     if (!this.diffImg) {
-      // Get our temporary directory
+      // Get our temporary directory synchronously (prevent creating multiple temporary directories)
       var temporaryDirectory = ImageSet.getTemporaryDirectory();
 
       // Resolve and save our filepath to the diff
@@ -79,27 +79,21 @@ ImageSet.prototype = {
       // DEV: We use `current` as we assume these are volatile whereas `ref` could be in version control
       var ext = path.extname(this.currentImg); // .png
       this.diffImg = path.join(temporaryDirectory, this.currentImg + '.diff' + ext);
-    // Otherwise, in a split second continue to next part
-    } else {
-      // DEV: We use `setImmediate` to avoid zalgo (i.e. we expect async behavior)
-      setImmediate(next);
     }
 
-    function next() { // jshint ignore:line
-      // Create our diff image's directory
-      // DEV: We could have a custom diff path that doesn't yet exist
-      mkdirp(path.dirname(that.diffImg), function handleMkdirp (err) {
-        // If there was an error, callback with it
-        if (err) {
-          return cb(err);
-        }
+    // Create our diff image's directory
+    // DEV: We could have a custom diff path that doesn't yet exist
+    mkdirp(path.dirname(that.diffImg), function handleMkdirp (err) {
+      // If there was an error, callback with it
+      if (err) {
+        return cb(err);
+      }
 
-        // Compare our imges
-        // https://github.com/gemini-testing/gemini/blob/v4.13.0/lib/image/index.js#L79-L104
-        // TODO: Support multiple image comparators (e.g. `image-diff`)
-        looksSameComparator(that, cb);
-      });
-    }
+      // Compare our imges
+      // https://github.com/gemini-testing/gemini/blob/v4.13.0/lib/image/index.js#L79-L104
+      // TODO: Support multiple image comparators (e.g. `image-diff`)
+      looksSameComparator(that, cb);
+    });
   },
   // DEV: We could use `toJSON` but there is a trust issue of it always being used/not
   serialize: function () {
