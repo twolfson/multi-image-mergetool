@@ -30,8 +30,8 @@ exports.IMAGE_SET_EQUAL = {
 exports.IMAGE_SET_NOT_EQUAL = {
   id: 'mock-img-not-equal',
   currentImgUrl: base64Prefix + checkerboardBase64,
-  diffImgUrl: base64Prefix + dotBase64,
-  refImgUrl: base64Prefix + checkerboardDotDiffBase64,
+  diffImgUrl: base64Prefix + checkerboardDotDiffBase64,
+  refImgUrl: base64Prefix + dotBase64,
   imagesEqual: false
 };
 exports.IMAGE_SET_NOT_EQUAL2 = _.defaults({
