@@ -173,7 +173,7 @@ describe('An in-process CLI invocation', function () {
       expect(this.loggerInfo).to.contain(
         'current image "gemini-report/images/root/default-large/my-browser~current.png"');
       expect(this.loggerInfo).to.contain(
-        'ref image "gemini/screens/root/default-large/my-browser.png"');
+        'reference image "gemini/screens/root/default-large/my-browser.png"');
       expect(this.loggerInfo).to.contain(
        'diff image "gemini-report/images/root/default-large/my-browser~diff.png"');
     });

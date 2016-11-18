@@ -17,7 +17,7 @@ function ImageSet(currentImg, refImg, options) {
 
   // Log image set generation
   logger.verbose.info('Image set generated with current image "' + this.currentImg + '", ' +
-    'ref image "' + this.refImg + '", and diff image "' + this.diffImg + '"');
+    'reference image "' + this.refImg + '", and diff image "' + this.diffImg + '"');
 }
 
 // Define class methods/properties
@@ -28,9 +28,9 @@ ImageSet.generateSets = function (currentImgArr, refImgArr, options) {
   // Verify we have equal sets of images
   if (currentImgArr.length !== refImgArr.length) {
     throw new Error(currentImgArr.length + ' current images ' +
-      'and ' + refImgArr.length + ' ref images were received. We expect these numbers to line up, ' +
+      'and ' + refImgArr.length + ' reference images were received. We expect these numbers to line up, ' +
       'please check path resolution. ' +
-      'It\'s possible the ref image doesn\'t exist yet as it\'s new so ' +
+      'It\'s possible the reference image doesn\'t exist yet as it\'s new so ' +
       'please avoid using \'*\' patterns or similar');
   }
 
@@ -41,7 +41,7 @@ ImageSet.generateSets = function (currentImgArr, refImgArr, options) {
       throw new Error(currentImgArr.length + ' current images ' +
         'and ' + diffImgArr.length + ' diff images were received. We expect these numbers to line up, ' +
         'please check path resolution. ' +
-        'It\'s possible the ref image doesn\'t exist yet as it\'s new so ' +
+        'It\'s possible the reference image doesn\'t exist yet as it\'s new so ' +
         'please avoid using \'*\' patterns or similar');
     }
   }
@@ -111,7 +111,7 @@ ImageSet.prototype = {
     };
   },
   updateRef: function (refBuff, cb) {
-    // Update our ref image
+    // Update our reference image
     // DEV: We could load a single file handler at start of application and persist it to avoid path shifting hacks
     //   but we shouldn't be run as root so we should be fine
     var that = this;
