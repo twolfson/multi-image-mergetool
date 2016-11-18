@@ -95,6 +95,10 @@ function checkFn(params) {
 }
 parser.check(checkFn);
 
+// Expose generateServer and opener binding for easy testing
+exports.generateServer = generateServer;
+exports.opener = opener;
+
 // Expose our parse method
 exports._parse = function (argv, callback) {
   // Parse our arguments
@@ -180,7 +184,7 @@ exports._parse = function (argv, callback) {
     }
 
     // Generate our server with our image sets
-    var server = generateServer(imageSets, params);
+    var server = exports.generateServer(imageSets, params);
 
     // Start listening on our server
     server.listen(params.port, params.hostname);
@@ -196,7 +200,7 @@ exports._parse = function (argv, callback) {
 
     // Open browser window if requested
     if (!params.noBrowserOpen) {
-      opener(url);
+      exports.opener(url);
     }
 
     // Callback with no exit code

@@ -1,6 +1,6 @@
 // Load in our dependencies
 var assert = require('assert');
-var _cliParse = require('../../../server/cli')._parse;
+var cli = require('../../../server/cli');
 var logger = require('../../../server/logger');
 var sinonUtils = require('../../utils/sinon');
 
@@ -10,18 +10,37 @@ exports.parse = function (argv, options) {
   options = options || {};
 
   // Stub out logger.info
-  sinonUtils.stub(logger, 'info', function saveLoggerLog (buff) {
+  // DEV: We use filler function for convenience of access
+  //   We could stil look at `logger.info === spy`
+  sinonUtils.stub(logger, 'info', function saveLoggerInfo (buff) {
     this.loggerInfo = (this.loggerInfo || '') + buff.toString() + '\n';
   });
   after(function cleanup () {
     delete this.loggerInfo;
   });
 
+  // Stub our generateServer and browser opener as well
+  // DEV: We look at `cli.generateServer` and `cli.opener` for spy info
+  sinonUtils.stub(cli, 'generateServer', function () {
+    var that = this;
+    return {
+      listen: function (port, hostname) {
+        that.generateServerPort = port;
+        that.generateServerHostname = hostname;
+      }
+    };
+  });
+  after(function cleanup () {
+    delete this.generateServerPort;
+    delete this.generateServerHostname;
+  });
+  sinonUtils.stub(cli, 'opener');
+
   // Run our main function
   before(function runParse (done) {
     // Run cliParse, save results, and callback
     var that = this;
-    _cliParse(argv, function handleCliParse (err, exitCode) {
+    cli._parse(argv, function handleCliParse (err, exitCode) {
       that.err = err;
       that.exitCode = exitCode;
 

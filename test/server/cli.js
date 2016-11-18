@@ -1,6 +1,7 @@
 // Load in our dependencies
 var expect = require('chai').expect;
 var childUtils = require('./utils/child');
+var cli = require('../../server/cli');
 var cliUtils = require('./utils/cli');
 var multiImageMergetoolFilepath = __dirname + '/../../bin/multi-image-mergetool';
 var checkerboardFilepath = __dirname + '/../test-files/checkerboard.png';
@@ -44,23 +45,33 @@ describe('An in-process CLI invocation', function () {
     });
 
     it('contains non-matching output', function () {
-      expect(this.loggerInfo).to.match(/✘.+test-files\/dot\.png/);
+      expect(this.loggerInfo).to.match(/✘.+test-files\/checkerboard\.png/);
       expect(this.loggerInfo).to.contain('Images matched: 0 of 1');
     });
 
     it('starts a server', function () {
-
+      var generateServerSpy = cli.generateServer;
+      expect(generateServerSpy.callCount).to.equal(1);
+      expect(this.generateServerPort).to.equal(2020);
+      expect(this.generateServerHostname).to.equal('localhost');
     });
 
     it('opens a browser', function () {
-
-    })
+      var openerSpy = cli.opener;
+      expect(openerSpy.callCount).to.equal(1);
+      expect(openerSpy.args[0]).to.deep.equal(['http://localhost:2020/']);
+    });
 
     it('creates a diff file', function () {
       // Should be able to resolve from generateServer
       // Should be able to compare to `checkerboard-dot-diff` if we want
     });
   });
+
+  // TODO: Test --loader gemini
+  // TODO: Test --diff-images
+  // TODO: Test uneven count current/ref
+  // TODO: Test uneven count current/diff
 });
 
 // DEV: These are sanity checks for parse wrapper
