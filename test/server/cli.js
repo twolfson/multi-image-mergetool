@@ -181,6 +181,31 @@ describe('An in-process CLI invocation', function () {
        'diff image "gemini-report/images/root/default-large/my-browser~diff.png"');
     });
   });
+
+  describe.only('with --assert for non-matching images', function () {
+    cliUtils.parse([
+      'node', multiImageMergetoolFilepath,
+      '--current-images', dotFilepath,
+      '--ref-images', checkerboardFilepath
+    ], {
+      expectedExitCode: null
+    });
+
+    it('exits with a non-zero exit code', function () {
+      expect(this.err).to.equal(null);
+      expect(this.exitCode).to.equal(1);
+    });
+
+    it('doesn\'t start a server', function () {
+      var generateServerSpy = cli.generateServer;
+      expect(generateServerSpy.callCount).to.equal(0);
+    });
+
+    it('doesn\'t open a browser', function () {
+      var openerSpy = cli.opener;
+      expect(openerSpy.callCount).to.equal(0);
+    });
+  });
 });
 
 // DEV: These are sanity checks for parse wrapper
