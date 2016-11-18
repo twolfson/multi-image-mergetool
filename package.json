@@ -57,6 +57,7 @@
     "bootstrap": "~3.3.7",
     "brfs": "~1.4.3",
     "browserify": "~13.1.1",
+    "buffered-spawn": "~3.3.2",
     "chai": "~3.5.0",
     "domo": "~0.5.9",
     "foundry": "~4.0.3",
