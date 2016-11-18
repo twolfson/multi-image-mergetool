@@ -55,6 +55,10 @@ parser
     describe: 'Loading mechanism to find images',
     type: 'string'
   })
+  .option('assert', {
+    describe: 'Only perform assertions (no server). If all images match, exits with 0. Otherwise, exits with 1',
+    type: 'boolean'
+  })
   .option('port', {
     alias: 'p',
     describe: 'Port for server to listen on',
@@ -186,6 +190,11 @@ exports._parse = function (argv, callback) {
     // If all images matched, then exit
     if (imagesEqualCount === imageSets.length) {
       return callback(null, 0);
+    }
+
+    // If we are performing an assert, then exit
+    if (params.assert) {
+      return callback(null, 1);
     }
 
     // Generate our server with our image sets

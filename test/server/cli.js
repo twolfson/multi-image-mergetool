@@ -182,9 +182,10 @@ describe('An in-process CLI invocation', function () {
     });
   });
 
-  describe.only('with --assert for non-matching images', function () {
+  describe('with --assert for non-matching images', function () {
     cliUtils.parse([
       'node', multiImageMergetoolFilepath,
+      '--assert',
       '--current-images', dotFilepath,
       '--ref-images', checkerboardFilepath
     ], {
