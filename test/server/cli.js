@@ -15,12 +15,12 @@ var mimUtils = {
     // Fallback our options
     options = options || {};
 
-    // Stub out stdout
-    sinonUtils.stub(process.stdout, 'write', function saveStdout (buff) {
-      this.stdout = (this.stdout || '') + buff.toString() + '\n';
+    // Stub out logger.info
+    sinonUtils.stub(logger, 'info', function saveLoggerLog (buff) {
+      this.loggerInfo = (this.loggerInfo || '') + buff.toString() + '\n';
     });
     after(function cleanup () {
-      delete this.stdout;
+      delete this.loggerInfo;
     });
 
     // Run our main function
@@ -36,7 +36,7 @@ var mimUtils = {
         if (expectedExitCode !== null) {
           assert.strictEqual(err, null);
           assert.strictEqual(exitCode, expectedExitCode, 'Expected exit code "' + expectedExitCode + '" ' +
-            'but received "' + exitCode + '" and stdout "' + that.stdout + '"');
+            'but received "' + exitCode + '" and logger.info "' + that.loggerInfo + '"');
         }
         done();
       });
@@ -61,6 +61,12 @@ describe('An in-process CLI invocation', function () {
 
     it('exits cleanly', function () {
       // Asserted by expectedExitCode
+    });
+
+    it('contains matching output', function () {
+      expect(this.loggerInfo).to.match(/✓.+test-files\/dot\.png/);
+      expect(this.loggerInfo).to.match(/✓.+test-files\/checkerboard\.png/);
+      expect(this.loggerInfo).to.contain('Images matched: 2 of 2');
     });
   });
 });
