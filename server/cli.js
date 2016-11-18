@@ -96,7 +96,7 @@ function checkFn(params) {
 parser.check(checkFn);
 
 // Expose our parse method
-exports._parse = function (argv, callback) {
+exports.parse = function (argv) {
   // Parse our arguments
   var params = parser.parse(argv);
 
@@ -126,7 +126,7 @@ exports._parse = function (argv, callback) {
     });
   // Otherwise, complain about an invalid loader
   } else {
-    return callback(new Error('Unexpected loader: ' + params.loader));
+    throw new Error('Unexpected loader: ' + params.loader);
   }
 
   // Configure our logger singleton
@@ -168,7 +168,7 @@ exports._parse = function (argv, callback) {
   }, function handleResults (err) {
     // If there was an error, throw it
     if (err) {
-      return callback(err);
+      throw err;
     }
 
     // Log about our matching images
@@ -176,7 +176,8 @@ exports._parse = function (argv, callback) {
 
     // If all images matched, then exit
     if (imagesEqualCount === imageSets.length) {
-      return callback(null);
+      process.exit(0);
+      return;
     }
 
     // Generate our server with our image sets
@@ -198,18 +199,5 @@ exports._parse = function (argv, callback) {
     if (!params.noBrowserOpen) {
       opener(url);
     }
-  });
-};
-
-exports.parse = function (argv) {
-  // Run normal parser function
-  exports._parse(argv, function handleParse (err) {
-    // If we encounter an error, then throw it
-    if (err) {
-      throw err;
-    }
-
-    // Otherwise, exit cleanly
-    process.exit(0);
   });
 };
