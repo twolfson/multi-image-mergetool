@@ -103,7 +103,7 @@ multi-image-mergetool --loader gemini
 
 **Notes:**
 
-This isn't efficient due to comparing images twice and waiting for all screenshots to be taken before starting comparisons. Ideally we wrap `multi-image-mergetool` with a better integration or add data persistence to this library (unlikely). If you write a wrapper, please submit a PR so we can update this documentation.
+This isn't efficient due to comparing images twice and waiting for all screenshots to be taken before starting comparisons. Ideally we wrap `multi-image-mergetool` with a better integration or add data persistence to this library (unlikely). If you write a wrapper, please submit a PR updating this documentation.
 
 ## Development
 ### Setup
