@@ -8,7 +8,7 @@ var dotFilepath = __dirname + '/../test-files/dot.png';
 
 // Start our tests
 describe('An in-process CLI invocation', function () {
-  describe.only('with matching images', function () {
+  describe('with matching images', function () {
     cliUtils.parse([
       'node', multiImageMergetoolFilepath,
       '--current-images', dotFilepath, checkerboardFilepath,
@@ -25,6 +25,39 @@ describe('An in-process CLI invocation', function () {
       expect(this.loggerInfo).to.match(/✓.+test-files\/dot\.png/);
       expect(this.loggerInfo).to.match(/✓.+test-files\/checkerboard\.png/);
       expect(this.loggerInfo).to.contain('Images matched: 2 of 2');
+    });
+  });
+
+  describe('with non-matching images', function () {
+    cliUtils.parse([
+      'node', multiImageMergetoolFilepath,
+      '--current-images', dotFilepath,
+      '--ref-images', checkerboardFilepath
+    ], {
+      expectedExitCode: null
+    });
+
+    it('does not exit', function () {
+      expect(this.err).to.equal(null);
+      expect(this.exitCode).to.equal(null);
+    });
+
+    it('contains non-matching output', function () {
+      expect(this.loggerInfo).to.match(/✘.+test-files\/dot\.png/);
+      expect(this.loggerInfo).to.contain('Images matched: 0 of 1');
+    });
+
+    it('starts a server', function () {
+
+    });
+
+    it('opens a browser', function () {
+
+    })
+
+    it('creates a diff file', function () {
+      // Should be able to resolve from generateServer
+      // Should be able to compare to `checkerboard-dot-diff` if we want
     });
   });
 });
