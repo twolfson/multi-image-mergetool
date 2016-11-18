@@ -62,6 +62,7 @@ Options:
   --ref-images       Locations to load/save reference images (required if no --loader)  [array]
   --diff-images      Locations to save diff images  [array]
   --loader           Loading mechanism to find images  [string] [choices: "gemini"]
+  --assert           Only perform assertions (no server). If all images match, exits with 0. Otherwise, exits with 1  [boolean]
   --port, -p         Port for server to listen on  [number] [default: 2020]
   --hostname, -h     Hostname for server to listen on  [string] [default: "localhost"]
   --verbose          Enable verbose logging  [boolean]
@@ -74,7 +75,8 @@ Examples:
     multi-image-mergetool --current-images current1.png current2.png --ref-images ref1.png ref2.png
     multi-image-mergetool --current-images current1.png current2.png --ref-images ref1.png ref2.png --diff-images diff1.png diff2.png
   Load from `gemini` and `gemini-report` folders:
-    multi-image-mergetool --loader gemini```
+    multi-image-mergetool --loader gemini
+```
 
 **Notes:**
 
