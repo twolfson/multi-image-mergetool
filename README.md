@@ -7,7 +7,9 @@ This was built to resolve conflicts in full page test screenshots where auxilary
 **Features:**
 
 - Find/resolve common image changes via overlay selection
-- Support for any image configuration (e.g. same directory, same name/different directory, Gemini, specific names)
+- Support for any image configuration (e.g. same directory, same name/different directory, [Gemini][gemini], specific names)
+
+[Gemini]: https://github.com/gemini-testing/gemini
 
 ## Getting Started
 Install the module via:
