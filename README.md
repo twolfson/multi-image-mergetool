@@ -7,7 +7,7 @@ This was built to resolve conflicts in full page test screenshots where auxilary
 **Features:**
 
 - Find/resolve common image changes via overlay selection
-- Support for any image configuration (e.g. same directory, same name/different directory, [Gemini][gemini], specific names)
+- Support for any image configuration (e.g. same directory, same name/different directory, [Gemini][], specific names)
 
 [Gemini]: https://github.com/gemini-testing/gemini
 
@@ -85,6 +85,24 @@ Examples:
 
 ### Architecture choices
 We chose to use a server/browser implementation over a desktop application (e.g. Electron) for more flexibility with little development cost. It allows us to support virtualized environments (e.g. Vagrant, Docker) without asking our users to bend over backwards.
+
+## Examples
+### Gemini
+This repository was initially inspired by [gemini-gui][] so we want to maintain support for a similar setup. To get [Gemini][] set up, run the following:
+
+```bash
+# Generate `gemini` and `gemini-report`
+gemini-test --reporter html
+
+# Use `multi-image-mergetool` with `gemini` folders
+multi-image-mergetool --loader gemini
+```
+
+[gemini-gui]: https://github.com/gemini-testing/gemini-gui
+
+**Notes:**
+
+This isn't efficient due to comparing images twice and waiting for all screenshots to be taken before starting comparisons. Ideally we wrap `multi-image-mergetool` with a better integration. If you write a wrapper, please submit a PR so we can update this documentation.
 
 ## Development
 ### Setup
