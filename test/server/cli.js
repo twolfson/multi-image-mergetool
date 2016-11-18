@@ -7,7 +7,7 @@ var cli = require('../../server/cli');
 var cliUtils = require('./utils/cli');
 var fsUtils = require('./utils/fs');
 var multiImageMergetoolFilepath = __dirname + '/../../bin/multi-image-mergetool';
-var checkerboardFilepath = __dirname + '/../test-files/checkerboard.png';
+var diagonalFilepath = __dirname + '/../test-files/diagonal.png';
 var dotFilepath = __dirname + '/../test-files/dot.png';
 
 // Start our tests
@@ -16,8 +16,8 @@ describe('An in-process CLI invocation', function () {
   describe('with matching images', function () {
     cliUtils.parse([
       'node', multiImageMergetoolFilepath,
-      '--current-images', dotFilepath, checkerboardFilepath,
-      '--ref-images', dotFilepath, checkerboardFilepath
+      '--current-images', dotFilepath, diagonalFilepath,
+      '--ref-images', dotFilepath, diagonalFilepath
     ], {
       expectedExitCode: 0
     });
@@ -28,7 +28,7 @@ describe('An in-process CLI invocation', function () {
 
     it('contains matching output', function () {
       expect(this.loggerInfo).to.match(/✓.+test-files\/dot\.png/);
-      expect(this.loggerInfo).to.match(/✓.+test-files\/checkerboard\.png/);
+      expect(this.loggerInfo).to.match(/✓.+test-files\/diagonal\.png/);
       expect(this.loggerInfo).to.contain('Images matched: 2 of 2');
     });
   });
@@ -37,7 +37,7 @@ describe('An in-process CLI invocation', function () {
     cliUtils.parse([
       'node', multiImageMergetoolFilepath,
       '--current-images', dotFilepath,
-      '--ref-images', checkerboardFilepath
+      '--ref-images', diagonalFilepath
     ], {
       expectedExitCode: null
     });
@@ -48,7 +48,7 @@ describe('An in-process CLI invocation', function () {
     });
 
     it('contains non-matching output', function () {
-      expect(this.loggerInfo).to.match(/✘.+test-files\/checkerboard\.png/);
+      expect(this.loggerInfo).to.match(/✘.+test-files\/diagonal\.png/);
       expect(this.loggerInfo).to.contain('Images matched: 0 of 1');
     });
 
@@ -80,7 +80,7 @@ describe('An in-process CLI invocation', function () {
     cliUtils.parse([
       'node', multiImageMergetoolFilepath,
       '--current-images', dotFilepath,
-      '--ref-images', checkerboardFilepath,
+      '--ref-images', diagonalFilepath,
       '--diff-images', diffFilepath
     ], {
       expectedExitCode: null
@@ -104,7 +104,7 @@ describe('An in-process CLI invocation', function () {
     cliUtils.parse([
       'node', multiImageMergetoolFilepath,
       '--current-images', dotFilepath, dotFilepath,
-      '--ref-images', checkerboardFilepath
+      '--ref-images', diagonalFilepath
     ], {
       expectedExitCode: null
     });
@@ -121,7 +121,7 @@ describe('An in-process CLI invocation', function () {
     cliUtils.parse([
       'node', multiImageMergetoolFilepath,
       '--current-images', dotFilepath, dotFilepath,
-      '--ref-images', checkerboardFilepath, checkerboardFilepath,
+      '--ref-images', diagonalFilepath, diagonalFilepath,
       '--diff-images', diffFilepath
     ], {
       expectedExitCode: null
@@ -187,7 +187,7 @@ describe('An in-process CLI invocation', function () {
       'node', multiImageMergetoolFilepath,
       '--assert',
       '--current-images', dotFilepath,
-      '--ref-images', checkerboardFilepath
+      '--ref-images', diagonalFilepath
     ], {
       expectedExitCode: null
     });

@@ -13,7 +13,7 @@ describe('A request to POST /update-image-set/:filepath', function () {
     // Create a temporary ref file to update
     // DEV: We could use mocking for updating the file but this removes one more contract to maintain
     var currentFilepath = __dirname + '/../test-files/dot.png';
-    var originalRefFilepath = __dirname + '/../test-files/checkerboard.png';
+    var originalRefFilepath = __dirname + '/../test-files/diagonal.png';
     var refFilepath = __dirname + '/../test-files/tmp/update-image-set-filepath/existent.png';
     fsUtils.resetDir(__dirname + '/../test-files/tmp/update-image-set-filepath');
     before(function copyRefFilepath () {

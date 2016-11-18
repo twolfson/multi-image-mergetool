@@ -4,8 +4,8 @@ var $ = require('jquery');
 var _ = require('underscore');
 var async = require('async');
 var Application = require('../../../browser/js/application');
-var checkerboardBase64 = fs.readFileSync(__dirname + '/../../test-files/checkerboard.png', 'base64');
-var checkerboardDotDiffBase64 = fs.readFileSync(__dirname + '/../../test-files/checkerboard-dot-diff.png', 'base64');
+var diagonalBase64 = fs.readFileSync(__dirname + '/../../test-files/diagonal.png', 'base64');
+var diagonalDotDiffBase64 = fs.readFileSync(__dirname + '/../../test-files/diagonal-dot-diff.png', 'base64');
 var dotBase64 = fs.readFileSync(__dirname + '/../../test-files/dot.png', 'base64');
 
 // Disable transitions for Bootstrap
@@ -22,15 +22,15 @@ Application.bindOnce();
 var base64Prefix = 'data:image/png;base64,';
 exports.IMAGE_SET_EQUAL = {
   id: 'mock-img-equal',
-  currentImgUrl: base64Prefix + checkerboardBase64,
-  diffImgUrl: base64Prefix + checkerboardBase64,
-  refImgUrl: base64Prefix + checkerboardBase64,
+  currentImgUrl: base64Prefix + diagonalBase64,
+  diffImgUrl: base64Prefix + diagonalBase64,
+  refImgUrl: base64Prefix + diagonalBase64,
   imagesEqual: true
 };
 exports.IMAGE_SET_NOT_EQUAL = {
   id: 'mock-img-not-equal',
-  currentImgUrl: base64Prefix + checkerboardBase64,
-  diffImgUrl: base64Prefix + checkerboardDotDiffBase64,
+  currentImgUrl: base64Prefix + diagonalBase64,
+  diffImgUrl: base64Prefix + diagonalDotDiffBase64,
   refImgUrl: base64Prefix + dotBase64,
   imagesEqual: false
 };
