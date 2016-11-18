@@ -7,6 +7,7 @@ var checkerboardFilepath = __dirname + '/../test-files/checkerboard.png';
 var dotFilepath = __dirname + '/../test-files/dot.png';
 
 // Start our tests
+// DEV: `cliUtils.parse` stubs `logger.info`, `generateServer`, and `opener` (browser opener)
 describe('An in-process CLI invocation', function () {
   describe('with matching images', function () {
     cliUtils.parse([
