@@ -1,4 +1,5 @@
 // Load in our dependencies
+var fs = require('fs');
 var expect = require('chai').expect;
 var childUtils = require('./utils/child');
 var cli = require('../../server/cli');
@@ -67,6 +68,7 @@ describe('An in-process CLI invocation', function () {
       expect(generateServerSpy.callCount).to.equal(1);
       var imageSets = generateServerSpy.args[0][0];
       expect(imageSets[0].diffImg).to.be.a('String');
+      expect(fs.statSync(imageSets[0].diffImg)).to.not.equal(null);
     });
   });
 
