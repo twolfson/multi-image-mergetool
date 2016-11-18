@@ -51,6 +51,7 @@ function generateServer(imageSets) {
     req.imageSet = imageSetsByFilepath[requestedFilepath];
     next();
   }
+  // DEV: We use `:filepath` instead of `imageSet.id` to make source of image more obvious in browser
   server.get('/images/:filepath', [
     resolveImageSet,
     function serveImages (req, res, next) {
@@ -81,6 +82,7 @@ function generateServer(imageSets) {
   // Define our image update route
   // TODO: Add CSRF support (totally possible attack vector sadly =/)
   //    Probably use cookies or RocksDB
+  // DEV: We use `:filepath` instead of `imageSet.id` for consistency with `/images/:filepath`
   server.post('/update-image-set/:filepath', [
     resolveImageSet,
     function updateImageSetSave (req, res, next) {
