@@ -20,3 +20,6 @@ exports.tmpFile = function (filepath) {
     }
   });
 };
+exports.tmpFiles = function (filepathArr) {
+  filepathArr.forEach(exports.tmpFile);
+};

@@ -1,5 +1,6 @@
 // Load in our dependencies
 var fs = require('fs');
+var async = require('async');
 var expect = require('chai').expect;
 var childUtils = require('./utils/child');
 var cli = require('../../server/cli');
@@ -132,7 +133,51 @@ describe('An in-process CLI invocation', function () {
     });
   });
 
-  // TODO: Test --loader gemini
+  describe('with --loader gemini', function () {
+    // Set up temporary files
+    var testDir = __dirname + '/../test-files/tmp/cli/loader-gemini';
+    var currentFilepath = testDir + '/gemini-report/images/root/default-large/my-browser~current.png';
+    var refFilepath = testDir + '/gemini/screens/root/default-large/my-browser.png';
+    var diffFilepath = testDir + '/gemini-report/images/root/default-large/my-browser~diff.png';
+    var tmpFilepathArr = [refFilepath, currentFilepath, diffFilepath];
+    testFilesUtils.tmpFiles(tmpFilepathArr);
+    before(function copyFileContents (done) {
+      var contents = fs.readFileSync(__dirname + '/../test-files/dot.png');
+      async.forEach(tmpFilepathArr, function writeContents (tmpFilepath, cb) {
+        fs.writeFile(tmpFilepath, contents, cb);
+      }, done);
+    });
+
+    // Run our parser in the corresponding directory
+    var originalDir;
+    before(function pushDirectory () {
+      originalDir = process.cwd();
+      process.chdir(testDir);
+    });
+    after(function popDirectory () {
+      process.chdir(originalDir);
+    });
+    cliUtils.parse([
+      'node', multiImageMergetoolFilepath,
+      '--loader', 'gemini',
+      '--verbose'
+    ], {
+      expectedExitCode: 0
+    });
+
+    // Perform our assertions
+    it('has no errors', function () {
+      // Asserted by `expectedExitCode`
+    });
+    it('compares our images', function () {
+      expect(this.loggerInfo).to.contain(
+        'current image "gemini-report/images/root/default-large/my-browser~current.png"');
+      expect(this.loggerInfo).to.contain(
+        'ref image "gemini/screens/root/default-large/my-browser.png"');
+      expect(this.loggerInfo).to.contain(
+       'diff image "gemini-report/images/root/default-large/my-browser~diff.png"');
+    });
+  });
 });
 
 // DEV: These are sanity checks for parse wrapper

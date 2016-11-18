@@ -137,7 +137,7 @@ exports._parse = function (argv, callback) {
   logger.configure(params);
 
   // Log CLI info to user
-  logger.verbose.log('CLI arguments received', argv);
+  logger.verbose.info('CLI arguments received', argv);
 
   // Generate our image sets
   var imageSets;
