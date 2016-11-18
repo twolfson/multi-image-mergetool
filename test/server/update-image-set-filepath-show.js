@@ -1,5 +1,6 @@
 // Load in our dependencies
 var fs = require('fs');
+var path = require('path');
 var expect = require('chai').expect;
 var tmp = require('tmp');
 var ImageSet = require('../../server/image-set');
@@ -72,6 +73,26 @@ describe('A request to POST /update-image-set/:filepath', function () {
     httpUtils.save({
       method: 'POST', url: serverUtils.getUrl('/update-image-set/does-not-exist.png'),
       expectedStatusCode: 404
+    });
+
+    it('receives a 404', function () {
+      // Assert provided by `expectedStatusCode`
+    });
+  });
+
+  describe('for an existent yet unregistered filepath', function () {
+    // Create our server and make our request
+    // DEV: This covers scenarios like `/etc/passwd` but in a less egregious manner
+    var existentFilepath = path.resolve(__dirname, '../test-files/dot.png');
+    serverUtils.run([]);
+    httpUtils.save({
+      method: 'POST', url: serverUtils.getUrl('/update-image-set/' + encodeURIComponent(existentFilepath)),
+      expectedStatusCode: 404
+    });
+
+    before(function verifyFileExists () {
+      // DEV: `fs.statSync` will throw an error if not found
+      expect(fs.statSync(existentFilepath)).to.not.equal(null);
     });
 
     it('receives a 404', function () {

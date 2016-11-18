@@ -65,4 +65,24 @@ describe('A request to GET /images/:filepath', function () {
       // Assert provided by `expectedStatusCode`
     });
   });
+
+  describe('for an existent yet unregistered filepath', function () {
+    // Create our server and make our request
+    // DEV: This covers scenarios like `/etc/passwd` but in a less egregious manner
+    var existentFilepath = path.resolve(__dirname, '../test-files/dot.png');
+    serverUtils.run([]);
+    httpUtils.save({
+      method: 'GET', url: serverUtils.getUrl('/images/' + encodeURIComponent(existentFilepath)),
+      expectedStatusCode: 404
+    });
+
+    before(function verifyFileExists () {
+      // DEV: `fs.statSync` will throw an error if not found
+      expect(fs.statSync(existentFilepath)).to.not.equal(null);
+    });
+
+    it('receives a 404', function () {
+      // Assert provided by `expectedStatusCode`
+    });
+  });
 });

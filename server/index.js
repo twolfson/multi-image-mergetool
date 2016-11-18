@@ -25,7 +25,6 @@ function generateServer(imageSets) {
   server.use(bodyParser.urlencoded({extended: false, limit: '1MB'}));
 
   // Expose our images statically
-  // TODO: Verify we don't leak any sensitive file paths (e.g. `/etc/passwd`)
   var imageSetsByFilepath = {};
   imageSets.forEach(function saveImageFilepath (imageSet) {
     imageSetsByFilepath[imageSet.currentImg] = imageSet;
