@@ -1,4 +1,6 @@
 # multi-image-mergetool changelog
+1.14.2 - Added test to verify screenshot in README is up to date
+
 1.14.1 - Added screenshot to README and updated test images to make overlay more obvious
 
 1.14.0 - Added support for `--assert`
