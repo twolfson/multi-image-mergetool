@@ -26,10 +26,7 @@ function approveAllXHRUpdates() {
     url: /\/update-image-set\/[^\/]+/,
     statusCode: 200,
     headers: {'Content-Type': 'application/json'},
-    // jscs:disable maximumLineLength
-    // Set via: echo -n '{"imagesEqual":false}' > test/test-files/http-responses/update-image-set-filepath-not-equal.json
-    // jscs:enable maximumLineLength
-    body: updateImageSetFilepathEqualResponse // {imagesEqual: false}
+    body: updateImageSetFilepathEqualResponse // {imagesEqual: true}
   }]);
 }
 function disapproveAllXHRUpdates() {
