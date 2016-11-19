@@ -78,6 +78,7 @@ describe('An application with similarly failing images', function () {
     before(clickUpdateSimilarImages);
     // DEV: This is effectively waiting for new image sources to update
     // TODO: Figure out how to detect when images have new source and it's not yet loaded
+    //   Maybe a cache table and cache table resetter via `applicationUtils.init`?
     before(function wait100Ms (done) {
       setTimeout(done, 100);
     });
