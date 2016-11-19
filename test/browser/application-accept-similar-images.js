@@ -32,7 +32,7 @@ function clickFindSimilarImages() {
 
 // Start our tests
 describe('An application with allsimilarly failing images', function () {
-  describe.only('when accepting some similarly failing images', function () {
+  describe('when accepting some similarly failing images', function () {
     applicationUtils.init(applicationUtils.IMAGE_SETS.MULTIPLE_NOT_EQUAL);
     before(overlayDiffImg);
     before(clickFindSimilarImages);
