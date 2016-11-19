@@ -29,6 +29,21 @@ function clickFindSimilarImages() {
   assert(buttonEl);
   $(buttonEl).click();
 }
+function approveAllXHRUpdates() {
+  sinonUtils.mockXHR([{
+    method: 'POST',
+    url: /\/update-image-set\/[^\/]+/,
+    statusCode: 200,
+    headers: {'Content-Type': 'application/json'},
+    body: updateImageSetFilepathResponse // {imagesEqual: true}
+  }]);
+}
+function clickAcceptSimilarImages() {
+  var buttonEl = this.containerEl.querySelector(
+    '[data-image-set="mock-img-not-equal"] button[data-action="accept-similar-images"]');
+  assert(buttonEl);
+  $(buttonEl).click();
+}
 
 // Start our tests
 describe('An application with allsimilarly failing images', function () {
@@ -36,25 +51,14 @@ describe('An application with allsimilarly failing images', function () {
     applicationUtils.init(applicationUtils.IMAGE_SETS.MULTIPLE_NOT_EQUAL);
     before(overlayDiffImg);
     before(clickFindSimilarImages);
+    approveAllXHRUpdates();
     before(function deselectSimilarImageSets () {
       var currentSimilarImageSetEl = this.containerEl.querySelector('[data-similar-image-set="mock-img-not-equal"]');
       var saveUpdateEl = currentSimilarImageSetEl.querySelector('[name=save_update]');
       saveUpdateEl.checked = false;
     });
-    sinonUtils.mockXHR([{
-      method: 'POST',
-      url: /\/update-image-set\/[^\/]+/,
-      statusCode: 200,
-      headers: {'Content-Type': 'application/json'},
-      body: updateImageSetFilepathResponse // {imagesEqual: true}
-    }]);
-    before(function clickAcceptSimilarImages () {
-      var buttonEl = this.containerEl.querySelector(
-        '[data-image-set="mock-img-not-equal"] button[data-action="accept-similar-images"]');
-      assert(buttonEl);
-      $(buttonEl).click();
-    });
-    applicationUtils.screenshot('accept-similar-images');
+    before(clickAcceptSimilarImages);
+    applicationUtils.screenshot('accept-some-similar-images');
 
     it('updates selected images in full in its image set', function () {
       // Verify image set status updated
@@ -87,6 +91,19 @@ describe('An application with allsimilarly failing images', function () {
     });
 
     it.skip('removes results for similar images', function () {
+      // Placeholder content
+    });
+  });
+
+  describe('when accepting all similarly failing images', function () {
+    applicationUtils.init(applicationUtils.IMAGE_SETS.MULTIPLE_NOT_EQUAL);
+    before(overlayDiffImg);
+    before(clickFindSimilarImages);
+    approveAllXHRUpdates();
+    before(clickAcceptSimilarImages);
+    applicationUtils.screenshot('accept-all-similar-images');
+
+    it.skip('collapses current image set', function () {
       // Placeholder content
     });
   });
