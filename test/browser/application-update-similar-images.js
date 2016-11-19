@@ -53,7 +53,7 @@ function clickUpdateSimilarImages() {
 describe('An application with similarly failing images', function () {
   describe('when updating some similarly failing images partially', function () {
     applicationUtils.init(applicationUtils.IMAGE_SETS.MULTIPLE_NOT_EQUAL);
-    before(function partiallyOverlayDiffImg(done) {
+    before(function partiallyOverlayDiffImg (done) {
       // DEV: We use an expanded image set so we can click/drag
       var diffImg = this.containerEl.querySelector('[data-image-set="mock-img-not-equal"] img[data-compare-type=diff]');
       var diffImgBounds = diffImg.getBoundingClientRect();
