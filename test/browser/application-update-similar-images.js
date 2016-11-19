@@ -135,8 +135,35 @@ describe('An application with similarly failing images', function () {
     });
     before(clickFindSimilarImages);
     approveAllXHRUpdates();
+    // DEV: This is effectively waiting for new image sources to update
+    // TODO: Figure out how to detect when images have new source and it's not yet loaded
+    //   Maybe a cache table and cache table resetter via `applicationUtils.init`?
+    before(function wait100Ms (done) {
+      setTimeout(done, 100);
+    });
     before(clickUpdateSimilarImages);
     applicationUtils.screenshot('update-similar-images-fully');
+
+    it('updates selected images in full in its image set', function () {
+      // Verify image set status updated
+      var imageSetTitleEl = this.containerEl.querySelector('[data-image-set="mock-img-not-equal2"] .image-set__title');
+      expect(imageSetTitleEl.getAttribute('data-images-equal')).to.equal('true');
+
+      // Assert XHR sent
+      var requests = this.sinonServer.requests;
+      expect(requests).to.have.length(1);
+      expect(requests[0].url).to.equal('/update-image-set/mock-img-not-equal2');
+      // DEV: We don't exclusively compare to the original mock data as they could both be null or similar
+      expect(requests[0].requestBody).to.contain('ref=data');
+
+      // Deep assert XHR content
+      var imgEl = this.containerEl.querySelector(
+        '[data-image-set="mock-img-not-equal2"] img[data-compare-type=current]');
+      var expectedBase64 = applicationUtils.getBase64Content(imgEl);
+      expect(requests[0].requestBody).to.equal('ref=' + encodeURIComponent(expectedBase64));
+
+      // DEV: We could assert cachebusted URLs but that is redundant at the moment
+    });
 
     it.skip('collapses current image set', function () {
       // Placeholder content
