@@ -6,8 +6,8 @@ var expect = require('chai').expect;
 var sinonUtils = require('../utils/sinon');
 // DEV: For unknown reasons, we must import `sinonUtils` before `applicationUtils`
 var applicationUtils = require('./utils/application');
-var updateImageSetFilepathResponse = fs.readFileSync(
-  __dirname + '/../test-files/http-responses/update-image-set-filepath.json', 'utf8');
+var updateImageSetFilepathEqualResponse = fs.readFileSync(
+  __dirname + '/../test-files/http-responses/update-image-set-filepath-equal.json', 'utf8');
 
 // Start our tests
 describe('A user accepting failing images is successful', function () {
@@ -18,7 +18,7 @@ describe('A user accepting failing images is successful', function () {
     url: /\/update-image-set\/[^\/]+/,
     statusCode: 200,
     headers: {'Content-Type': 'application/json'},
-    body: updateImageSetFilepathResponse // {imagesEqual: true}
+    body: updateImageSetFilepathEqualResponse // {imagesEqual: true}
   }]);
   before(function assertBadStatus () {
     var imageSetTitleEl = this.containerEl.querySelector('[data-image-set="mock-img-not-equal"] .image-set__title');

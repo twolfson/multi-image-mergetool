@@ -7,8 +7,8 @@ var sinonUtils = require('../utils/sinon');
 // DEV: For unknown reasons, we must import `sinonUtils` before `applicationUtils`
 var applicationUtils = require('./utils/application');
 var mouseUtils = require('./utils/mouse');
-var updateImageSetFilepathResponse = fs.readFileSync(
-  __dirname + '/../test-files/http-responses/update-image-set-filepath.json', 'utf8');
+var updateImageSetFilepathEqualResponse = fs.readFileSync(
+  __dirname + '/../test-files/http-responses/update-image-set-filepath-equal.json', 'utf8');
 
 // Define reused actions in tests
 // TODO: Consolidate reused actions in tests (currently not sober enough to consolidate them wisely)
@@ -35,7 +35,7 @@ function approveAllXHRUpdates() {
     url: /\/update-image-set\/[^\/]+/,
     statusCode: 200,
     headers: {'Content-Type': 'application/json'},
-    body: updateImageSetFilepathResponse // {imagesEqual: true}
+    body: updateImageSetFilepathEqualResponse // {imagesEqual: true}
   }]);
 }
 function clickAcceptSimilarImages() {
