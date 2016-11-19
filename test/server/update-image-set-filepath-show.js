@@ -49,9 +49,9 @@ describe('A request to POST /update-image-set/:filepath', function () {
 
     it('replies with imagesEqual info', function () {
       // DEV: We use a contract to guarantee consistency between browser/server tests
-      // Set via: echo -n '{"imagesEqual":true}' > test/test-files/http-responses/update-image-set-filepath.json
+      // Set via: echo -n '{"imagesEqual":true}' > test/test-files/http-responses/update-image-set-filepath-equal.json
       var expectedResponse = fs.readFileSync(
-        __dirname + '/../test-files/http-responses/update-image-set-filepath.json', 'utf8');
+        __dirname + '/../test-files/http-responses/update-image-set-filepath-equal.json', 'utf8');
       expect(this.body).to.deep.equal(expectedResponse);
     });
   });
