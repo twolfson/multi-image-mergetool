@@ -40,7 +40,7 @@ function approveAllXHRUpdates() {
     // jscs:disable maximumLineLength
     // Set via: echo -n '{"imagesEqual":false}' > test/test-files/http-responses/update-image-set-filepath-not-equal.json
     // jscs:enable maximumLineLength
-    body: updateImageSetFilepathNotEqualResponse // {imagesEqual: false}
+    body: updateImageSetFilepathEqualResponse // {imagesEqual: false}
   }]);
 }
 function disapproveAllXHRUpdates() {
@@ -77,7 +77,7 @@ describe('An application with similarly failing images', function () {
     before(clickUpdateSimilarImages);
     applicationUtils.screenshot('update-similar-images-partially');
 
-    it('updates selected images in full in its image set', function () {
+    it('updates selected images partially in its image set', function () {
       // Verify image set status updated
       var imageSetTitleEl = this.containerEl.querySelector('[data-image-set="mock-img-not-equal2"] .image-set__title');
       expect(imageSetTitleEl.getAttribute('data-images-equal')).to.equal('true');
@@ -90,10 +90,15 @@ describe('An application with similarly failing images', function () {
       expect(requests[0].requestBody).to.contain('ref=data');
 
       // Deep assert XHR content
-      var imgEl = this.containerEl.querySelector(
+      // DEV: It's somewhere in-between so we can't quite assert it
+      var currentImgEl = this.containerEl.querySelector(
         '[data-image-set="mock-img-not-equal2"] img[data-compare-type=current]');
-      var expectedBase64 = applicationUtils.getBase64Content(imgEl);
-      expect(requests[0].requestBody).to.equal('ref=' + encodeURIComponent(expectedBase64));
+      var currentBase64 = applicationUtils.getBase64Content(currentImgEl);
+      var refImgEl = this.containerEl.querySelector(
+        '[data-image-set="mock-img-not-equal2"] img[data-compare-type=ref]');
+      var refBase64 = applicationUtils.getBase64Content(refImgEl);
+      expect(requests[0].requestBody).to.not.equal('ref=' + encodeURIComponent(currentBase64));
+      expect(requests[0].requestBody).to.not.equal('ref=' + encodeURIComponent(refBase64));
 
       // DEV: We could assert cachebusted URLs but that is redundant at the moment
     });
