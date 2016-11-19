@@ -1,4 +1,6 @@
 # multi-image-mergetool changelog
+1.14.5 - Fixed up test suite
+
 1.14.4 - Added browser tests for "Update similar images"
 
 1.14.3 - Added browser tests for "Accept similar images"
