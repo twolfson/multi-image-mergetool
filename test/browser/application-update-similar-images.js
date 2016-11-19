@@ -56,6 +56,7 @@ function disapproveAllXHRUpdates() {
   }]);
 }
 function clickUpdateSimilarImages() {
+  // Click our update button
   var buttonEl = this.containerEl.querySelector(
     '[data-image-set="mock-img-not-equal"] button[data-action="update-similar-images"]');
   assert(buttonEl);
@@ -68,6 +69,7 @@ describe('An application with similarly failing images', function () {
     applicationUtils.init(applicationUtils.IMAGE_SETS.MULTIPLE_NOT_EQUAL);
     before(overlayDiffImg);
     before(clickFindSimilarImages);
+    applicationUtils.waitForImagesToLoad();
     disapproveAllXHRUpdates();
     before(function deselectSimilarImageSets () {
       var currentSimilarImageSetEl = this.containerEl.querySelector('[data-similar-image-set="mock-img-not-equal"]');
@@ -78,9 +80,9 @@ describe('An application with similarly failing images', function () {
     applicationUtils.screenshot('update-similar-images-partially');
 
     it('updates selected images partially in its image set', function () {
-      // Verify image set status updated
+      // Verify image set status was updated-ish
       var imageSetTitleEl = this.containerEl.querySelector('[data-image-set="mock-img-not-equal2"] .image-set__title');
-      expect(imageSetTitleEl.getAttribute('data-images-equal')).to.equal('true');
+      expect(imageSetTitleEl.getAttribute('data-images-equal')).to.equal('false');
 
       // Assert XHR sent
       var requests = this.sinonServer.requests;
