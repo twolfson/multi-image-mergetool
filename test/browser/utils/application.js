@@ -45,6 +45,10 @@ exports.IMAGE_SETS = {
 // Define our application utils
 // DEV: If `applicationUtils` needs to be reused, place it into a `utils` folder,
 //   add `(imageSets)` as an option, and define constants of `imageSets` for us to use in utils
+var debugHelper = _.once(function () {
+  console.info('/debug.html detected but no `.only`. ' +
+    'To visually debug tests/stop cleanup, add a `.only` to a test suite');
+});
 exports.init = function (imageSetInfoArr) {
   before(function createApplication () {
     // DEV: We add `className` for nicer looking screenshots
@@ -83,8 +87,7 @@ exports.init = function (imageSetInfoArr) {
       }
 
       // Notify user about debugging
-      console.info('/debug.html detected but no `.only`. ' +
-        'To visually debug tests/stop cleanup, add a `.only` to a test suite');
+      debugHelper();
     }
 
     // Perform our cleanup
