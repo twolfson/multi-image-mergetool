@@ -1,0 +1,93 @@
+// Load in our dependencies
+var fs = require('fs');
+var $ = require('jquery');
+var assert = require('assert');
+var expect = require('chai').expect;
+var sinonUtils = require('../utils/sinon');
+// DEV: For unknown reasons, we must import `sinonUtils` before `applicationUtils`
+var applicationUtils = require('./utils/application');
+var mouseUtils = require('./utils/mouse');
+var updateImageSetFilepathResponse = fs.readFileSync(
+  __dirname + '/../test-files/http-responses/update-image-set-filepath.json', 'utf8');
+
+// Define reused actions in tests
+// TODO: Consolidate reused actions in tests (currently not sober enough to consolidate them wisely)
+function overlayDiffImg(done) {
+  // DEV: We use an expanded image set so we can click/drag
+  var diffImg = this.containerEl.querySelector('[data-image-set="mock-img-not-equal"] img[data-compare-type=diff]');
+  var diffImgBounds = diffImg.getBoundingClientRect();
+  mouseUtils.moveMouse({
+    targetEl: diffImg,
+    startCoords: {x: diffImgBounds.left, y: diffImgBounds.top},
+    endCoords: {x: diffImgBounds.left + 10, y: diffImgBounds.top + 10},
+    duration: 100 // ms
+  }, done);
+}
+function clickFindSimilarImages() {
+  var buttonEl = this.containerEl.querySelector(
+    '[data-image-set="mock-img-not-equal"] button[data-action="find-similar-images"]');
+  assert(buttonEl);
+  $(buttonEl).click();
+}
+
+// Start our tests
+describe('An application with allsimilarly failing images', function () {
+  describe.only('when accepting some similarly failing images', function () {
+    applicationUtils.init(applicationUtils.IMAGE_SETS.MULTIPLE_NOT_EQUAL);
+    before(overlayDiffImg);
+    before(clickFindSimilarImages);
+    before(function deselectSimilarImageSets () {
+      var currentSimilarImageSetEl = this.containerEl.querySelector('[data-similar-image-set="mock-img-not-equal"]');
+      var saveUpdateEl = currentSimilarImageSetEl.querySelector('[name=save_update]');
+      saveUpdateEl.checked = false;
+    });
+    sinonUtils.mockXHR([{
+      method: 'POST',
+      url: /\/update-image-set\/[^\/]+/,
+      statusCode: 200,
+      headers: {'Content-Type': 'application/json'},
+      body: updateImageSetFilepathResponse // {imagesEqual: true}
+    }]);
+    before(function clickAcceptSimilarImages () {
+      var buttonEl = this.containerEl.querySelector(
+        '[data-image-set="mock-img-not-equal"] button[data-action="accept-similar-images"]');
+      assert(buttonEl);
+      $(buttonEl).click();
+    });
+    applicationUtils.screenshot('accept-similar-images');
+
+    it.only('updates selected images in full in its image set', function () {
+      // Verify image set status updated
+      var imageSetTitleEl = this.containerEl.querySelector('[data-image-set="mock-img-not-equal2"] .image-set__title');
+      expect(imageSetTitleEl.getAttribute('data-images-equal')).to.equal('true');
+
+      // Complete initial XHR assertion
+      var requests = this.sinonServer.requests;
+      expect(requests).to.have.length(1);
+      expect(requests[0].url).to.equal('/update-image-set/mock-img-not-equal2');
+      // DEV: We don't exclusively compare to the original mock data as they could both be null or similar
+      expect(requests[0].requestBody).to.contain('ref=data');
+
+      // Continue deep assertions
+      var currentImgEl = this.containerEl.querySelector(
+        '[data-image-set="mock-img-not-equal2"] img[data-compare-type=current]');
+      var expectedBase64 = applicationUtils.getBase64Content(currentImgEl);
+      expect(requests[0].requestBody).to.equal('ref=' + encodeURIComponent(expectedBase64));
+
+      // DEV: We could assert cachebusted URLs but that is redundant at the moment
+    });
+
+    it('doesn\'t update unselected images', function () {
+      var resultsEl = this.containerEl.querySelector('.results');
+      expect(resultsEl.textContent).to.not.contain('No similar images found');
+      var similarImageSetEls = resultsEl.querySelectorAll('[data-similar-image-set]');
+      expect(similarImageSetEls).to.have.length(2);
+      expect(similarImageSetEls[0].getAttribute('data-similar-image-set')).to.equal('mock-img-not-equal');
+      expect(similarImageSetEls[1].getAttribute('data-similar-image-set')).to.equal('mock-img-not-equal2');
+    });
+
+    it.skip('removes results for similar images', function () {
+      // Placeholder content
+    });
+  });
+});

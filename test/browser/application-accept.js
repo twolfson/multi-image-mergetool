@@ -44,6 +44,7 @@ describe('A user accepting failing images is successful', function () {
     // Complete initial XHR assertion
     var requests = this.sinonServer.requests;
     expect(requests).to.have.length(1);
+    expect(requests[0].url).to.equal('/update-image-set/mock-img-not-equal');
     // DEV: We don't exclusively compare to the original mock data as they could both be null or similar
     expect(requests[0].requestBody).to.contain('ref=data');
 
