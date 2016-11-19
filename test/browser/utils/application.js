@@ -46,7 +46,14 @@ exports.IMAGE_SETS = {
 // DEV: If `applicationUtils` needs to be reused, place it into a `utils` folder,
 //   add `(imageSets)` as an option, and define constants of `imageSets` for us to use in utils
 var loggedDebugNotice = false;
-exports.waitForImagesToLoad = exports.waitForImagesToUpdate = function () {
+exports.init = function (imageSetInfoArr) {
+  before(function createApplication () {
+    // DEV: We add `className` for nicer looking screenshots
+    this.containerEl = document.createElement('div');
+    this.containerEl.className = 'container-fluid';
+    document.body.appendChild(this.containerEl);
+    this.app = new Application(this.containerEl, imageSetInfoArr || exports.IMAGE_SETS.DEFAULT);
+  });
   before(function waitForImagesToLoad (done) {
     // Wait for images to load to prevent canvas and screenshot issues
     var imgElArr = this.containerEl.querySelectorAll('img');
@@ -64,16 +71,6 @@ exports.waitForImagesToLoad = exports.waitForImagesToUpdate = function () {
       imgEl.onerror = cb;
     }, done);
   });
-};
-exports.init = function (imageSetInfoArr) {
-  before(function createApplication () {
-    // DEV: We add `className` for nicer looking screenshots
-    this.containerEl = document.createElement('div');
-    this.containerEl.className = 'container-fluid';
-    document.body.appendChild(this.containerEl);
-    this.app = new Application(this.containerEl, imageSetInfoArr || exports.IMAGE_SETS.DEFAULT);
-  });
-  exports.waitForImagesToLoad();
   after(function cleanup () {
     // If we are on the debug page, expose everything
     if (window.location.pathname === '/debug.html')  {
