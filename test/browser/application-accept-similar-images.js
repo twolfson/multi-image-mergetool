@@ -56,34 +56,34 @@ describe('An application with allsimilarly failing images', function () {
     });
     applicationUtils.screenshot('accept-similar-images');
 
-    it.only('updates selected images in full in its image set', function () {
+    it('updates selected images in full in its image set', function () {
       // Verify image set status updated
       var imageSetTitleEl = this.containerEl.querySelector('[data-image-set="mock-img-not-equal2"] .image-set__title');
       expect(imageSetTitleEl.getAttribute('data-images-equal')).to.equal('true');
 
-      // Complete initial XHR assertion
+      // Assert XHR sent
       var requests = this.sinonServer.requests;
       expect(requests).to.have.length(1);
       expect(requests[0].url).to.equal('/update-image-set/mock-img-not-equal2');
       // DEV: We don't exclusively compare to the original mock data as they could both be null or similar
       expect(requests[0].requestBody).to.contain('ref=data');
 
-      // Continue deep assertions
-      var currentImgEl = this.containerEl.querySelector(
+      // Deep assert XHR content
+      var imgEl = this.containerEl.querySelector(
         '[data-image-set="mock-img-not-equal2"] img[data-compare-type=current]');
-      var expectedBase64 = applicationUtils.getBase64Content(currentImgEl);
+      var expectedBase64 = applicationUtils.getBase64Content(imgEl);
       expect(requests[0].requestBody).to.equal('ref=' + encodeURIComponent(expectedBase64));
 
       // DEV: We could assert cachebusted URLs but that is redundant at the moment
     });
 
     it('doesn\'t update unselected images', function () {
-      var resultsEl = this.containerEl.querySelector('.results');
-      expect(resultsEl.textContent).to.not.contain('No similar images found');
-      var similarImageSetEls = resultsEl.querySelectorAll('[data-similar-image-set]');
-      expect(similarImageSetEls).to.have.length(2);
-      expect(similarImageSetEls[0].getAttribute('data-similar-image-set')).to.equal('mock-img-not-equal');
-      expect(similarImageSetEls[1].getAttribute('data-similar-image-set')).to.equal('mock-img-not-equal2');
+      // Verify image set status not updated
+      var imageSetTitleEl = this.containerEl.querySelector('[data-image-set="mock-img-not-equal"] .image-set__title');
+      expect(imageSetTitleEl.getAttribute('data-images-equal')).to.equal('false');
+
+      // DEV: XHR assertions are done in previous `it`
+      //   Mostly via length check + url check
     });
 
     it.skip('removes results for similar images', function () {
