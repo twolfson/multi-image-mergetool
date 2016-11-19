@@ -14,17 +14,6 @@ var updateImageSetFilepathNotEqualResponse = fs.readFileSync(
 
 // Define reused actions in tests
 // TODO: Consolidate reused actions in tests (currently not sober enough to consolidate them wisely)
-function overlayDiffImg(done) {
-  // DEV: We use an expanded image set so we can click/drag
-  var diffImg = this.containerEl.querySelector('[data-image-set="mock-img-not-equal"] img[data-compare-type=diff]');
-  var diffImgBounds = diffImg.getBoundingClientRect();
-  mouseUtils.moveMouse({
-    targetEl: diffImg,
-    startCoords: {x: diffImgBounds.left, y: diffImgBounds.top},
-    endCoords: {x: diffImgBounds.left + 10, y: diffImgBounds.top + 10},
-    duration: 100 // ms
-  }, done);
-}
 function clickFindSimilarImages() {
   var buttonEl = this.containerEl.querySelector(
     '[data-image-set="mock-img-not-equal"] button[data-action="find-similar-images"]');
@@ -67,7 +56,17 @@ function clickUpdateSimilarImages() {
 describe('An application with similarly failing images', function () {
   describe('when updating some similarly failing images partially', function () {
     applicationUtils.init(applicationUtils.IMAGE_SETS.MULTIPLE_NOT_EQUAL);
-    before(overlayDiffImg);
+    before(function partiallyOverlayDiffImg(done) {
+      // DEV: We use an expanded image set so we can click/drag
+      var diffImg = this.containerEl.querySelector('[data-image-set="mock-img-not-equal"] img[data-compare-type=diff]');
+      var diffImgBounds = diffImg.getBoundingClientRect();
+      mouseUtils.moveMouse({
+        targetEl: diffImg,
+        startCoords: {x: diffImgBounds.left, y: diffImgBounds.top},
+        endCoords: {x: diffImgBounds.left + 10, y: diffImgBounds.top + 10},
+        duration: 100 // ms
+      }, done);
+    });
     before(clickFindSimilarImages);
     disapproveAllXHRUpdates();
     before(function deselectSimilarImageSets () {
@@ -122,7 +121,7 @@ describe('An application with similarly failing images', function () {
 
   describe('when updating some similarly failing images fully', function () {
     applicationUtils.init(applicationUtils.IMAGE_SETS.MULTIPLE_NOT_EQUAL);
-    before(function overlayDiffImg (done) {
+    before(function fullyOverlayDiffImg (done) {
       // DEV: We use an expanded image set so we can click/drag
       var diffImg = this.containerEl.querySelector('[data-image-set="mock-img-not-equal"] img[data-compare-type=diff]');
       var diffImgBounds = diffImg.getBoundingClientRect();
