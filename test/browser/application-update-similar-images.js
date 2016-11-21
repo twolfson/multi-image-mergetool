@@ -53,16 +53,10 @@ function clickUpdateSimilarImages() {
 describe('An application with similarly failing images', function () {
   describe('when updating some similarly failing images partially', function () {
     applicationUtils.init(applicationUtils.IMAGE_SETS.MULTIPLE_NOT_EQUAL);
-    before(function partiallyOverlayDiffImg (done) {
-      // DEV: We use an expanded image set so we can click/drag
-      var diffImg = this.containerEl.querySelector('[data-image-set="mock-img-not-equal"] img[data-compare-type=diff]');
-      var diffImgBounds = diffImg.getBoundingClientRect();
-      domUtils.dragMouse({
-        targetEl: diffImg,
-        startCoords: {x: diffImgBounds.left, y: diffImgBounds.top},
-        endCoords: {x: diffImgBounds.left + 10, y: diffImgBounds.top + 10},
-        duration: 100 // ms
-      }, done);
+    domUtils.dragOverElement({
+      selector: '[data-image-set="mock-img-not-equal"] img[data-compare-type=diff]',
+      startCoords: {x: 0, y: 0},
+      endCoords: {x: 10, y: 10}
     });
     before(clickFindSimilarImages);
     disapproveAllXHRUpdates();
@@ -118,16 +112,10 @@ describe('An application with similarly failing images', function () {
 
   describe('when updating some similarly failing images fully', function () {
     applicationUtils.init(applicationUtils.IMAGE_SETS.MULTIPLE_NOT_EQUAL);
-    before(function fullyOverlayDiffImg (done) {
-      // DEV: We use an expanded image set so we can click/drag
-      var diffImg = this.containerEl.querySelector('[data-image-set="mock-img-not-equal"] img[data-compare-type=diff]');
-      var diffImgBounds = diffImg.getBoundingClientRect();
-      domUtils.dragMouse({
-        targetEl: diffImg,
-        startCoords: {x: diffImgBounds.left, y: diffImgBounds.top},
-        endCoords: {x: diffImgBounds.left + 15, y: diffImgBounds.top + 15},
-        duration: 100 // ms
-      }, done);
+    domUtils.dragOverElement({
+      selector: '[data-image-set="mock-img-not-equal"] img[data-compare-type=diff]',
+      startCoords: {x: 0, y: 0},
+      endCoords: {x: 15, y: 15}
     });
     before(clickFindSimilarImages);
     approveAllXHRUpdates();

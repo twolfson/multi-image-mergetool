@@ -5,15 +5,15 @@ var simulant = require('simulant');
 var TWEEN = require('tween.js');
 
 // Define our mouse move helper
-exports.dragMouse = function (options, cb) {
+exports._dragMouse = function (options, cb) {
   // Assert all our options
   var startCoords = options.startCoords;
   var targetEl = options.targetEl;
-  assert(startCoords, '`mouseUtils.mousemove` expected `options.startCoords` to be defined but it wasn\'t');
-  assert(options.endCoords, '`mouseUtils.mousemove` expected `options.endCoords` to be defined but it wasn\'t');
-  assert(options.duration, '`mouseUtils.mousemove` expected `options.duration` to be defined but it wasn\'t');
-  assert(targetEl, '`mouseUtils.mousemove` expected `options.targetEl` to be defined but it wasn\'t');
-  assert(cb, '`mouseUtils.mousemove` expected a callback function but there was none');
+  assert(startCoords, '`domUtils._dragMouse` expected `options.startCoords` to be defined but it wasn\'t');
+  assert(options.endCoords, '`domUtils._dragMouse` expected `options.endCoords` to be defined but it wasn\'t');
+  assert(options.duration, '`domUtils._dragMouse` expected `options.duration` to be defined but it wasn\'t');
+  assert(targetEl, '`domUtils._dragMouse` expected `options.targetEl` to be defined but it wasn\'t');
+  assert(cb, '`domUtils._dragMouse` expected a callback function but there was none');
 
   // Immediately click our mouse down
   // https://developer.mozilla.org/en-US/docs/Web/API/Document/elementFromPoint
@@ -49,4 +49,30 @@ exports.dragMouse = function (options, cb) {
     }
   }
   requestAnimationFrame(animate);
+};
+
+exports.dragOverElement = function (options) {
+  // Assert all our options
+  var selector = options.selector;
+  assert(options.startCoords, '`domUtils.dragOverElement` expected `options.startCoords` to be defined but it wasn\'t');
+  assert(options.endCoords, '`domUtils.dragOverElement` expected `options.endCoords` to be defined but it wasn\'t');
+  assert(selector, '`domUtils.dragOverElement` expected `options.selector` to be defined but it wasn\'t');
+
+  before(function dragOverElement (done) {
+    // Resolve our element
+    assert(this.containerEl, 'Expected `this.containerEl` to be defined but it wasn\'t. ' +
+      'Please use `applicationUtils.init()` before running `domUtils.dragOverElement`');
+    var targetEl = this.containerEl.querySelector(selector);
+    assert(targetEl, 'Unable to find element by selector "' + selector + '" within `this.containerEl`. ' +
+      'Please verify the selector is correct and the element is bound to `this.containerEl`');
+
+    // Call our drag action
+    var targetElBounds = targetEl.getBoundingClientRect();
+    exports._dragMouse({
+      targetEl: targetEl,
+      startCoords: {x: targetElBounds.left + options.startCoords.x, y: targetElBounds.top + options.startCoords.y},
+      endCoords: {x: targetElBounds.left + options.endCoords.x, y: targetElBounds.top + options.endCoords.y},
+      duration: options.duration || 100 // ms
+    }, done);
+  });
 };

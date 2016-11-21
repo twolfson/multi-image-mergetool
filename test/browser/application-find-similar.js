@@ -6,17 +6,6 @@ var applicationUtils = require('./utils/application');
 var domUtils = require('./utils/dom');
 
 // Define reused actions in tests
-function overlayDiffImg(done) {
-  // DEV: We use an expanded image set so we can click/drag
-  var diffImg = this.containerEl.querySelector('[data-image-set="mock-img-not-equal"] img[data-compare-type=diff]');
-  var diffImgBounds = diffImg.getBoundingClientRect();
-  domUtils.dragMouse({
-    targetEl: diffImg,
-    startCoords: {x: diffImgBounds.left, y: diffImgBounds.top},
-    endCoords: {x: diffImgBounds.left + 10, y: diffImgBounds.top + 10},
-    duration: 100 // ms
-  }, done);
-}
 function clickFindSimilarImages() {
   var buttonEl = this.containerEl.querySelector(
     '[data-image-set="mock-img-not-equal"] button[data-action="find-similar-images"]');
@@ -30,7 +19,11 @@ describe('An application with similarly failing images', function () {
   applicationUtils.init(applicationUtils.IMAGE_SETS.MULTIPLE_NOT_EQUAL);
 
   describe('when finding similarly failing images', function () {
-    before(overlayDiffImg);
+    domUtils.dragOverElement({
+      selector: '[data-image-set="mock-img-not-equal"] img[data-compare-type=diff]',
+      startCoords: {x: 0, y: 0},
+      endCoords: {x: 10, y: 10}
+    });
     before(clickFindSimilarImages);
     applicationUtils.screenshot('find-similar-matching');
 
@@ -50,7 +43,11 @@ describe('An application with no similarly failing images', function () {
   applicationUtils.init(applicationUtils.IMAGE_SETS.DEFAULT);
 
   describe('when finding similarly failing images', function () {
-    before(overlayDiffImg);
+    domUtils.dragOverElement({
+      selector: '[data-image-set="mock-img-not-equal"] img[data-compare-type=diff]',
+      startCoords: {x: 0, y: 0},
+      endCoords: {x: 10, y: 10}
+    });
     before(clickFindSimilarImages);
     applicationUtils.screenshot('find-similar-no-matching');
 
