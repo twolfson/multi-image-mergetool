@@ -2,7 +2,8 @@
 var expect = require('chai').expect;
 var applicationUtils = require('./utils/application');
 var domUtils = require('./utils/dom');
-var xhrUtils = require('./utils/xhr');
+var sinonUtils = require('./utils/sinon');
+var xhrResponses = require('./utils/xhr');
 
 // Start our tests
 describe('An application with similarly failing images', function () {
@@ -15,7 +16,7 @@ describe('An application with similarly failing images', function () {
     });
     domUtils.click('[data-image-set="mock-img-not-equal"] ' +
       'button[data-action="find-similar-images"]');
-    xhrUtils.approveAllUpdates();
+    sinonUtils.mockXHR([xhrResponses.UPDATE_IMAGE_SET_APPROVE]);
     before(function deselectSimilarImageSets () {
       var currentSimilarImageSetEl = this.containerEl.querySelector('[data-similar-image-set="mock-img-not-equal"]');
       var saveUpdateEl = currentSimilarImageSetEl.querySelector('[name=save_update]');
@@ -69,7 +70,7 @@ describe('An application with similarly failing images', function () {
     });
     domUtils.click('[data-image-set="mock-img-not-equal"] ' +
       'button[data-action="find-similar-images"]');
-    xhrUtils.approveAllUpdates();
+    sinonUtils.mockXHR([xhrResponses.UPDATE_IMAGE_SET_APPROVE]);
     domUtils.click('[data-image-set="mock-img-not-equal"] ' +
       'button[data-action="accept-similar-images"]');
     applicationUtils.screenshot('accept-all-similar-images');

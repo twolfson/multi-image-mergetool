@@ -4,13 +4,13 @@ var assert = require('assert');
 var expect = require('chai').expect;
 var applicationUtils = require('./utils/application');
 var sinonUtils = require('../../utils/sinon');
-var xhrUtils = require('../utils/xhr');
+var xhrResponses = require('../utils/xhr');
 
 // Start our tests
 describe('A user accepting failing images is successful', function () {
   // Create our application, set up our XHR mocks, and click our button
   applicationUtils.init();
-  xhrUtils.approveAllUpdates();
+  sinonUtils.mockXHR([xhrResponses.UPDATE_IMAGE_SET_APPROVE]);
   before(function assertBadStatus () {
     var imageSetTitleEl = this.containerEl.querySelector('[data-image-set="mock-img-not-equal"] .image-set__title');
     expect(imageSetTitleEl.getAttribute('data-images-equal')).to.equal('false');
@@ -66,7 +66,7 @@ describe('A user accepting failing images has an error', function () {
   // Create our application, silence errors, set up our XHR mocks, and click our button
   applicationUtils.init();
   sinonUtils.stub(console, 'error');
-  xhrUtils.replyWithError();
+  sinonUtils.mockXHR([xhrResponses.UPDATE_IMAGE_SET_ERROR]);
   before(function assertBadStatus () {
     var imageSetTitleEl = this.containerEl.querySelector('[data-image-set="mock-img-not-equal"] .image-set__title');
     expect(imageSetTitleEl.getAttribute('data-images-equal')).to.equal('false');
