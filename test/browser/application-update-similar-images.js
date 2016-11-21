@@ -1,37 +1,8 @@
 // Load in our dependencies
-var fs = require('fs');
 var expect = require('chai').expect;
 var applicationUtils = require('./utils/application');
 var domUtils = require('./utils/dom');
-var sinonUtils = require('../utils/sinon');
-var updateImageSetFilepathEqualResponse = fs.readFileSync(
-  __dirname + '/../test-files/http-responses/update-image-set-filepath-equal.json', 'utf8');
-var updateImageSetFilepathNotEqualResponse = fs.readFileSync(
-  __dirname + '/../test-files/http-responses/update-image-set-filepath-not-equal.json', 'utf8');
-
-// Define reused actions in tests
-// TODO: Consolidate reused actions in tests (currently not sober enough to consolidate them wisely)
-function approveAllXHRUpdates() {
-  sinonUtils.mockXHR([{
-    method: 'POST',
-    url: /\/update-image-set\/[^\/]+/,
-    statusCode: 200,
-    headers: {'Content-Type': 'application/json'},
-    body: updateImageSetFilepathEqualResponse // {imagesEqual: true}
-  }]);
-}
-function disapproveAllXHRUpdates() {
-  sinonUtils.mockXHR([{
-    method: 'POST',
-    url: /\/update-image-set\/[^\/]+/,
-    statusCode: 200,
-    headers: {'Content-Type': 'application/json'},
-    // jscs:disable maximumLineLength
-    // Set via: echo -n '{"imagesEqual":false}' > test/test-files/http-responses/update-image-set-filepath-not-equal.json
-    // jscs:enable maximumLineLength
-    body: updateImageSetFilepathNotEqualResponse // {imagesEqual: false}
-  }]);
-}
+var xhrUtils = require('./utils/xhr');
 
 // Start our tests
 describe('An application with similarly failing images', function () {
@@ -44,7 +15,7 @@ describe('An application with similarly failing images', function () {
     });
     domUtils.click('[data-image-set="mock-img-not-equal"] ' +
       'button[data-action="find-similar-images"]');
-    disapproveAllXHRUpdates();
+    xhrUtils.disapproveAllUpdates();
     before(function deselectSimilarImageSets () {
       var currentSimilarImageSetEl = this.containerEl.querySelector('[data-similar-image-set="mock-img-not-equal"]');
       var saveUpdateEl = currentSimilarImageSetEl.querySelector('[name=save_update]');
@@ -105,7 +76,7 @@ describe('An application with similarly failing images', function () {
     });
     domUtils.click('[data-image-set="mock-img-not-equal"] ' +
       'button[data-action="find-similar-images"]');
-    approveAllXHRUpdates();
+    xhrUtils.approveAllUpdates();
     domUtils.click('[data-image-set="mock-img-not-equal"] ' +
       'button[data-action="update-similar-images"]');
     // DEV: This is effectively waiting for new image sources to update

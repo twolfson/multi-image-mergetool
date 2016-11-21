@@ -1,24 +1,16 @@
 // Load in our dependencies
-var fs = require('fs');
 var $ = require('jquery');
 var assert = require('assert');
 var expect = require('chai').expect;
 var applicationUtils = require('./utils/application');
-var sinonUtils = require('../utils/sinon');
-var updateImageSetFilepathEqualResponse = fs.readFileSync(
-  __dirname + '/../test-files/http-responses/update-image-set-filepath-equal.json', 'utf8');
+var sinonUtils = require('../../utils/sinon');
+var xhrUtils = require('../utils/xhr');
 
 // Start our tests
 describe('A user accepting failing images is successful', function () {
   // Create our application, set up our XHR mocks, and click our button
   applicationUtils.init();
-  sinonUtils.mockXHR([{
-    method: 'POST',
-    url: /\/update-image-set\/[^\/]+/,
-    statusCode: 200,
-    headers: {'Content-Type': 'application/json'},
-    body: updateImageSetFilepathEqualResponse // {imagesEqual: true}
-  }]);
+  xhrUtils.approveAllUpdates();
   before(function assertBadStatus () {
     var imageSetTitleEl = this.containerEl.querySelector('[data-image-set="mock-img-not-equal"] .image-set__title');
     expect(imageSetTitleEl.getAttribute('data-images-equal')).to.equal('false');
@@ -74,12 +66,7 @@ describe('A user accepting failing images has an error', function () {
   // Create our application, silence errors, set up our XHR mocks, and click our button
   applicationUtils.init();
   sinonUtils.stub(console, 'error');
-  sinonUtils.mockXHR([{
-    method: 'POST',
-    url: /\/update-image-set\/[^\/]+/,
-    statusCode: 500,
-    body: 'Internal server error'
-  }]);
+  xhrUtils.replyWithError();
   before(function assertBadStatus () {
     var imageSetTitleEl = this.containerEl.querySelector('[data-image-set="mock-img-not-equal"] .image-set__title');
     expect(imageSetTitleEl.getAttribute('data-images-equal')).to.equal('false');
