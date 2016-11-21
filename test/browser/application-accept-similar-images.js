@@ -1,7 +1,5 @@
 // Load in our dependencies
 var fs = require('fs');
-var $ = require('jquery');
-var assert = require('assert');
 var expect = require('chai').expect;
 var sinonUtils = require('../utils/sinon');
 // DEV: For unknown reasons, we must import `sinonUtils` before `applicationUtils`
@@ -12,12 +10,6 @@ var updateImageSetFilepathEqualResponse = fs.readFileSync(
 
 // Define reused actions in tests
 // TODO: Consolidate reused actions in tests (currently not sober enough to consolidate them wisely)
-function clickFindSimilarImages() {
-  var buttonEl = this.containerEl.querySelector(
-    '[data-image-set="mock-img-not-equal"] button[data-action="find-similar-images"]');
-  assert(buttonEl);
-  $(buttonEl).click();
-}
 function approveAllXHRUpdates() {
   sinonUtils.mockXHR([{
     method: 'POST',
@@ -26,12 +18,6 @@ function approveAllXHRUpdates() {
     headers: {'Content-Type': 'application/json'},
     body: updateImageSetFilepathEqualResponse // {imagesEqual: true}
   }]);
-}
-function clickAcceptSimilarImages() {
-  var buttonEl = this.containerEl.querySelector(
-    '[data-image-set="mock-img-not-equal"] button[data-action="accept-similar-images"]');
-  assert(buttonEl);
-  $(buttonEl).click();
 }
 
 // Start our tests
@@ -43,14 +29,16 @@ describe('An application with similarly failing images', function () {
       startCoords: {x: 0, y: 0},
       endCoords: {x: 10, y: 10}
     });
-    before(clickFindSimilarImages);
+    domUtils.click('[data-image-set="mock-img-not-equal"] ' +
+      'button[data-action="find-similar-images"]');
     approveAllXHRUpdates();
     before(function deselectSimilarImageSets () {
       var currentSimilarImageSetEl = this.containerEl.querySelector('[data-similar-image-set="mock-img-not-equal"]');
       var saveUpdateEl = currentSimilarImageSetEl.querySelector('[name=save_update]');
       saveUpdateEl.checked = false;
     });
-    before(clickAcceptSimilarImages);
+    domUtils.click('[data-image-set="mock-img-not-equal"] ' +
+      'button[data-action="accept-similar-images"]');
     applicationUtils.screenshot('accept-some-similar-images');
 
     it('updates selected images in full in its image set', function () {
@@ -95,9 +83,11 @@ describe('An application with similarly failing images', function () {
       startCoords: {x: 0, y: 0},
       endCoords: {x: 10, y: 10}
     });
-    before(clickFindSimilarImages);
+    domUtils.click('[data-image-set="mock-img-not-equal"] ' +
+      'button[data-action="find-similar-images"]');
     approveAllXHRUpdates();
-    before(clickAcceptSimilarImages);
+    domUtils.click('[data-image-set="mock-img-not-equal"] ' +
+      'button[data-action="accept-similar-images"]');
     applicationUtils.screenshot('accept-all-similar-images');
 
     it.skip('collapses current image set', function () {

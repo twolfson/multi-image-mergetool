@@ -1,10 +1,27 @@
 // Load in our dependencies
-// Based on https://raw.githubusercontent.com/twolfson/mockdesk/0.14.2/lib/js/scripts/drag-rectangle.js
 var assert = require('assert');
+var $ = require('jquery');
 var simulant = require('simulant');
 var TWEEN = require('tween.js');
 
-// Define our mouse move helper
+// Define our helpers
+exports._findElement = function (selector) {
+  assert(this.containerEl, 'Expected `this.containerEl` to be defined but it wasn\'t. ' +
+    'Please use `applicationUtils.init()` before running `domUtils` actions');
+  var el = this.containerEl.querySelector(selector);
+  assert(el, 'Unable to find element by selector "' + selector + '" within `this.containerEl`. ' +
+    'Please verify the selector is correct and the element is bound to `this.containerEl`');
+  return el;
+};
+
+exports.click = function (selector) {
+  before(function clickFn () {
+    var buttonEl = exports._findElement.call(this, selector);
+    $(buttonEl).click();
+  });
+};
+
+// Based on https://raw.githubusercontent.com/twolfson/mockdesk/0.14.2/lib/js/scripts/drag-rectangle.js
 exports._dragMouse = function (options, cb) {
   // Assert all our options
   var startCoords = options.startCoords;
@@ -50,7 +67,6 @@ exports._dragMouse = function (options, cb) {
   }
   requestAnimationFrame(animate);
 };
-
 exports.dragOverElement = function (options) {
   // Assert all our options
   var selector = options.selector;
@@ -60,11 +76,7 @@ exports.dragOverElement = function (options) {
 
   before(function dragOverElement (done) {
     // Resolve our element
-    assert(this.containerEl, 'Expected `this.containerEl` to be defined but it wasn\'t. ' +
-      'Please use `applicationUtils.init()` before running `domUtils.dragOverElement`');
-    var targetEl = this.containerEl.querySelector(selector);
-    assert(targetEl, 'Unable to find element by selector "' + selector + '" within `this.containerEl`. ' +
-      'Please verify the selector is correct and the element is bound to `this.containerEl`');
+    var targetEl = exports._findElement.call(this, selector);
 
     // Call our drag action
     var targetElBounds = targetEl.getBoundingClientRect();

@@ -1,7 +1,5 @@
 // Load in our dependencies
 var fs = require('fs');
-var $ = require('jquery');
-var assert = require('assert');
 var expect = require('chai').expect;
 var sinonUtils = require('../utils/sinon');
 // DEV: For unknown reasons, we must import `sinonUtils` before `applicationUtils`
@@ -14,12 +12,6 @@ var updateImageSetFilepathNotEqualResponse = fs.readFileSync(
 
 // Define reused actions in tests
 // TODO: Consolidate reused actions in tests (currently not sober enough to consolidate them wisely)
-function clickFindSimilarImages() {
-  var buttonEl = this.containerEl.querySelector(
-    '[data-image-set="mock-img-not-equal"] button[data-action="find-similar-images"]');
-  assert(buttonEl);
-  $(buttonEl).click();
-}
 function approveAllXHRUpdates() {
   sinonUtils.mockXHR([{
     method: 'POST',
@@ -41,13 +33,6 @@ function disapproveAllXHRUpdates() {
     body: updateImageSetFilepathNotEqualResponse // {imagesEqual: false}
   }]);
 }
-function clickUpdateSimilarImages() {
-  // Click our update button
-  var buttonEl = this.containerEl.querySelector(
-    '[data-image-set="mock-img-not-equal"] button[data-action="update-similar-images"]');
-  assert(buttonEl);
-  $(buttonEl).click();
-}
 
 // Start our tests
 describe('An application with similarly failing images', function () {
@@ -58,14 +43,16 @@ describe('An application with similarly failing images', function () {
       startCoords: {x: 0, y: 0},
       endCoords: {x: 10, y: 10}
     });
-    before(clickFindSimilarImages);
+    domUtils.click('[data-image-set="mock-img-not-equal"] ' +
+      'button[data-action="find-similar-images"]');
     disapproveAllXHRUpdates();
     before(function deselectSimilarImageSets () {
       var currentSimilarImageSetEl = this.containerEl.querySelector('[data-similar-image-set="mock-img-not-equal"]');
       var saveUpdateEl = currentSimilarImageSetEl.querySelector('[name=save_update]');
       saveUpdateEl.checked = false;
     });
-    before(clickUpdateSimilarImages);
+    domUtils.click('[data-image-set="mock-img-not-equal"] ' +
+      'button[data-action="update-similar-images"]');
     // DEV: This is effectively waiting for new image sources to update
     // TODO: Figure out how to detect when images have new source and it's not yet loaded
     //   Maybe a cache table and cache table resetter via `applicationUtils.init`?
@@ -117,9 +104,11 @@ describe('An application with similarly failing images', function () {
       startCoords: {x: 0, y: 0},
       endCoords: {x: 15, y: 15}
     });
-    before(clickFindSimilarImages);
+    domUtils.click('[data-image-set="mock-img-not-equal"] ' +
+      'button[data-action="find-similar-images"]');
     approveAllXHRUpdates();
-    before(clickUpdateSimilarImages);
+    domUtils.click('[data-image-set="mock-img-not-equal"] ' +
+      'button[data-action="update-similar-images"]');
     // DEV: This is effectively waiting for new image sources to update
     // TODO: Figure out how to detect when images have new source and it's not yet loaded
     //   Maybe a cache table and cache table resetter via `applicationUtils.init`?
