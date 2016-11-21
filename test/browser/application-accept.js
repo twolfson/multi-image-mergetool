@@ -1,8 +1,7 @@
 // Load in our dependencies
-var $ = require('jquery');
-var assert = require('assert');
 var expect = require('chai').expect;
 var applicationUtils = require('./utils/application');
+var domUtils = require('./utils/dom');
 var sinonUtils = require('../utils/sinon');
 var xhrResponses = require('../test-files/http-responses/xhr');
 
@@ -15,14 +14,9 @@ describe('A user accepting failing images is successful', function () {
     var imageSetTitleEl = this.containerEl.querySelector('[data-image-set="mock-img-not-equal"] .image-set__title');
     expect(imageSetTitleEl.getAttribute('data-images-equal')).to.equal('false');
   });
-  before(function clickAcceptButton (done) {
-    // Click our acceptance button
-    var buttonEl = this.containerEl.querySelector(
-      '[data-image-set="mock-img-not-equal"] button[data-action=accept-changes]');
-    assert(buttonEl);
-    $(buttonEl).click();
-
-    // Wait for XHR to complete
+  domUtils.click('[data-image-set="mock-img-not-equal"] ' +
+    'button[data-action=accept-changes]');
+  before(function waitForXHRToComplete (done) {
     setTimeout(done, 100);
   });
 
@@ -71,14 +65,9 @@ describe('A user accepting failing images has an error', function () {
     var imageSetTitleEl = this.containerEl.querySelector('[data-image-set="mock-img-not-equal"] .image-set__title');
     expect(imageSetTitleEl.getAttribute('data-images-equal')).to.equal('false');
   });
-  before(function clickAcceptButton (done) {
-    // Click our acceptance button
-    var buttonEl = this.containerEl.querySelector(
-      '[data-image-set="mock-img-not-equal"] button[data-action=accept-changes]');
-    assert(buttonEl);
-    $(buttonEl).click();
-
-    // Wait for XHR to complete
+  domUtils.click('[data-image-set="mock-img-not-equal"] ' +
+    'button[data-action=accept-changes]');
+  before(function waitForXHRToComplete (done) {
     setTimeout(done, 100);
   });
 
