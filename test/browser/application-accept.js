@@ -3,8 +3,8 @@ var $ = require('jquery');
 var assert = require('assert');
 var expect = require('chai').expect;
 var applicationUtils = require('./utils/application');
-var sinonUtils = require('../../utils/sinon');
-var xhrResponses = require('../utils/xhr');
+var sinonUtils = require('../utils/sinon');
+var xhrResponses = require('../test-files/http-responses/xhr');
 
 // Start our tests
 describe('A user accepting failing images is successful', function () {

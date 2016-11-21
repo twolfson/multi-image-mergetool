@@ -1,9 +1,9 @@
 // Load in our dependencies
 var fs = require('fs');
 var updateImageSetFilepathEqualResponse = fs.readFileSync(
-  __dirname + '/../../test-files/http-responses/update-image-set-filepath-equal.json', 'utf8');
+  __dirname + '/update-image-set-filepath-equal.json', 'utf8');
 var updateImageSetFilepathNotEqualResponse = fs.readFileSync(
-  __dirname + '/../test-files/http-responses/update-image-set-filepath-not-equal.json', 'utf8');
+  __dirname + '/update-image-set-filepath-not-equal.json', 'utf8');
 
 // Define our helpers
 exports.UPDATE_IMAGE_SET_APPROVE = {

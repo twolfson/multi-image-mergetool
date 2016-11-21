@@ -2,8 +2,8 @@
 var expect = require('chai').expect;
 var applicationUtils = require('./utils/application');
 var domUtils = require('./utils/dom');
-var sinonUtils = require('./utils/sinon');
-var xhrResponses = require('./utils/xhr');
+var sinonUtils = require('../utils/sinon');
+var xhrResponses = require('../test-files/http-responses/xhr');
 
 // Start our tests
 describe('An application with similarly failing images', function () {
