@@ -1,10 +1,9 @@
 // Load in our dependencies
 var fs = require('fs');
 var expect = require('chai').expect;
-var sinonUtils = require('../utils/sinon');
-// DEV: For unknown reasons, we must import `sinonUtils` before `applicationUtils`
 var applicationUtils = require('./utils/application');
 var domUtils = require('./utils/dom');
+var sinonUtils = require('../utils/sinon');
 var updateImageSetFilepathEqualResponse = fs.readFileSync(
   __dirname + '/../test-files/http-responses/update-image-set-filepath-equal.json', 'utf8');
 
