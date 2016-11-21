@@ -5,7 +5,7 @@ var simulant = require('simulant');
 var TWEEN = require('tween.js');
 
 // Define our mouse move helper
-exports.moveMouse = function (options, cb) {
+exports.dragMouse = function (options, cb) {
   // Assert all our options
   var startCoords = options.startCoords;
   var targetEl = options.targetEl;
