@@ -3,14 +3,14 @@ var $ = require('jquery');
 var assert = require('assert');
 var expect = require('chai').expect;
 var applicationUtils = require('./utils/application');
-var mouseUtils = require('./utils/mouse');
+var domUtils = require('./utils/dom');
 
 // Define reused actions in tests
 function overlayDiffImg(done) {
   // DEV: We use an expanded image set so we can click/drag
   var diffImg = this.containerEl.querySelector('[data-image-set="mock-img-not-equal"] img[data-compare-type=diff]');
   var diffImgBounds = diffImg.getBoundingClientRect();
-  mouseUtils.dragMouse({
+  domUtils.dragMouse({
     targetEl: diffImg,
     startCoords: {x: diffImgBounds.left, y: diffImgBounds.top},
     endCoords: {x: diffImgBounds.left + 10, y: diffImgBounds.top + 10},
