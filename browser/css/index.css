@@ -29,7 +29,7 @@ ul {
   opacity: 0.5;
 
   /* Allow click through for new selection */
-  /* TODO: Depending on configuration, this could be a drag action on the overlay */
+  /* DEV: Depending on configuration, this could be a drag action on the overlay */
   pointer-events: none;
 }
 
