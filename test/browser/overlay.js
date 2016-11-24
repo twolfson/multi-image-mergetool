@@ -20,7 +20,7 @@ var overlayUtils = {
     before(function bindOverlay () {
       var el = D.DIV({
         id: 'overlay-container',
-        style: 'width: 300px; height: 200px; color: navy'
+        style: 'width: 300px; height: 200px; background: navy'
       });
       this.containerEl.appendChild(el);
       this.overlay = new Overlay(el, {containerEl: this.containerEl});
@@ -135,8 +135,35 @@ describe('An overlay that attempts to extend past bottom boundary', function () 
   });
 });
 
-describe.skip('An overlay on a scrolled page', function () {
+describe('An overlay on a scrolled page', function () {
+  overlayUtils.init();
+  before(function scrollPage () {
+    this.scrollEl = D.DIV({style: 'width: 2000px; height: 2000px'});
+    document.body.appendChild(this.scrollEl);
+    expect(document.body.scrollTop).to.equal(0);
+    expect(document.body.scrollLeft).to.equal(0);
+    document.body.scrollTop = 200;
+    document.body.scrollLeft = 200;
+    expect(document.body.scrollTop).to.equal(200);
+    expect(document.body.scrollLeft).to.equal(200);
+  });
+  after(function cleanup () {
+    document.body.removeChild(this.scrollEl);
+    delete this.scrollEl;
+    expect(document.body.scrollTop).to.equal(0);
+    expect(document.body.scrollLeft).to.equal(0);
+  });
+  domUtils.dragOverElement({
+    selector: '#overlay-container',
+    startCoords: {x: 50, y: 60},
+    endCoords: {x: 500, y: 500}
+  });
+
   it('keeps boundaries relative to element', function () {
-    // Test bounds (e.g. we can go to edge in scrolled direction)
+    var overlayBounds = this.containerEl.querySelector('.overlay').getBoundingClientRect();
+    expect(overlayBounds.left).to.equal(-150); // 50 - 200 (offset top)
+    expect(overlayBounds.top).to.equal(-140); // 60 - 200 (offset top)
+    expect(overlayBounds.width).to.equal(250); // 300 (el width) - 50
+    expect(overlayBounds.height).to.equal(140); // 200 (el height) - 60
   });
 });
