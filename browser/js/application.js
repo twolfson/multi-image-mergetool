@@ -3,14 +3,14 @@
 var $ = window.$ = window.jQuery = require('jquery');
 void require('bootstrap/dist/js/bootstrap.js');
 var D = require('./domo');
-var Overlay = require('./overlay');
+var ImageSet = require('./image-set');
 
 // TODO: Consider scrollspy for update buttons
 // TODO: Consider buttons to expand row of images to full screen
 // TODO: Consider magnifying glass zoom on images (e.g. like in ecommerce sites)
 
 // Define our application
-function Application(_containerEl, imageSets) {
+function Application(_containerEl, imageSetInfoArr) {
   // Save our container element for later
   // TODO: Add a `destroy` method which removes element as well as any bindings
   this.containerEl = _containerEl;
@@ -22,98 +22,8 @@ function Application(_containerEl, imageSets) {
   // Expose our images
   // TODO: Expose images in tree list like gemini-gui, maybe even simplified variants like GitHub
   //   (e.g. `a/b/c` when only 1 file)
-  imageSets.forEach(function createImageSet (imgSet, i) {
-    // Create local variables for our image set
-    var imgSetId = imgSet.id;
-    var imgSetHumanName = imgSet.id;
-
-    // Generate our image set element
-    var imgSetEl = D.UL({'data-image-set': imgSetId}, [
-      D.LI([
-        // Row title
-        D.A({
-          class: 'image-set__title',
-          href: 'javascript:void 0;', 'data-toggle': 'collapse',
-          'data-target': '[data-image-set="' + imgSetId + '"] .image-set__collapse',
-          'data-images-equal': imgSet.imagesEqual,
-          'aria-controls': imgSetId
-        }, imgSetHumanName),
-
-        // Collapsable container for row
-        // DEV: We use `data-id` as `id` has restrictions on characters
-        D.DIV({
-          // Make our first image set visible
-          // DEV: If class names get too complex, use `classnames` library
-          class: imgSet.imagesEqual ? 'image-set__collapse collapse well' : 'image-set__collapse collapse in well'
-        }, [
-          // Action buttons
-          D.DIV([
-            D.BUTTON({
-              class: 'btn btn-default',
-              'data-action': 'accept-changes'
-            }, '✓ Accept changes'),
-            ' ',
-            D.BUTTON({
-              class: 'btn btn-default',
-              'data-action': 'find-similar-images'
-              // TODO: Make our button disabled and only enable when an overlay is drawn
-              // TODO: When changes are accepted, reset all affected overlays and buttons
-              // disabled: 'disabled'
-            }, 'Find similar images with selection')
-          ]),
-
-          // Image set
-          D.TABLE({class: 'table'}, [
-            D.THEAD([
-              D.TR([
-                D.TH('Current:'),
-                D.TH('Diff:'),
-                D.TH('Ref:')
-              ])
-            ]),
-            D.TBODY([
-              D.TR([
-                // DEV: We use `width: 33%` to guarantee no widths change when images are loading
-                D.TD({style: 'width: 33%'}, [
-                  D.IMG({
-                    'data-compare-type': 'current',
-                    src: imgSet.currentImgUrl,
-                    style: 'max-width: 100%'
-                  })
-                ]),
-                D.TD({style: 'width: 33%'}, [
-                  D.IMG({
-                    'data-compare-type': 'diff',
-                    src: imgSet.diffImgUrl,
-                    style: 'max-width: 100%'
-                  })
-                ]),
-                D.TD({style: 'width: 33%'}, [
-                  D.IMG({
-                    'data-compare-type': 'ref',
-                    src: imgSet.refImgUrl,
-                    style: 'max-width: 100%'
-                  })
-                ])
-              ])
-            ])
-          ])
-        ])
-      ])
-    ]);
-
-    // Bind an overlay to diff image
-    // TODO: Explore binding overlay to each of images (that jumps between them)
-    // DEV: We use imgSetEl's collapse as a container so it hides on collapse
-    var imgOverlay = new Overlay(imgSetEl.querySelector('img[data-compare-type=diff]'), {
-      containerEl: imgSetEl.querySelector('.image-set__collapse')
-    });
-
-    // Save imgOverlay directly to imgSetEl
-    imgSetEl.imgOverlay = imgOverlay;
-
-    // Append our element to the container element
-    imageSetsDocFrag.appendChild(imgSetEl);
+  imageSetInfoArr.forEach(function createImageSet (imageSetInfo) {
+    void new ImageSet(imageSetsDocFrag, imageSetInfo);
   });
 
   // Apppend our container element
