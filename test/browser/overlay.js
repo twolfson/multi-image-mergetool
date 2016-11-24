@@ -58,8 +58,7 @@ describe('An overlay over an element', function () {
     });
 
     it('starts/stops where we expect', function () {
-      var overlayEl = this.containerEl.querySelector('.overlay');
-      var overlayBounds = overlayEl.getBoundingClientRect();
+      var overlayBounds = this.containerEl.querySelector('.overlay').getBoundingClientRect();
       expect(overlayBounds.left).to.equal(50);
       expect(overlayBounds.top).to.equal(60);
       expect(overlayBounds.width).to.equal(100);
@@ -68,26 +67,71 @@ describe('An overlay over an element', function () {
   });
 });
 
-describe.skip('An overlay that attempts to extend past top boundary', function () {
+describe('An overlay that attempts to extend past top boundary', function () {
+  overlayUtils.init();
+  domUtils.dragOverElement({
+    selector: '#overlay-container',
+    startCoords: {x: 50, y: 60},
+    endCoords: {x: 10, y: -50}
+  });
+
   it('is stopped at top boundary', function () {
-    // Test bounds
+    var overlayBounds = this.containerEl.querySelector('.overlay').getBoundingClientRect();
+    expect(overlayBounds.left).to.equal(10);
+    expect(overlayBounds.top).to.equal(0);
+    expect(overlayBounds.width).to.equal(40);
+    expect(overlayBounds.height).to.equal(60);
   });
 });
 
-describe.skip('An overlay that attempts to extend past left boundary', function () {
+describe('An overlay that attempts to extend past left boundary', function () {
+  overlayUtils.init();
+  domUtils.dragOverElement({
+    selector: '#overlay-container',
+    startCoords: {x: 50, y: 70},
+    endCoords: {x: -50, y: 10}
+  });
+
   it('is stopped at left boundary', function () {
-    // Test bounds
-  });
-});
-describe.skip('An overlay that attempts to extend past right boundary', function () {
-  it('is stopped at right boundary', function () {
-    // Test bounds
+    var overlayBounds = this.containerEl.querySelector('.overlay').getBoundingClientRect();
+    expect(overlayBounds.left).to.equal(0);
+    expect(overlayBounds.top).to.equal(10);
+    expect(overlayBounds.width).to.equal(50);
+    expect(overlayBounds.height).to.equal(60);
   });
 });
 
-describe.skip('An overlay that attempts to extend past bottom boundary', function () {
+describe('An overlay that attempts to extend past right boundary', function () {
+  overlayUtils.init();
+  domUtils.dragOverElement({
+    selector: '#overlay-container',
+    startCoords: {x: 50, y: 70},
+    endCoords: {x: 350, y: 80}
+  });
+
+  it('is stopped at right boundary', function () {
+    var overlayBounds = this.containerEl.querySelector('.overlay').getBoundingClientRect();
+    expect(overlayBounds.left).to.equal(50);
+    expect(overlayBounds.top).to.equal(70);
+    expect(overlayBounds.width).to.equal(250);
+    expect(overlayBounds.height).to.equal(10);
+  });
+});
+
+describe('An overlay that attempts to extend past bottom boundary', function () {
+  overlayUtils.init();
+  domUtils.dragOverElement({
+    selector: '#overlay-container',
+    startCoords: {x: 50, y: 70},
+    endCoords: {x: 60, y: 280}
+  });
+
   it('is stopped at bottom boundary', function () {
-    // Test bounds
+    var overlayBounds = this.containerEl.querySelector('.overlay').getBoundingClientRect();
+    expect(overlayBounds.left).to.equal(50);
+    expect(overlayBounds.top).to.equal(70);
+    expect(overlayBounds.width).to.equal(10);
+    expect(overlayBounds.height).to.equal(130);
   });
 });
 
