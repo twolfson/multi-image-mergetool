@@ -38,28 +38,19 @@ function Application(_containerEl, imageSetInfoArr) {
   // TODO: Move `bind` to be specific to container so we don't need a global
   global.application = this;
 }
+Application.prototype = {
+  acceptImageSetChanges: function (acceptedImgBase64, imgSetId) {
+    var imageSet = this.imageSetsById[imgSetId];
+    imageSet.acceptChanges(acceptedImgBase64);
+  },
+  updateReferenceImage: function (imgBase64, imgSetId) {
+    var imageSet = this.imageSetsById[imgSetId];
+    imageSet.updateReferenceImage(imgBase64);
+  }
+};
 
 // Define our button bindings
 Application.bindOnce = function () {
-  // Define cache busting helper
-  function cachebustImg($img) {
-    var originalSrc = $img.attr('src');
-    var newSrc = originalSrc.match(/\?1$/) ? originalSrc + '1' : originalSrc + '?1';
-    $img.attr('src', newSrc);
-  }
-
-  // Define acceptance and update helpers
-  // TODO: Consolidate these helpers
-  function acceptImageSetChanges(acceptedImgBase64, imgSetId) {
-    var imageSet = global.application.imageSetsById[imgSetId];
-    imageSet.acceptChanges(acceptedImgBase64);
-  }
-
-  function updateReferenceImage(imgBase64, imgSetId) {
-    var imageSet = global.application.imageSetsById[imgSetId];
-    imageSet.updateReferenceImage(imgBase64);
-  }
-
   // Define base64 content helper
   // TODO: Find a base64 content helper library?
   var base64CanvasEl = document.createElement('canvas');
@@ -98,7 +89,7 @@ Application.bindOnce = function () {
     var base64Data = getBase64Content($currentImg[0]);
 
     // Run acceptance function
-    acceptImageSetChanges(base64Data, imgSetId);
+    global.application.acceptImageSetChanges(base64Data, imgSetId);
   });
 
   function findSelectedSimilarImageSets(evt) {
@@ -134,7 +125,7 @@ Application.bindOnce = function () {
 
       // Run accept function
       // TODO: Remove results when all loaded
-      acceptImageSetChanges(originalCurrentImgBase64, similarImgSetId);
+      global.application.acceptImageSetChanges(originalCurrentImgBase64, similarImgSetId);
     });
   });
   $('body').on('click', 'button[data-action="update-similar-images"]', function handleClick (evt) {
@@ -154,7 +145,7 @@ Application.bindOnce = function () {
 
       // Run update function
       // TODO: Remove results when all loaded
-      updateReferenceImage(base64Data, similarImgSetId);
+      global.application.updateReferenceImage(base64Data, similarImgSetId);
     });
   });
 
