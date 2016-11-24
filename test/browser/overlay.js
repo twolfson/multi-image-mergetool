@@ -2,18 +2,52 @@
 var expect = require('chai').expect;
 var D = require('../../browser/js/domo');
 var Overlay = require('../../browser/js/overlay');
+var domUtils = require('./utils/dom');
 
 // Start our tests
 describe.only('An overlay over an element', function () {
-  it('is visible', function () {
-    // Create our element and overlay
-    var containerEl = D.DIV([
-      D.DIV({style: 'width: 300px; height: 200px; color: navy'})
-    ]);
-    var el = containerEl.childNodes[0];
-    var overlay = new Overlay(el, {containerEl: containerEl});
+  // Set up our elements
+  before(function createElement () {
+    // Create our container element
+    this.containerEl = D.DIV();
+    document.body.appendChild(this.containerEl);
+  });
+  after(function cleanup () {
+    document.body.removeChild(this.containerEl);
+    delete this.containerEl;
+  });
+  before(function bindOverlay () {
+    var el = D.DIV({
+      id: 'overlay-container',
+      style: 'width: 300px; height: 200px; color: navy'
+    });
+    this.containerEl.appendChild(el);
+    this.overlay = new Overlay(el, {containerEl: this.containerEl});
+  });
+  after(function cleanup () {
+    // TODO: Set up unbinding of overlay
+    delete this.overlay;
+  });
 
-    // TODO: Set up unbinding
+  // Perform our assertions
+  it('is not initially visible', function () {
+    var overlayEl = this.containerEl.querySelector('.overlay');
+    expect(overlayEl).to.equal(null);
+  });
+
+  describe('after dragging over our element', function () {
+    // Perform overlay drag
+    domUtils.dragOverElement({
+      selector: '#overlay-container',
+      startCoords: {x: 0, y: 0},
+      endCoords: {x: 100, y: 100}
+    });
+
+    // Perform our assertions
+    it('is visible', function () {
+      var overlayEl = this.containerEl.querySelector('.overlay');
+      expect(overlayEl).to.not.equal(null);
+    });
   });
 });
 
