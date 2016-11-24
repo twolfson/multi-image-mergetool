@@ -112,20 +112,26 @@ ImageSet.cachebustImg = function (imgEl) {
 
 // Define prototype methods
 ImageSet.prototype = {
-  acceptChanges: function (acceptedImgBase64) {
+  acceptChanges: function (imgBase64) {
+    this._updateReferenceImage(imgBase64, 'true');
+  },
+  _updateReferenceImage: function (imgBase64, eagerStatus) {
     // Fade out diff and reference images to "loading" state
     this.diffImg.classList.add('loading');
     this.refImg.classList.add('loading');
 
-    // Eagerly update our status
-    // DEV: This won't be the scenario for update reference image (i.e. we are progressively updating images)
+    // If we have an eager status, use it
+    // DEV: For an acceptance, we will eagerly update to 'imagesEqual: true'
+    eagerStatus = eagerStatus || 'loading';
+
+    // Update our status while updating
     var oldStatus = this.state.imagesEqual;
-    this.titleEl.setAttribute('data-images-equal', 'true');
+    this.titleEl.setAttribute('data-images-equal', eagerStatus);
 
     // Make an AJAX call to accept our image
     // http://api.jquery.com/jQuery.ajax/#jqXHR
     var jqXHR = $.post('/update-image-set/' + encodeURIComponent(this.id), {
-      ref: acceptedImgBase64
+      ref: imgBase64
     });
 
     // If there is an error
@@ -135,15 +141,15 @@ ImageSet.prototype = {
       console.error('Error encountered "' + errorThrown + '" when updating image "' + that.id + '"');
 
       // Reset status to previous state
-      // TODO: Test resetting to previous state on failure
       that.titleEl.setAttribute('data-images-equal', oldStatus);
     });
 
     // When we complete updating
     jqXHR.done(function handleDone (data, textStatus, jqXHR) {
-      // Save new state
+      // Save new state and update status
       // data = {imagesEqual: true}
       that.state.imagesEqual = data.imagesEqual;
+      that.titleEl.setAttribute('data-images-equal', data.imagesEqual);
     });
 
     // When loading completes, remove loading state and update image references
@@ -153,6 +159,9 @@ ImageSet.prototype = {
       ImageSet.cachebustImg(that.diffImg);
       ImageSet.cachebustImg(that.refImg);
     });
+  },
+  updateReferenceImage: function (imgBase64) {
+    this._updateReferenceImage(imgBase64);
   },
   saveEl: function (key, el) {
     this[key] = el;
