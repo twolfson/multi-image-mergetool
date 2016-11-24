@@ -1,5 +1,6 @@
 // Load in our dependencies
 // DEV: Re-expose jQuery for Bootstrap
+var assert = require('assert');
 var $ = window.$ = window.jQuery = require('jquery');
 void require('bootstrap/dist/js/bootstrap.js');
 var D = require('./domo');
@@ -22,12 +23,20 @@ function Application(_containerEl, imageSetInfoArr) {
   // Expose our images
   // TODO: Expose images in tree list like gemini-gui, maybe even simplified variants like GitHub
   //   (e.g. `a/b/c` when only 1 file)
+  var imageSetsById = this.imageSetsById = {};
   imageSetInfoArr.forEach(function createImageSet (imageSetInfo) {
-    void new ImageSet(imageSetsDocFrag, imageSetInfo);
+    var imageSet = new ImageSet(imageSetsDocFrag, imageSetInfo);
+    assert(imageSet.id);
+    assert.strictEqual(imageSetsById[imageSet.id], undefined);
+    imageSetsById[imageSet.id] = imageSet;
   });
 
   // Apppend our container element
   this.containerEl.appendChild(imageSetsDocFrag);
+
+  // Expose ourself as a global
+  // TODO: Move `bind` to be specific to container so we don't need a global
+  global.application = this;
 }
 
 // Define our button bindings
@@ -42,43 +51,8 @@ Application.bindOnce = function () {
   // Define acceptance and update helpers
   // TODO: Consolidate these helpers
   function acceptImageSetChanges(acceptedImgBase64, imgSetId) {
-    // Fade out diff and reference images to "loading" state
-    var $imgSet = $('[data-image-set="' + $.escapeSelector(imgSetId) + '"]');
-    // assert.strictEqual($imgSet.length, 1);
-    var $diffImg = $imgSet.find('[data-compare-type="diff"]');
-    var $refImg = $imgSet.find('[data-compare-type="ref"]');
-    $diffImg.addClass('loading');
-    $refImg.addClass('loading');
-
-    // Eagerly update our status
-    // DEV: This won't be the scenario for update reference image (i.e. we are progressively updating images)
-    var $imagesEqual = $imgSet.find('[data-images-equal]');
-    var oldStatus = $imagesEqual.attr('data-images-equal');
-    $imagesEqual.attr('data-images-equal', 'true');
-
-    // Make an AJAX call to accept our image
-    // http://api.jquery.com/jQuery.ajax/#jqXHR
-    var jqXHR = $.post('/update-image-set/' + encodeURIComponent(imgSetId), {
-      ref: acceptedImgBase64
-    });
-
-    // If there is an error
-    jqXHR.fail(function handleFail (jqXHR, textStatus, errorThrown) {
-      // TODO: Expose error to user so they can retry
-      console.error('Error encountered "' + errorThrown + '" when updating image "' + imgSetId + '"');
-
-      // Reset status to previous state
-      // TODO: Test resetting to previous state on failure
-      $imagesEqual.attr('data-images-equal', oldStatus);
-    });
-
-    // When loading completes, remove loading state and update image references
-    jqXHR.always(function handleAlways (dataOrJqXHR, textStatus, jqXHROrErrorThrown) {
-      $diffImg.removeClass('loading');
-      $refImg.removeClass('loading');
-      cachebustImg($diffImg);
-      cachebustImg($refImg);
-    });
+    var imageSet = global.application.imageSetsById[imgSetId];
+    imageSet.acceptChanges(acceptedImgBase64);
   }
 
   function updateReferenceImage(imgBase64, imgSetId) {

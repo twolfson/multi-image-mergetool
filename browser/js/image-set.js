@@ -6,7 +6,7 @@ var Overlay = require('./overlay');
 // Deifne our constructor
 function ImageSet(_containerEl, imageSetInfo) {
   // Create local variables for our image set
-  var imgSetId = imageSetInfo.id;
+  var imgSetId = this.id = imageSetInfo.id;
   var imgSetHumanName = imageSetInfo.id;
 
   // Save our state
@@ -119,7 +119,7 @@ ImageSet.prototype = {
 
     // Eagerly update our status
     // DEV: This won't be the scenario for update reference image (i.e. we are progressively updating images)
-    var oldStatus = this.imagesEqual;
+    var oldStatus = this.state.imagesEqual;
     this.titleEl.setAttribute('data-images-equal', 'true');
 
     // Make an AJAX call to accept our image
@@ -137,6 +137,13 @@ ImageSet.prototype = {
       // Reset status to previous state
       // TODO: Test resetting to previous state on failure
       that.titleEl.setAttribute('data-images-equal', oldStatus);
+    });
+
+    // When we complete updating
+    jqXHR.done(function handleDone (data, textStatus, jqXHR) {
+      // Save new state
+      // data = {imagesEqual: true}
+      that.state.imagesEqual = data.imagesEqual;
     });
 
     // When loading completes, remove loading state and update image references
