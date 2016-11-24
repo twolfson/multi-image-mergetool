@@ -47,14 +47,23 @@ describe('An overlay over an element', function () {
     // Perform overlay drag
     domUtils.dragOverElement({
       selector: '#overlay-container',
-      startCoords: {x: 0, y: 0},
-      endCoords: {x: 100, y: 100}
+      startCoords: {x: 50, y: 60},
+      endCoords: {x: 150, y: 170}
     });
 
     // Perform our assertions
     it('is visible', function () {
       var overlayEl = this.containerEl.querySelector('.overlay');
       expect(overlayEl).to.not.equal(null);
+    });
+
+    it('starts/stops where we expect', function () {
+      var overlayEl = this.containerEl.querySelector('.overlay');
+      var overlayBounds = overlayEl.getBoundingClientRect();
+      expect(overlayBounds.left).to.equal(50);
+      expect(overlayBounds.top).to.equal(60);
+      expect(overlayBounds.width).to.equal(100);
+      expect(overlayBounds.height).to.equal(110);
     });
   });
 });
