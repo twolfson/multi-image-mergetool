@@ -1,4 +1,6 @@
 # multi-image-mergetool changelog
+1.14.7 - Added browser tests for overlay
+
 1.14.6 - Cleaned up copy/pasted components between tests
 
 1.14.5 - Fixed up test suite
