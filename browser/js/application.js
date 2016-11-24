@@ -56,51 +56,8 @@ Application.bindOnce = function () {
   }
 
   function updateReferenceImage(imgBase64, imgSetId) {
-    // Fade out diff and reference images to "loading" state
-    var $imgSet = $('[data-image-set="' + $.escapeSelector(imgSetId) + '"]');
-    // assert.strictEqual($imgSet.length, 1);
-    var $diffImg = $imgSet.find('[data-compare-type="diff"]');
-    // TODO: We are selecting results table image as well via this selected due to cloneNode
-    //   Figure out how to not select it or make results disappear or something
-    var $refImg = $imgSet.find('[data-compare-type="ref"]');
-    $diffImg.addClass('loading');
-    $refImg.addClass('loading');
-
-    // Set status to neutral state
-    var $imagesEqual = $imgSet.find('[data-images-equal]');
-    var oldStatus = $imagesEqual.attr('data-images-equal');
-    $imagesEqual.attr('data-images-equal', 'loading');
-
-    // Make an AJAX call to accept our image
-    // http://api.jquery.com/jQuery.ajax/#jqXHR
-    var jqXHR = $.post('/update-image-set/' + encodeURIComponent(imgSetId), {
-      ref: imgBase64
-    });
-
-    // If there is an error
-    jqXHR.fail(function handleFail (jqXHR, textStatus, errorThrown) {
-      // TODO: Expose error to user so they can retry
-      console.error('Error encountered "' + errorThrown + '" when updating image "' + imgSetId + '"');
-
-      // Reset status to previous state
-      // TODO: Test resetting to previous state on failure
-      $imagesEqual.attr('data-images-equal', oldStatus);
-    });
-
-    // When we complete updating
-    jqXHR.done(function handleDone (data, textStatus, jqXHR) {
-      // Update status to new state
-      // data = {imagesEqual: true}
-      $imagesEqual.attr('data-images-equal', data.imagesEqual);
-    });
-
-    // When loading completes, remove loading state and update image references
-    jqXHR.always(function handleAlways (dataOrJqXHR, textStatus, jqXHROrErrorThrown) {
-      $diffImg.removeClass('loading');
-      $refImg.removeClass('loading');
-      cachebustImg($diffImg);
-      cachebustImg($refImg);
-    });
+    var imageSet = global.application.imageSetsById[imgSetId];
+    imageSet.updateReferenceImage(imgBase64);
   }
 
   // Define base64 content helper
