@@ -1,16 +1,19 @@
 // Load in our dependencies
 var expect = require('chai').expect;
-var D = require('domo');
+var D = require('../../browser/js/domo');
 var Overlay = require('../../browser/js/overlay');
 
 // Start our tests
-describe.skip('An overlay over an element', function () {
+describe.only('An overlay over an element', function () {
   it('is visible', function () {
-    // Test visibility, maybe with a screenshot
-    var el = D.DIV({style: 'width: 300px; height: 200px; color: navy'});
-    var overlay = new Overlay(el);
-    expect(overlay);
-    // Need to simulate mouse movements via something like `simulant`
+    // Create our element and overlay
+    var containerEl = D.DIV([
+      D.DIV({style: 'width: 300px; height: 200px; color: navy'})
+    ]);
+    var el = containerEl.childNodes[0];
+    var overlay = new Overlay(el, {containerEl: containerEl});
+
+    // TODO: Set up unbinding
   });
 });
 

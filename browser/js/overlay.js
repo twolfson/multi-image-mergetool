@@ -3,6 +3,9 @@ var Unidragger = require('unidragger');
 
 // Define our overlay class
 function Overlay(targetEl, options) {
+  // Fallback our options
+  options = options || {};
+
   // Bind our overlay to the element
   this.targetEl = targetEl;
   this.handles = [targetEl];
