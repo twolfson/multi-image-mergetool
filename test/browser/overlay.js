@@ -4,30 +4,38 @@ var D = require('../../browser/js/domo');
 var Overlay = require('../../browser/js/overlay');
 var domUtils = require('./utils/dom');
 
-// Start our tests
-describe.only('An overlay over an element', function () {
-  // Set up our elements
-  before(function createElement () {
-    // Create our container element
-    this.containerEl = D.DIV();
-    document.body.appendChild(this.containerEl);
-  });
-  after(function cleanup () {
-    document.body.removeChild(this.containerEl);
-    delete this.containerEl;
-  });
-  before(function bindOverlay () {
-    var el = D.DIV({
-      id: 'overlay-container',
-      style: 'width: 300px; height: 200px; color: navy'
+// Define our test helpers
+var overlayUtils = {
+  init: function () {
+    // Set up our elements
+    before(function createElement () {
+      // Create our container element
+      this.containerEl = D.DIV();
+      document.body.appendChild(this.containerEl);
     });
-    this.containerEl.appendChild(el);
-    this.overlay = new Overlay(el, {containerEl: this.containerEl});
-  });
-  after(function cleanup () {
-    // TODO: Set up unbinding of overlay
-    delete this.overlay;
-  });
+    after(function cleanup () {
+      document.body.removeChild(this.containerEl);
+      delete this.containerEl;
+    });
+    before(function bindOverlay () {
+      var el = D.DIV({
+        id: 'overlay-container',
+        style: 'width: 300px; height: 200px; color: navy'
+      });
+      this.containerEl.appendChild(el);
+      this.overlay = new Overlay(el, {containerEl: this.containerEl});
+    });
+    after(function cleanup () {
+      // TODO: Set up unbinding of overlay
+      delete this.overlay;
+    });
+  }
+};
+
+// Start our tests
+describe('An overlay over an element', function () {
+  // Set up our elements
+  overlayUtils.init();
 
   // Perform our assertions
   it('is not initially visible', function () {
