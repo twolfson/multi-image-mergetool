@@ -1,4 +1,6 @@
 # multi-image-mergetool changelog
+1.16.0 - Moved from `global.application` to `GlobalState`
+
 1.15.0 - Create ImagetSet constructor and consolidated acceptChanges/updateReferenceImage actions
 
 1.14.7 - Added browser tests for overlay
