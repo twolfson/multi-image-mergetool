@@ -109,7 +109,8 @@ Application.bindOnce = function () {
 
       // Run accept function
       // TODO: Remove results when all loaded
-      global.application.acceptImageSetChanges(originalCurrentImgBase64, similarImgSetId);
+      var imageSet = GlobalState.fetchImageSetById(similarImgSetId);
+      imageSet.acceptChanges(originalCurrentImgBase64);
     });
   });
   $('body').on('click', 'button[data-action="update-similar-images"]', function handleClick (evt) {
@@ -129,7 +130,8 @@ Application.bindOnce = function () {
 
       // Run update function
       // TODO: Remove results when all loaded
-      global.application.updateReferenceImage(base64Data, similarImgSetId);
+      var imageSet = GlobalState.fetchImageSetById(similarImgSetId);
+      imageSet.acceptChanges(base64Data);
     });
   });
 

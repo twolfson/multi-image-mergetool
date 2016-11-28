@@ -1,6 +1,7 @@
 // Load in our dependencies
 var $ = window.$ = window.jQuery = require('jquery');
 var D = require('./domo');
+var GlobalState = require('./global-state');
 var Overlay = require('./overlay');
 
 // Deifne our constructor
@@ -101,6 +102,9 @@ function ImageSet(_containerEl, imageSetInfo) {
 
   // Append our element to the container element
   _containerEl.appendChild(imgSetEl);
+
+  // Register our image set to the global state
+  GlobalState.addImageSet(this);
 }
 
 // Define class level helpers
