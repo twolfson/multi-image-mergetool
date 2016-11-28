@@ -8,7 +8,7 @@ var Overlay = require('./overlay');
 function ImageSet(_containerEl, imageSetInfo) {
   // Create local variables for our image set
   var imgSetId = this.id = imageSetInfo.id;
-  var imgSetHumanName = imageSetInfo.id;
+  var imgSetHumanName = this.humanName = imageSetInfo.id;
 
   // Save our state
   this.state = {

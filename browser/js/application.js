@@ -277,7 +277,7 @@ Application.bindOnce = function () {
           D.THEAD([
             D.TR([
               // TODO: Add collapse support like in `gemini-gui`
-              D.TH({colspan: 3}, imageSet.humanName)
+              D.TH({colspan: 3}, imageSet === expectedImgSet ? imageSet.humanName + ' (current set)' : imageSet.humanName)
             ]),
             D.TR([
               // TODO: Move style out of inline and to classes for more performance
