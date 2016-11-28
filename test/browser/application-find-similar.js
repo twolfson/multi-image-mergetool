@@ -74,13 +74,17 @@ describe.only('An application with many similarly failing images', function () {
     });
 
     it('resolve them performantly', function (done) {
-      this.timeout(10000);
       var buttonEl = domUtils._findElement.call(this,
         '[data-image-set="mock-img-not-equal-1"] button[data-action="find-similar-images"]');
       var $button = $(buttonEl);
       var suite = new Benchmark.Suite();
-      suite.add('Find similar images', function () {
-        $button.click();
+      suite.add('Find similar images', {
+        // https://github.com/bestiejs/benchmark.js/issues/172
+        maxTime: 1,
+        minSamples: 2,
+        fn: function () {
+          $button.click();
+        }
       });
       suite.on('complete', function handleCompletion () {
         console.log(this);
