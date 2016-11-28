@@ -20,25 +20,25 @@ function ImageSet(currentImage, refImage, options) {
 }
 
 // Define class methods/properties
-ImageSet.generateSets = function (currentImageArr, refImageArr, options) {
+ImageSet.generateSets = function (currentImages, refImages, options) {
   // Fallback our options
   options = options || {};
 
   // Verify we have equal sets of images
-  if (currentImageArr.length !== refImageArr.length) {
-    throw new Error(currentImageArr.length + ' current images ' +
-      'and ' + refImageArr.length + ' reference images were received. We expect these numbers to line up, ' +
+  if (currentImages.length !== refImages.length) {
+    throw new Error(currentImages.length + ' current images ' +
+      'and ' + refImages.length + ' reference images were received. We expect these numbers to line up, ' +
       'please check path resolution. ' +
       'It\'s possible the reference image doesn\'t exist yet as it\'s new so ' +
       'please avoid using \'*\' patterns or similar');
   }
 
   // If there are diff images, then verify they are equal as well
-  var diffImageArr = options.diffImages;
-  if (diffImageArr) {
-    if (diffImageArr.length !== currentImageArr.length) {
-      throw new Error(currentImageArr.length + ' current images ' +
-        'and ' + diffImageArr.length + ' diff images were received. We expect these numbers to line up, ' +
+  var diffImages = options.diffImages;
+  if (diffImages) {
+    if (diffImages.length !== currentImages.length) {
+      throw new Error(currentImages.length + ' current images ' +
+        'and ' + diffImages.length + ' diff images were received. We expect these numbers to line up, ' +
         'please check path resolution. ' +
         'It\'s possible the reference image doesn\'t exist yet as it\'s new so ' +
         'please avoid using \'*\' patterns or similar');
@@ -46,9 +46,9 @@ ImageSet.generateSets = function (currentImageArr, refImageArr, options) {
   }
 
   // Generate new sets of images
-  var imageSets = currentImageArr.map(function createImageSet (currentImage, i) {
-    return new ImageSet(currentImage, refImageArr[i], {
-      diffImage: diffImageArr ? diffImageArr[i] : null
+  var imageSets = currentImages.map(function createImageSet (currentImage, i) {
+    return new ImageSet(currentImage, refImages[i], {
+      diffImage: diffImages ? diffImages[i] : null
     });
   });
 
