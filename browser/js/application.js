@@ -37,31 +37,17 @@ function Application(_containerEl, imageSetInfoArr) {
 Application.bindOnce = function () {
   // Set up image acceptance binding
   $('body').on('click', 'button[data-action="accept-changes"]', function handleClick (evt) {
-    // Find our image set container
-    var btnEl = evt.target;
-    var $imageSet = $(btnEl).closest('[data-image-set]');
-    var imageSetId = $imageSet.data('image-set');
-    assert.strictEqual($imageSet.length, 1);
+    // Resolve our image set
+    var imageSet = ImageSet.fetchByEvent(evt);
 
-    // Find the current image
-    var $currentImg = $imageSet.find('[data-compare-type="current"]');
-    assert.strictEqual($currentImg.length, 1);
-
-    // Extract base64 content for image
-    var base64Data = utils.getBase64Content($currentImg[0]);
-
-    // Run acceptance function
-    var imageSet = GlobalState.fetchImageSetById(imageSetId);
+    // Extract and accept base64 content for image
+    var base64Data = utils.getBase64Content(imageSet.currentImg);
     imageSet.acceptChanges(base64Data);
   });
 
   $('body').on('click', 'button[data-action="find-similar-images"]', function handleClick (evt) {
-    // Find our image set
-    var btnEl = evt.target;
-    var $imageSet = $(btnEl).closest('[data-image-set]');
-    var imageSet = GlobalState.fetchImageSetById($imageSet.data('image-set'));
-
-    // Find its similar images
+    // Find our image set's similar images
+    var imageSet = ImageSet.fetchByEvent(evt);
     imageSet.findSimilarImages();
   });
 };

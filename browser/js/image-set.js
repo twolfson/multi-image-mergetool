@@ -115,6 +115,15 @@ ImageSet.cachebustImg = function (imgEl) {
   var newSrc = originalSrc.match(/\?1$/) ? originalSrc + '1' : originalSrc + '?1';
   imgEl.setAttribute('src', newSrc);
 };
+ImageSet.fetchByEvent = function (evt) {
+  // Resolve our id
+  var targetEl = evt.target;
+  var $imageSet = $(targetEl).closest('[data-image-set]');
+  var imageSetId = $imageSet.data('image-set');
+
+  // Return our image set
+  return GlobalState.fetchImageSetById(imageSetId);
+};
 
 // Define prototype methods
 ImageSet.prototype = {
