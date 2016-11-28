@@ -4,6 +4,7 @@ var $ = require('jquery');
 var _ = require('underscore');
 var async = require('async');
 var Application = require('../../../browser/js/application');
+var GlobalState = require('../../../browser/js/global-state');
 var diagonalBase64 = fs.readFileSync(__dirname + '/../../test-files/diagonal.png', 'base64');
 var diagonalDotDiffBase64 = fs.readFileSync(__dirname + '/../../test-files/diagonal-dot-diff.png', 'base64');
 var dotBase64 = fs.readFileSync(__dirname + '/../../test-files/dot.png', 'base64');
@@ -47,6 +48,9 @@ exports.IMAGE_SETS = {
 //   add `(imageSets)` as an option, and define constants of `imageSets` for us to use in utils
 var loggedDebugNotice = false;
 exports.init = function (imageSetInfoArr) {
+  before(function resetGlobalState () {
+    GlobalState.reset();
+  });
   before(function createApplication () {
     // DEV: We add `className` for nicer looking screenshots
     this.containerEl = document.createElement('div');
