@@ -11,9 +11,11 @@ module.exports = {
     };
   },
   addImageSet: function (imageSet) {
-    assert(imageSet.id);
+    assert(imageSet.id, 'Unable to find `id` property of `imageSet`. ' +
+      'Please verify an `ImageSet` is being passed to `GlobalState.addImageSet`');
     var imageSetsById = this._state.imageSetsById;
-    assert.strictEqual(imageSetsById[imageSet.id], undefined);
+    assert.strictEqual(imageSetsById[imageSet.id], undefined,
+      'An image set with id "' + imageSet.id + '" is already registered');
     imageSetsById[imageSet.id] = imageSet;
   },
   getImageSetById: function (id) {
