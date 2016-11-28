@@ -61,6 +61,7 @@ describe('An application with no similarly failing images', function () {
 });
 
 // Define a performance test
+// TODO: Consider putting test behind an environment flag (found via `--grep`?)
 describe.only('An application with many similarly failing images', function () {
   // Create our application
   applicationUtils.init(applicationUtils.IMAGE_SETS.PERFORMANCE);
@@ -81,13 +82,16 @@ describe.only('An application with many similarly failing images', function () {
       suite.add('Find similar images', {
         // https://github.com/bestiejs/benchmark.js/issues/172
         maxTime: 1,
-        minSamples: 2,
         fn: function () {
           $button.click();
         }
       });
       suite.on('complete', function handleCompletion () {
-        console.log(this);
+        // https://benchmarkjs.com/docs
+        var benchmark = this[0];
+        expect(benchmark.stats.sample.length).to.be.at.least(2);
+        expect(benchmark.stats.mean).to.be.at.least(0.100); // 100 ms
+        expect(benchmark.stats.mean).to.be.at.most(0.600); // 600 ms
         done();
       });
       suite.run();
