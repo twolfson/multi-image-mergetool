@@ -80,11 +80,10 @@ Application.bindOnce = function () {
     // Find our image set container
     var btnEl = evt.target;
     var $imageSet = $(btnEl).closest('[data-image-set]');
-    // assert.strictEqual($imageSet.length, 1);
+    assert.strictEqual($imageSet.length, 1);
 
     // Find our similar image sets
     var $similarImageSets = $imageSet.find('[data-similar-image-set]');
-    // assert.strictEqual($currentImg.length, 1);
 
     // Filter our similar image sets to selected ones
     return $similarImageSets.filter(function updateImageSet (i, similarImageSetEl) {
@@ -104,7 +103,7 @@ Application.bindOnce = function () {
 
       // Find our original current image
       var $originalCurrentImg = $similarImageSet.find('.original-current');
-      // assert.strictEqual($originalCurrentImg.length, 1);
+      assert.strictEqual($originalCurrentImg.length, 1);
       var originalCurrentImgBase64 = getBase64Content($originalCurrentImg[0]);
 
       // Run accept function
@@ -125,7 +124,7 @@ Application.bindOnce = function () {
 
       // Extract updated base64 content
       var $updatedRefCanvas = $similarImageSet.find('.updated-ref');
-      // assert.strictEqual($updatedRefCanvas.length, 1);
+      assert.strictEqual($updatedRefCanvas.length, 1);
       var base64Data = $updatedRefCanvas[0].toDataURL('image/png');
 
       // Run update function
@@ -146,7 +145,7 @@ Application.bindOnce = function () {
 
     // Find our target area
     var imgOverlay = expectedImageSetEl.imgOverlay;
-    // assert(imgOverlay);
+    assert(imgOverlay);
     var targetArea = imgOverlay.overlayInfo.relative;
 
     // Resolve our expected diff img
