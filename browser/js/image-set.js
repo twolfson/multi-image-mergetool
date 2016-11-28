@@ -169,7 +169,6 @@ ImageSet.prototype = {
     }
 
     // Filter image sets based on matching widths and selection
-    // TODO: Handle only 1 matching image set (i.e. source image) -- should say "No matches found" or similar
     var matchingImageSets = GlobalState.getImageSets().filter(function matchImageSetInfo (imageSetInfo) {
       // If the images are different widths, return false
       // TODO: Allow this to be a configurable heuristic
