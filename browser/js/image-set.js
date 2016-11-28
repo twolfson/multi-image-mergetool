@@ -97,8 +97,8 @@ function ImageSet(_containerEl, imageSetInfo) {
     containerEl: imageSetEl.querySelector('.image-set__collapse')
   });
 
-  // Save imgOverlay directly to imageSetEl
-  imageSetEl.imgOverlay = imgOverlay;
+  // Save imgOverlay for layer
+  this.imgOverlay = imgOverlay;
 
   // Append our element to the container element
   _containerEl.appendChild(imageSetEl);

@@ -139,19 +139,17 @@ Application.bindOnce = function () {
     // Find our image set container
     var btnEl = evt.target;
     var $expectedImageSet = $(btnEl).closest('[data-image-set]');
-    var expectedImageSetEl = $expectedImageSet[0];
     var expectedImageSetCollapseEl = $expectedImageSet.find('.image-set__collapse')[0];
-    var expectedImageSetId = $expectedImageSet.data('image-set');
-    var expectedImageSet = GlobalState.fetchImageSetById(expectedImageSetId);
+    var expectedImageSet = GlobalState.fetchImageSetById($expectedImageSet.data('image-set'));
 
     // Find our target area
-    var imgOverlay = expectedImageSetEl.imgOverlay;
+    var imgOverlay = expectedImageSet.imgOverlay;
     assert(imgOverlay);
     var targetArea = imgOverlay.overlayInfo.relative;
 
     // Resolve our expected diff img
     // DEV: This loads first matching image only due to `querySelector` instead of `querySelectorAll`
-    var expectedDiffImg = expectedImageSetEl.querySelector('[data-compare-type=diff]');
+    var expectedDiffImg = expectedImageSet.diffImg;
 
     // Adjust our target area based on scaling
     // TODO: Be sure to test target area scaling for both matching and updated diffs
