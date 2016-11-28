@@ -1,4 +1,6 @@
 # multi-image-mergetool changelog
+1.18.1 - Enabled disabled assertions
+
 1.18.0 - Normalized to `imageSet` in browser/server where appropriate
 
 1.17.0 - Relocated finding matching image sets to `ImageSet.findSimilarImageSets()` method
