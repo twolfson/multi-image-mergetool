@@ -121,7 +121,6 @@ ImageSet.prototype = {
   },
   findSimilarImageSets: function (targetArea) {
     // Start our performance check (70ms for 200 1024x1600 images)
-    // TODO: Add back humanName += `current set` support
     console.time('findSelectionMatches');
 
     // Prepare canvas for images to match against
