@@ -23,16 +23,16 @@ Application.bindOnce();
 var base64Prefix = 'data:image/png;base64,';
 exports.IMAGE_SET_EQUAL = {
   id: 'mock-img-equal',
-  currentImgUrl: base64Prefix + diagonalBase64,
-  diffImgUrl: base64Prefix + diagonalBase64,
-  refImgUrl: base64Prefix + diagonalBase64,
+  currentImageUrl: base64Prefix + diagonalBase64,
+  diffImageUrl: base64Prefix + diagonalBase64,
+  refImageUrl: base64Prefix + diagonalBase64,
   imagesEqual: true
 };
 exports.IMAGE_SET_NOT_EQUAL = {
   id: 'mock-img-not-equal',
-  currentImgUrl: base64Prefix + diagonalBase64,
-  diffImgUrl: base64Prefix + diagonalDotDiffBase64,
-  refImgUrl: base64Prefix + dotBase64,
+  currentImageUrl: base64Prefix + diagonalBase64,
+  diffImageUrl: base64Prefix + diagonalDotDiffBase64,
+  refImageUrl: base64Prefix + dotBase64,
   imagesEqual: false
 };
 exports.IMAGE_SET_NOT_EQUAL2 = _.defaults({
