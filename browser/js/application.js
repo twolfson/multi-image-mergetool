@@ -5,6 +5,7 @@ var $ = window.$ = window.jQuery = require('jquery');
 void require('bootstrap/dist/js/bootstrap.js');
 var D = require('./domo');
 var ImageSet = require('./image-set');
+var GlobalState = require('./global-state');
 
 // TODO: Consider scrollspy for update buttons
 // TODO: Consider buttons to expand row of images to full screen
@@ -23,31 +24,13 @@ function Application(_containerEl, imageSetInfoArr) {
   // Expose our images
   // TODO: Expose images in tree list like gemini-gui, maybe even simplified variants like GitHub
   //   (e.g. `a/b/c` when only 1 file)
-  var imageSetsById = this.imageSetsById = {};
   imageSetInfoArr.forEach(function createImageSet (imageSetInfo) {
-    var imageSet = new ImageSet(imageSetsDocFrag, imageSetInfo);
-    assert(imageSet.id);
-    assert.strictEqual(imageSetsById[imageSet.id], undefined);
-    imageSetsById[imageSet.id] = imageSet;
+    void new ImageSet(imageSetsDocFrag, imageSetInfo);
   });
 
   // Apppend our container element
   this.containerEl.appendChild(imageSetsDocFrag);
-
-  // Expose ourself as a global
-  // TODO: Move `bind` to be specific to container so we don't need a global
-  global.application = this;
 }
-Application.prototype = {
-  acceptImageSetChanges: function (acceptedImgBase64, imgSetId) {
-    var imageSet = this.imageSetsById[imgSetId];
-    imageSet.acceptChanges(acceptedImgBase64);
-  },
-  updateReferenceImage: function (imgBase64, imgSetId) {
-    var imageSet = this.imageSetsById[imgSetId];
-    imageSet.updateReferenceImage(imgBase64);
-  }
-};
 
 // Define our button bindings
 Application.bindOnce = function () {
@@ -77,19 +60,20 @@ Application.bindOnce = function () {
   $('body').on('click', 'button[data-action="accept-changes"]', function handleClick (evt) {
     // Find our image set container
     var btnEl = evt.target;
-    var $imgSet = $(btnEl).closest('[data-image-set]');
-    var imgSetId = $imgSet.data('image-set');
-    // assert.strictEqual($imgSet.length, 1);
+    var $imageSet = $(btnEl).closest('[data-image-set]');
+    var imageSetId = $imageSet.data('image-set');
+    assert.strictEqual($imageSet.length, 1);
 
     // Find the current image
-    var $currentImg = $imgSet.find('[data-compare-type="current"]');
-    // assert.strictEqual($currentImg.length, 1);
+    var $currentImg = $imageSet.find('[data-compare-type="current"]');
+    assert.strictEqual($currentImg.length, 1);
 
     // Extract base64 content for image
     var base64Data = getBase64Content($currentImg[0]);
 
     // Run acceptance function
-    global.application.acceptImageSetChanges(base64Data, imgSetId);
+    var imageSet = GlobalState.fetchImageSetById(imageSetId);
+    imageSet.acceptChanges(base64Data);
   });
 
   function findSelectedSimilarImageSets(evt) {

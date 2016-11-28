@@ -18,6 +18,11 @@ module.exports = {
   },
   getImageSetById: function (id) {
     return this._state.imageSetsById[id];
+  },
+  fetchImageSetById: function (id) {
+    var imageSet = this.getImageSetById(id);
+    assert(imageSet, 'Unable to find image set by id "' + id + '"');
+    return imageSet;
   }
 };
 
