@@ -1,5 +1,4 @@
 // Define base64 content helper
-// TODO: Find a base64 content helper library?
 var base64CanvasEl = document.createElement('canvas');
 var base64Context = base64CanvasEl.getContext('2d');
 exports.getBase64Content = function (imgEl) {
