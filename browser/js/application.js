@@ -79,11 +79,11 @@ Application.bindOnce = function () {
   function findSelectedSimilarImageSets(evt) {
     // Find our image set container
     var btnEl = evt.target;
-    var $imgSet = $(btnEl).closest('[data-image-set]');
-    // assert.strictEqual($imgSet.length, 1);
+    var $imageSet = $(btnEl).closest('[data-image-set]');
+    // assert.strictEqual($imageSet.length, 1);
 
     // Find our similar image sets
-    var $similarImageSets = $imgSet.find('[data-similar-image-set]');
+    var $similarImageSets = $imageSet.find('[data-similar-image-set]');
     // assert.strictEqual($currentImg.length, 1);
 
     // Filter our similar image sets to selected ones
@@ -100,7 +100,7 @@ Application.bindOnce = function () {
     $selectedSimilarImageSets.each(function updateImageSet (i, similarImageSetEl) {
       // Move back to jQuery collection
       var $similarImageSet = $(similarImageSetEl);
-      var similarImgSetId = $similarImageSet.data('similar-image-set');
+      var similarImageSetId = $similarImageSet.data('similar-image-set');
 
       // Find our original current image
       var $originalCurrentImg = $similarImageSet.find('.original-current');
@@ -109,7 +109,7 @@ Application.bindOnce = function () {
 
       // Run accept function
       // TODO: Remove results when all loaded
-      var imageSet = GlobalState.fetchImageSetById(similarImgSetId);
+      var imageSet = GlobalState.fetchImageSetById(similarImageSetId);
       imageSet.acceptChanges(originalCurrentImgBase64);
     });
   });
@@ -121,7 +121,7 @@ Application.bindOnce = function () {
     $selectedSimilarImageSets.each(function updateImageSet (i, similarImageSetEl) {
       // Move back to jQuery collection
       var $similarImageSet = $(similarImageSetEl);
-      var similarImgSetId = $similarImageSet.data('similar-image-set');
+      var similarImageSetId = $similarImageSet.data('similar-image-set');
 
       // Extract updated base64 content
       var $updatedRefCanvas = $similarImageSet.find('.updated-ref');
@@ -130,7 +130,7 @@ Application.bindOnce = function () {
 
       // Run update function
       // TODO: Remove results when all loaded
-      var imageSet = GlobalState.fetchImageSetById(similarImgSetId);
+      var imageSet = GlobalState.fetchImageSetById(similarImageSetId);
       imageSet.acceptChanges(base64Data);
     });
   });
@@ -138,20 +138,20 @@ Application.bindOnce = function () {
   $('body').on('click', 'button[data-action="find-similar-images"]', function handleClick (evt) {
     // Find our image set container
     var btnEl = evt.target;
-    var $expectedImgSet = $(btnEl).closest('[data-image-set]');
-    var expectedImgSetEl = $expectedImgSet[0];
-    var expectedImgSetCollapseEl = $expectedImgSet.find('.image-set__collapse')[0];
-    var expectedImgSetId = $expectedImgSet.data('image-set');
-    var expectedImgSet = GlobalState.fetchImageSetById(expectedImgSetId);
+    var $expectedImageSet = $(btnEl).closest('[data-image-set]');
+    var expectedImageSetEl = $expectedImageSet[0];
+    var expectedImageSetCollapseEl = $expectedImageSet.find('.image-set__collapse')[0];
+    var expectedImageSetId = $expectedImageSet.data('image-set');
+    var expectedImageSet = GlobalState.fetchImageSetById(expectedImageSetId);
 
     // Find our target area
-    var imgOverlay = expectedImgSetEl.imgOverlay;
+    var imgOverlay = expectedImageSetEl.imgOverlay;
     // assert(imgOverlay);
     var targetArea = imgOverlay.overlayInfo.relative;
 
     // Resolve our expected diff img
     // DEV: This loads first matching image only due to `querySelector` instead of `querySelectorAll`
-    var expectedDiffImg = expectedImgSetEl.querySelector('[data-compare-type=diff]');
+    var expectedDiffImg = expectedImageSetEl.querySelector('[data-compare-type=diff]');
 
     // Adjust our target area based on scaling
     // TODO: Be sure to test target area scaling for both matching and updated diffs
@@ -164,9 +164,9 @@ Application.bindOnce = function () {
     };
 
     // Remove previously existing results
-    var _resultsEl = expectedImgSetCollapseEl.querySelector('.results');
+    var _resultsEl = expectedImageSetCollapseEl.querySelector('.results');
     if (_resultsEl) {
-      expectedImgSetCollapseEl.removeChild(_resultsEl);
+      expectedImageSetCollapseEl.removeChild(_resultsEl);
     }
 
     // Generate and append our results
@@ -178,13 +178,13 @@ Application.bindOnce = function () {
       ])
     ]);
     // TODO: Delete results element upon resolution
-    expectedImgSetCollapseEl.appendChild(resultsEl);
+    expectedImageSetCollapseEl.appendChild(resultsEl);
 
     // Start our chain of methods
     findSelectionMatches();
     function findSelectionMatches() { // jshint ignore:line
       // Resolve our similar image sets based on target area
-      var matchingImageSets = expectedImgSet.findSimilarImageSets(targetArea);
+      var matchingImageSets = expectedImageSet.findSimilarImageSets(targetArea);
 
       // If we have no matching image sets
       assert.notEqual(matchingImageSets.length, 0,
@@ -271,7 +271,7 @@ Application.bindOnce = function () {
         // DEV: We use a document fragment to avoid `n` DOM edits -- instead it's 1
         // DEV: Tables will all use same width due to heuristics
         var imageSetHumanName = imageSet.humanName;
-        if (imageSet === expectedImgSet) { imageSetHumanName += ' (current set)'; }
+        if (imageSet === expectedImageSet) { imageSetHumanName += ' (current set)'; }
         var resultGroupEl = D.TABLE({
           class: 'table',
           'data-similar-image-set': imageSet.id

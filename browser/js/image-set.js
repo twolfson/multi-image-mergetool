@@ -7,8 +7,8 @@ var Overlay = require('./overlay');
 // Deifne our constructor
 function ImageSet(_containerEl, imageSetInfo) {
   // Create local variables for our image set
-  var imgSetId = this.id = imageSetInfo.id;
-  var imgSetHumanName = this.humanName = imageSetInfo.id;
+  var imageSetId = this.id = imageSetInfo.id;
+  var imageSetHumanName = this.humanName = imageSetInfo.id;
 
   // Save our state
   this.state = {
@@ -16,16 +16,16 @@ function ImageSet(_containerEl, imageSetInfo) {
   };
 
   // Generate our image set element
-  var imgSetEl = D.UL({'data-image-set': imgSetId}, [
+  var imageSetEl = D.UL({'data-image-set': imageSetId}, [
     D.LI([
       // Row title
       this.saveEl('titleEl', D.A({
         class: 'image-set__title',
         href: 'javascript:void 0;', 'data-toggle': 'collapse',
-        'data-target': '[data-image-set="' + imgSetId + '"] .image-set__collapse',
+        'data-target': '[data-image-set="' + imageSetId + '"] .image-set__collapse',
         'data-images-equal': imageSetInfo.imagesEqual,
-        'aria-controls': imgSetId
-      }, imgSetHumanName)),
+        'aria-controls': imageSetId
+      }, imageSetHumanName)),
 
       // Collapsable container for row
       // DEV: We use `data-id` as `id` has restrictions on characters
@@ -92,16 +92,16 @@ function ImageSet(_containerEl, imageSetInfo) {
 
   // Bind an overlay to diff image
   // TODO: Explore binding overlay to each of images (that jumps between them)
-  // DEV: We use imgSetEl's collapse as a container so it hides on collapse
-  var imgOverlay = new Overlay(imgSetEl.querySelector('img[data-compare-type=diff]'), {
-    containerEl: imgSetEl.querySelector('.image-set__collapse')
+  // DEV: We use imageSetEl's collapse as a container so it hides on collapse
+  var imgOverlay = new Overlay(imageSetEl.querySelector('img[data-compare-type=diff]'), {
+    containerEl: imageSetEl.querySelector('.image-set__collapse')
   });
 
-  // Save imgOverlay directly to imgSetEl
-  imgSetEl.imgOverlay = imgOverlay;
+  // Save imgOverlay directly to imageSetEl
+  imageSetEl.imgOverlay = imgOverlay;
 
   // Append our element to the container element
-  _containerEl.appendChild(imgSetEl);
+  _containerEl.appendChild(imageSetEl);
 
   // Register our image set to the global state
   GlobalState.addImageSet(this);

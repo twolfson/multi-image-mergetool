@@ -47,7 +47,7 @@ ImageSet.generateSets = function (currentImgArr, refImgArr, options) {
   }
 
   // Generate new sets of images
-  var imageSets = currentImgArr.map(function createImgSet (currentImg, i) {
+  var imageSets = currentImgArr.map(function createImageSet (currentImg, i) {
     return new ImageSet(currentImg, refImgArr[i], {
       diffImg: diffImgArr ? diffImgArr[i] : null
     });
