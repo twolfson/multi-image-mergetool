@@ -121,16 +121,16 @@ exports._parse = function (argv, callback) {
   // Otherwise, if our loader is Gemini, resolve its references
   } else if (params.loader === 'gemini') {
     currentImages = glob.sync('gemini-report/images/**/*~current.png');
-    refImages = currentImages.map(function resolveRefImage (currentImg) {
+    refImages = currentImages.map(function resolveRefImage (currentImage) {
       // gemini-report/images/root/default-large/Chrome~current.png ->
       //  gemini/screens/root/default-large/Chrome.png
-      return currentImg.replace('gemini-report/images', 'gemini/screens')
+      return currentImage.replace('gemini-report/images', 'gemini/screens')
         .replace('~current.png', '.png');
     });
-    diffImages = currentImages.map(function resolveRefImage (currentImg) {
+    diffImages = currentImages.map(function resolveRefImage (currentImage) {
       // gemini-report/images/root/default-large/Chrome~current.png ->
       //   gemini-report/images/root/default-large/Chrome~diff.png
-      return currentImg.replace('~current.png', '~diff.png');
+      return currentImage.replace('~current.png', '~diff.png');
     });
   // Otherwise, complain about an invalid loader
   } else {
@@ -169,10 +169,10 @@ exports._parse = function (argv, callback) {
       // Otherwise, log our result and update our counter
       // https://github.com/gemini-testing/gemini/blob/v4.13.0/lib/reporters/flat-factory/flat.js#L41-L78
       if (imagesEqual) {
-        logger.info(ICON_SUCCESS + ' ' + imageSet.refImg);
+        logger.info(ICON_SUCCESS + ' ' + imageSet.refImage);
         imagesEqualCount += 1;
       } else {
-        logger.info(ICON_FAIL + ' ' + imageSet.refImg);
+        logger.info(ICON_FAIL + ' ' + imageSet.refImage);
       }
 
       // Callback

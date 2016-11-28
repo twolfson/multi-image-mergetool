@@ -69,8 +69,8 @@ describe('An in-process CLI invocation', function () {
       var generateServerSpy = cli.generateServer;
       expect(generateServerSpy.callCount).to.equal(1);
       var imageSets = generateServerSpy.args[0][0];
-      expect(imageSets[0].diffImg).to.be.a('String');
-      expect(fs.statSync(imageSets[0].diffImg)).to.not.equal(null);
+      expect(imageSets[0].diffImage).to.be.a('String');
+      expect(fs.statSync(imageSets[0].diffImage)).to.not.equal(null);
     });
   });
 
@@ -94,9 +94,9 @@ describe('An in-process CLI invocation', function () {
     it('uses our custom diff file', function () {
       var generateServerSpy = cli.generateServer;
       var imageSets = generateServerSpy.args[0][0];
-      expect(imageSets[0].diffImg).to.equal(diffFilepath);
+      expect(imageSets[0].diffImage).to.equal(diffFilepath);
       // DEV: This verifies we both create the file's directory and the file itself
-      expect(fs.statSync(imageSets[0].diffImg)).to.not.equal(null);
+      expect(fs.statSync(imageSets[0].diffImage)).to.not.equal(null);
     });
   });
 

@@ -27,13 +27,13 @@ function generateServer(imageSets) {
   // Expose our images statically
   var imageSetsByFilepath = {};
   imageSets.forEach(function saveImageFilepath (imageSet) {
-    imageSetsByFilepath[imageSet.currentImg] = imageSet;
-    imageSetsByFilepath[imageSet.refImg] = imageSet;
+    imageSetsByFilepath[imageSet.currentImage] = imageSet;
+    imageSetsByFilepath[imageSet.refImage] = imageSet;
     // DEV: We could have a security issue if someone symlinks `/tmp/...` to `/etc/passwd` =/
     //   but that's kind of unavoidable since the inode is constantly changing due to being a diff
-    assert(imageSet.diffImg, 'Expected `imageSet.diffImg` to be defined but it wasn\'t. ' +
+    assert(imageSet.diffImage, 'Expected `imageSet.diffImage` to be defined but it wasn\'t. ' +
       'Please verify `imageSet.compare()` has been run first');
-    imageSetsByFilepath[imageSet.diffImg] = imageSet;
+    imageSetsByFilepath[imageSet.diffImage] = imageSet;
   });
   function resolveImageSet(req, res, next) {
     // Attempt to recognize our image

@@ -65,21 +65,21 @@ function ImageSet(_containerEl, imageSetInfo) {
               D.TD({style: 'width: 33%'}, [
                 this.saveEl('currentImg', D.IMG({
                   'data-compare-type': 'current',
-                  src: imageSetInfo.currentImgUrl,
+                  src: imageSetInfo.currentImageUrl,
                   style: 'max-width: 100%'
                 }))
               ]),
               D.TD({style: 'width: 33%'}, [
                 this.saveEl('diffImg', D.IMG({
                   'data-compare-type': 'diff',
-                  src: imageSetInfo.diffImgUrl,
+                  src: imageSetInfo.diffImageUrl,
                   style: 'max-width: 100%'
                 }))
               ]),
               D.TD({style: 'width: 33%'}, [
                 this.saveEl('refImg', D.IMG({
                   'data-compare-type': 'ref',
-                  src: imageSetInfo.refImgUrl,
+                  src: imageSetInfo.refImageUrl,
                   style: 'max-width: 100%'
                 }))
               ])
