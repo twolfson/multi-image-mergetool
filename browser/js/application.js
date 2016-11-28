@@ -270,6 +270,7 @@ Application.bindOnce = function () {
         // Generate and append result content
         // DEV: We use a document fragment to avoid `n` DOM edits -- instead it's 1
         // DEV: Tables will all use same width due to heuristics
+        var imageSetHumanName = imageSet === expectedImgSet ? imageSet.humanName + ' (current set)' : imageSet.humanName;
         var resultGroupEl = D.TABLE({
           class: 'table',
           'data-similar-image-set': imageSet.id
@@ -277,7 +278,7 @@ Application.bindOnce = function () {
           D.THEAD([
             D.TR([
               // TODO: Add collapse support like in `gemini-gui`
-              D.TH({colspan: 3}, imageSet === expectedImgSet ? imageSet.humanName + ' (current set)' : imageSet.humanName)
+              D.TH({colspan: 3}, imageSetHumanName)
             ]),
             D.TR([
               // TODO: Move style out of inline and to classes for more performance
