@@ -1,4 +1,6 @@
 # multi-image-mergetool changelog
+1.19.0 - Relocated results generation to its own class
+
 1.18.1 - Enabled disabled assertions
 
 1.18.0 - Normalized to `imageSet` in browser/server where appropriate
