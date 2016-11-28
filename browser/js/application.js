@@ -184,18 +184,18 @@ Application.bindOnce = function () {
     findSelectionMatches();
     function findSelectionMatches() { // jshint ignore:line
       // Resolve our similar image sets based on target area
-      var matchingImageSetInfos = expectedImgSet.findSimilarImageSets(targetArea);
+      var matchingImageSets = expectedImgSet.findSimilarImageSets(targetArea);
 
       // If we have no matching image sets
-      // assert.notEqual(matchingImageSetInfos.length, 0,
-      //   'Something went horribly wrong when matching images; not even the original is equal to itself');
-      if (matchingImageSetInfos.length === 1) {
+      assert.notEqual(matchingImageSets.length, 0,
+        'Something went horribly wrong when matching images; not even the original is equal to itself');
+      if (matchingImageSets.length === 1) {
         resultsEl.appendChild(D.DIV('No similar images found'));
         return;
       }
 
       // Otherwise, update our count and append our buttons
-      resultsEl.querySelector('.results__count').textContent = ' (' + matchingImageSetInfos.length + ')';
+      resultsEl.querySelector('.results__count').textContent = ' (' + matchingImageSets.length + ')';
       resultsEl.appendChild(D.DIV([
         D.BUTTON({
           class: 'btn btn-default',
@@ -209,10 +209,10 @@ Application.bindOnce = function () {
       ]));
 
       // Pass through matching sets to `bulkUpdateSelection`
-      bulkUpdateSelection(matchingImageSetInfos);
+      bulkUpdateSelection(matchingImageSets);
     }
 
-    function bulkUpdateSelection(imageSetInfos) { // jshint ignore:line
+    function bulkUpdateSelection(imageSets) { // jshint ignore:line
       // Start our performance check (620ms total for 100 1024x1600 images, 400ms seems to be first `drawImage`)
       console.time('bulkUpdateSelection');
 
@@ -220,11 +220,11 @@ Application.bindOnce = function () {
       var resultsDocFrag = D.FRAGMENT();
 
       // Generate and updated ref image for each of our comparisons
-      imageSetInfos.forEach(function generateUpdatedRef (imageSetInfo) {
+      imageSets.forEach(function generateUpdatedRef (imageSet) {
         // Localize our references
-        var currentImg = imageSetInfo.currentImg;
-        var diffImg = imageSetInfo.diffImg;
-        var refImg = imageSetInfo.refImg;
+        var currentImg = imageSet.currentImg;
+        var diffImg = imageSet.diffImg;
+        var refImg = imageSet.refImg;
 
         // Create helper to generate new canvases
         function createUpdatedCanvas(baseImg, attributes) {
@@ -272,12 +272,12 @@ Application.bindOnce = function () {
         // DEV: Tables will all use same width due to heuristics
         var resultGroupEl = D.TABLE({
           class: 'table',
-          'data-similar-image-set': imageSetInfo.id
+          'data-similar-image-set': imageSet.id
         }, [
           D.THEAD([
             D.TR([
               // TODO: Add collapse support like in `gemini-gui`
-              D.TH({colspan: 3}, imageSetInfo.humanName)
+              D.TH({colspan: 3}, imageSet.humanName)
             ]),
             D.TR([
               // TODO: Move style out of inline and to classes for more performance
