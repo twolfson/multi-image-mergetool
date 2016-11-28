@@ -4,7 +4,7 @@ var D = require('./domo');
 var GlobalState = require('./global-state');
 var Overlay = require('./overlay');
 
-// Deifne our constructor
+// Define our constructor
 function ImageSet(_containerEl, imageSetInfo) {
   // Create local variables for our image set
   var imageSetId = this.id = imageSetInfo.id;
