@@ -1,4 +1,6 @@
 # multi-image-mergetool changelog
+1.17.0 - Relocated finding matching image sets to `ImageSet.findSimilarImageSets()` method
+
 1.16.0 - Moved from `global.application` to `GlobalState`
 
 1.15.0 - Create ImagetSet constructor and consolidated acceptChanges/updateReferenceImage actions
