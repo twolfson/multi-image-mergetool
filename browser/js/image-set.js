@@ -1,8 +1,10 @@
 // Load in our dependencies
+var assert = require('assert');
 var $ = window.$ = window.jQuery = require('jquery');
 var D = require('./domo');
 var GlobalState = require('./global-state');
 var Overlay = require('./overlay');
+var SimilarImageResults = require('./similar-image-results');
 
 // Define our constructor
 function ImageSet(_containerEl, imageSetInfo) {
@@ -29,7 +31,7 @@ function ImageSet(_containerEl, imageSetInfo) {
 
       // Collapsable container for row
       // DEV: We use `data-id` as `id` has restrictions on characters
-      D.DIV({
+      this.saveEl('contentsEl', D.DIV({
         // Make our first image set visible
         // DEV: If class names get too complex, use `classnames` library
         class: imageSetInfo.imagesEqual ? 'image-set__collapse collapse well' : 'image-set__collapse collapse in well'
@@ -86,7 +88,7 @@ function ImageSet(_containerEl, imageSetInfo) {
             ])
           ])
         ])
-      ])
+      ]))
     ])
   ]);
 
@@ -119,7 +121,7 @@ ImageSet.prototype = {
   acceptChanges: function (imgBase64) {
     this._updateReferenceImage(imgBase64, 'true');
   },
-  findSimilarImageSets: function (targetArea) {
+  _findSimilarImageSets: function (targetArea) {
     // Start our performance check (70ms for 200 1024x1600 images)
     console.time('findSelectionMatches');
 
@@ -195,6 +197,72 @@ ImageSet.prototype = {
 
     // Return our matching image sets
     return matchingImageSets;
+  },
+  findSimilarImageSets: function () {
+    // Localize our expected diff img
+    var expectedDiffImg = this.diffImg;
+
+    // Find and adjust our target area based on scaling
+    // TODO: Be sure to test target area scaling for both matching and updated diffs
+    var targetArea = this.imgOverlay.overlayInfo.relative;
+    var scaleRatio = expectedDiffImg.naturalWidth / expectedDiffImg.width;
+    targetArea = {
+      width: Math.min(Math.ceil(scaleRatio * targetArea.width), expectedDiffImg.naturalWidth),
+      height: Math.min(Math.ceil(scaleRatio * targetArea.height), expectedDiffImg.naturalHeight),
+      left: Math.max(Math.floor(scaleRatio * targetArea.left), 0),
+      top: Math.max(Math.floor(scaleRatio * targetArea.top), 0)
+    };
+
+    // Remove previously existing results
+    if (this._resultsEl) {
+      this.contentsEl.removeChild(this._resultsEl);
+    }
+
+    // Generate and append our results
+    // TODO: Relocate results generation/clearing into ImageSet class
+    // DEV: We perform result element generation/append first to improve perceived loading
+    var resultsEl = this._resultsEl = D.DIV({class: 'results'}, [
+      D.H4([
+        'Similar images',
+        D.SPAN({class: 'results__count'}, ''),
+        ':'
+      ])
+    ]);
+    // TODO: Delete results element upon resolution
+    this.contentsEl.appendChild(resultsEl);
+
+    // Resolve our similar image sets based on target area
+    var matchingImageSets = this._findSimilarImageSets(targetArea);
+
+    // If we have no matching image sets
+    assert.notEqual(matchingImageSets.length, 0,
+      'Something went horribly wrong when matching images; not even the original is equal to itself');
+    if (matchingImageSets.length === 1) {
+      resultsEl.appendChild(D.DIV('No similar images found'));
+      return;
+    }
+
+    // Otherwise, update our count and append our buttons
+    resultsEl.querySelector('.results__count').textContent = ' (' + matchingImageSets.length + ')';
+    resultsEl.appendChild(D.DIV([
+      D.BUTTON({
+        class: 'btn btn-default',
+        'data-action': 'accept-similar-images'
+      }, '✓ Accept similar images'),
+      ' ',
+      D.BUTTON({
+        class: 'btn btn-default',
+        'data-action': 'update-similar-images'
+      }, '✓ Update similar images with selection')
+    ]));
+
+    // Generate our new results
+    // DEV: We could generate similar image sets separately but this is to keep performance issues contained
+    void new SimilarImageResults(resultsEl, {
+      imageSets: matchingImageSets,
+      targetArea: targetArea,
+      expectedImageSet: this
+    });
   },
   _updateReferenceImage: function (imgBase64, eagerStatus) {
     // Fade out diff and reference images to "loading" state

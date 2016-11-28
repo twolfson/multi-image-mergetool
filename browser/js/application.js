@@ -6,7 +6,6 @@ void require('bootstrap/dist/js/bootstrap.js');
 var D = require('./domo');
 var GlobalState = require('./global-state');
 var ImageSet = require('./image-set');
-var SimilarImageResults = require('./similar-image-results');
 
 // TODO: Consider scrollspy for update buttons
 // TODO: Consider buttons to expand row of images to full screen
@@ -136,82 +135,13 @@ Application.bindOnce = function () {
   });
 
   $('body').on('click', 'button[data-action="find-similar-images"]', function handleClick (evt) {
-    // Find our image set container
+    // Find our image set
     var btnEl = evt.target;
-    var $expectedImageSet = $(btnEl).closest('[data-image-set]');
-    var expectedImageSetCollapseEl = $expectedImageSet.find('.image-set__collapse')[0];
-    var expectedImageSet = GlobalState.fetchImageSetById($expectedImageSet.data('image-set'));
+    var $imageSet = $(btnEl).closest('[data-image-set]');
+    var imageSet = GlobalState.fetchImageSetById($imageSet.data('image-set'));
 
-    // Find our target area
-    var imgOverlay = expectedImageSet.imgOverlay;
-    assert(imgOverlay);
-    var targetArea = imgOverlay.overlayInfo.relative;
-
-    // Resolve our expected diff img
-    // DEV: This loads first matching image only due to `querySelector` instead of `querySelectorAll`
-    var expectedDiffImg = expectedImageSet.diffImg;
-
-    // Adjust our target area based on scaling
-    // TODO: Be sure to test target area scaling for both matching and updated diffs
-    var scaleRatio = expectedDiffImg.naturalWidth / expectedDiffImg.width;
-    targetArea = {
-      width: Math.min(Math.ceil(scaleRatio * targetArea.width), expectedDiffImg.naturalWidth),
-      height: Math.min(Math.ceil(scaleRatio * targetArea.height), expectedDiffImg.naturalHeight),
-      left: Math.max(Math.floor(scaleRatio * targetArea.left), 0),
-      top: Math.max(Math.floor(scaleRatio * targetArea.top), 0)
-    };
-
-    // Remove previously existing results
-    var _resultsEl = expectedImageSetCollapseEl.querySelector('.results');
-    if (_resultsEl) {
-      expectedImageSetCollapseEl.removeChild(_resultsEl);
-    }
-
-    // Generate and append our results
-    // TODO: Relocate results generation/clearing into ImageSet class
-    // DEV: We perform result element generation/append first to improve perceived loading
-    var resultsEl = D.DIV({class: 'results'}, [
-      D.H4([
-        'Similar images',
-        D.SPAN({class: 'results__count'}, ''),
-        ':'
-      ])
-    ]);
-    // TODO: Delete results element upon resolution
-    expectedImageSetCollapseEl.appendChild(resultsEl);
-
-    // Resolve our similar image sets based on target area
-    var matchingImageSets = expectedImageSet.findSimilarImageSets(targetArea);
-
-    // If we have no matching image sets
-    assert.notEqual(matchingImageSets.length, 0,
-      'Something went horribly wrong when matching images; not even the original is equal to itself');
-    if (matchingImageSets.length === 1) {
-      resultsEl.appendChild(D.DIV('No similar images found'));
-      return;
-    }
-
-    // Otherwise, update our count and append our buttons
-    resultsEl.querySelector('.results__count').textContent = ' (' + matchingImageSets.length + ')';
-    resultsEl.appendChild(D.DIV([
-      D.BUTTON({
-        class: 'btn btn-default',
-        'data-action': 'accept-similar-images'
-      }, '✓ Accept similar images'),
-      ' ',
-      D.BUTTON({
-        class: 'btn btn-default',
-        'data-action': 'update-similar-images'
-      }, '✓ Update similar images with selection')
-    ]));
-
-    // Generate our new results
-    // DEV: We could generate similar image sets separately but this is to keep performance issues contained
-    void new SimilarImageResults(resultsEl, {
-      imageSets: matchingImageSets,
-      targetArea: targetArea,
-      expectedImageSet: expectedImageSet
-    });
+    // Find its similar images
+    imageSet.findSimilarImages();
   });
 };
 
