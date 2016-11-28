@@ -172,6 +172,7 @@ Application.bindOnce = function () {
 
     // Generate and append our results
     // TODO: Relocate results generation/clearing into ImageSet class
+    // DEV: We perform result element generation/append first to improve perceived loading
     var resultsEl = D.DIV({class: 'results'}, [
       D.H4([
         'Similar images',
@@ -182,47 +183,38 @@ Application.bindOnce = function () {
     // TODO: Delete results element upon resolution
     expectedImageSetCollapseEl.appendChild(resultsEl);
 
-    // Start our chain of methods
-    findSelectionMatches();
-    function findSelectionMatches() { // jshint ignore:line
-      // Resolve our similar image sets based on target area
-      var matchingImageSets = expectedImageSet.findSimilarImageSets(targetArea);
+    // Resolve our similar image sets based on target area
+    var matchingImageSets = expectedImageSet.findSimilarImageSets(targetArea);
 
-      // If we have no matching image sets
-      assert.notEqual(matchingImageSets.length, 0,
-        'Something went horribly wrong when matching images; not even the original is equal to itself');
-      if (matchingImageSets.length === 1) {
-        resultsEl.appendChild(D.DIV('No similar images found'));
-        return;
-      }
-
-      // Otherwise, update our count and append our buttons
-      resultsEl.querySelector('.results__count').textContent = ' (' + matchingImageSets.length + ')';
-      resultsEl.appendChild(D.DIV([
-        D.BUTTON({
-          class: 'btn btn-default',
-          'data-action': 'accept-similar-images'
-        }, '✓ Accept similar images'),
-        ' ',
-        D.BUTTON({
-          class: 'btn btn-default',
-          'data-action': 'update-similar-images'
-        }, '✓ Update similar images with selection')
-      ]));
-
-      // Pass through matching sets to `bulkUpdateSelection`
-      bulkUpdateSelection(matchingImageSets);
+    // If we have no matching image sets
+    assert.notEqual(matchingImageSets.length, 0,
+      'Something went horribly wrong when matching images; not even the original is equal to itself');
+    if (matchingImageSets.length === 1) {
+      resultsEl.appendChild(D.DIV('No similar images found'));
+      return;
     }
 
-    function bulkUpdateSelection(imageSets) { // jshint ignore:line
-      // Generate our new results
-      // DEV: We could generate similar image sets separately but this is to keep performance issues contained
-      void new SimilarImageResults(resultsEl, {
-        imageSets: imageSets,
-        targetArea: targetArea,
-        expectedImageSet: expectedImageSet
-      });
-    }
+    // Otherwise, update our count and append our buttons
+    resultsEl.querySelector('.results__count').textContent = ' (' + matchingImageSets.length + ')';
+    resultsEl.appendChild(D.DIV([
+      D.BUTTON({
+        class: 'btn btn-default',
+        'data-action': 'accept-similar-images'
+      }, '✓ Accept similar images'),
+      ' ',
+      D.BUTTON({
+        class: 'btn btn-default',
+        'data-action': 'update-similar-images'
+      }, '✓ Update similar images with selection')
+    ]));
+
+    // Generate our new results
+    // DEV: We could generate similar image sets separately but this is to keep performance issues contained
+    void new SimilarImageResults(resultsEl, {
+      imageSets: matchingImageSets,
+      targetArea: targetArea,
+      expectedImageSet: expectedImageSet
+    });
   });
 };
 
