@@ -141,6 +141,8 @@ Application.bindOnce = function () {
     var $expectedImgSet = $(btnEl).closest('[data-image-set]');
     var expectedImgSetEl = $expectedImgSet[0];
     var expectedImgSetCollapseEl = $expectedImgSet.find('.image-set__collapse')[0];
+    var expectedImgSetId = $expectedImgSet.data('image-set');
+    var expectedImgSet = GlobalState.fetchImageSetById(expectedImgSetId);
 
     // Find our target area
     var imgOverlay = expectedImgSetEl.imgOverlay;
@@ -181,98 +183,8 @@ Application.bindOnce = function () {
     // Start our chain of methods
     findSelectionMatches();
     function findSelectionMatches() { // jshint ignore:line
-      // Start our performance check (70ms for 200 1024x1600 images)
-      console.time('findSelectionMatches');
-
-      // Find our sets of images to update
-      var imageSetEls = document.querySelectorAll('[data-image-set]');
-      imageSetEls = Array.prototype.slice.call(imageSetEls);
-
-      // Convert image sets into objects so we can add metadata
-      var imageSetInfos = imageSetEls.map(function createImageSetInfo (imageSetEl) {
-        var retVal = {
-          currentImg: imageSetEl.querySelector('[data-compare-type=current]'),
-          diffImg: imageSetEl.querySelector('[data-compare-type=diff]'),
-          refImg: imageSetEl.querySelector('[data-compare-type=ref]'),
-          id: imageSetEl.getAttribute('data-image-set'),
-          humanName: imageSetEl.getAttribute('data-image-set')
-        };
-        if (imageSetEl === expectedImgSetEl) {
-          retVal.humanName += ' (current set)';
-        }
-        return retVal;
-      });
-
-      // Prepare canvas for images to match against
-      function getSelectionImageData(img) {
-        // Generate our canvas sized down to the selection
-        // https://github.com/scijs/get-pixels/blob/7c447cd979637b31e47e148f238a1e71611af481/dom-pixels.js#L14-L18
-        var canvasEl = document.createElement('canvas');
-        canvasEl.width = targetArea.width;
-        canvasEl.height = targetArea.height;
-        var context = canvasEl.getContext('2d');
-
-        // Draw a clip as a performance precaution, then our image
-        // DEV: We haven't tested if using a clip improves performance but assume it should
-        // https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/drawImage
-        // https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/rect
-        context.rect(0, 0, targetArea.width, targetArea.height);
-        context.clip();
-        // TODO: Verify that drawing scaled images doesn't affect canvas drawing
-        context.drawImage(img, -1 * targetArea.left, -1 * targetArea.top);
-
-        // Return our generated canvas
-        // https://github.com/scijs/get-pixels/blob/7c447cd979637b31e47e148f238a1e71611af481/dom-pixels.js#L19-L20
-        return context.getImageData(0, 0, targetArea.width, targetArea.height).data;
-      }
-
-      // Reset HTML/CSS overrides
-      // TODO: We should be able to remove overrides by using `naturalWidth`
-      expectedDiffImg = expectedDiffImg.cloneNode();
-      delete expectedDiffImg.height; delete expectedDiffImg.width;
-      delete expectedDiffImg.style; delete expectedDiffImg.className;
-      var expectedImageData = getSelectionImageData(expectedDiffImg);
-
-      // Prepare deep equals helper
-      // DEV: This is bad for security as we short circuit (i.e. not time constant comparison)
-      function deepEquals(aArr, bArr) {
-        if (aArr.length !== bArr.length) {
-          return false;
-        }
-        var i = 0;
-        for (; i < aArr.length; i += 1) {
-          if (aArr[i] !== bArr[i]) {
-            return false;
-          }
-        }
-        return true;
-      }
-
-      // Filter image sets based on matching widths and selection
-      // TODO: Handle only 1 matching image set (i.e. source image) -- should say "No matches found" or similar
-      var matchingImageSetInfos = imageSetInfos.filter(function matchImageSetInfo (imageSetInfo) {
-        // If the images are different widths, return false
-        // TODO: Allow this to be a configurable heuristic
-        var actualDiffImg = imageSetInfo.diffImg;
-        if (expectedDiffImg.naturalWidth !== actualDiffImg.naturalWidth) {
-          return false;
-        }
-
-        // If the selection is different, return false
-        // DEV: We current do an exact match but could move to other comparison script
-        //   Unfortunately, Gemini's comparison seems to be Node.js only
-        //   and an exact match is "good enough" for now
-        var actualImageData = getSelectionImageData(actualDiffImg);
-        if (!deepEquals(actualImageData, expectedImageData)) {
-          return false;
-        }
-
-        // Otherwise, approve match
-        return true;
-      });
-
-      // End our performance check
-      console.timeEnd('findSelectionMatches');
+      // Resolve our similar image sets based on target area
+      var matchingImageSetInfos = expectedImgSet.findSimilarImageSets(targetArea);
 
       // If we have no matching image sets
       // assert.notEqual(matchingImageSetInfos.length, 0,

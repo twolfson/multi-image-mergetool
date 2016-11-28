@@ -7,7 +7,8 @@ module.exports = {
   _state: undefined,
   reset: function () {
     this._state = {
-      imageSetsById: []
+      imageSets: [],
+      imageSetsById: {}
     };
   },
   addImageSet: function (imageSet) {
@@ -16,7 +17,11 @@ module.exports = {
     var imageSetsById = this._state.imageSetsById;
     assert.strictEqual(imageSetsById[imageSet.id], undefined,
       'An image set with id "' + imageSet.id + '" is already registered');
+    this._state.imageSets.push(imageSet);
     imageSetsById[imageSet.id] = imageSet;
+  },
+  getImageSets: function () {
+    return this._state.imageSets;
   },
   getImageSetById: function (id) {
     return this._state.imageSetsById[id];
