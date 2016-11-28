@@ -5,6 +5,7 @@ var D = require('./domo');
 var GlobalState = require('./global-state');
 var Overlay = require('./overlay');
 var SimilarImageResults = require('./similar-image-results');
+var utils = require('./utils');
 
 // Define our constructor
 function ImageSet(_containerEl, imageSetInfo) {
@@ -110,6 +111,23 @@ function ImageSet(_containerEl, imageSetInfo) {
 }
 
 // Define class level helpers
+ImageSet.bindOnce = function () {
+  // Set up image acceptance binding
+  $('body').on('click', 'button[data-action="accept-changes"]', function handleClick (evt) {
+    // Resolve our image set
+    var imageSet = ImageSet.fetchByEvent(evt);
+
+    // Extract and accept base64 content for image
+    var base64Data = utils.getBase64Content(imageSet.currentImg);
+    imageSet.acceptChanges(base64Data);
+  });
+
+  $('body').on('click', 'button[data-action="find-similar-images"]', function handleClick (evt) {
+    // Find our image set's similar images
+    var imageSet = ImageSet.fetchByEvent(evt);
+    imageSet.findSimilarImages();
+  });
+};
 ImageSet.cachebustImg = function (imgEl) {
   var originalSrc = imgEl.getAttribute('src');
   var newSrc = originalSrc.match(/\?1$/) ? originalSrc + '1' : originalSrc + '?1';
@@ -207,7 +225,7 @@ ImageSet.prototype = {
     // Return our matching image sets
     return matchingImageSets;
   },
-  findSimilarImageSets: function () {
+  findSimilarImages: function () {
     // Localize our expected diff img
     var expectedDiffImg = this.diffImg;
 

@@ -1,12 +1,10 @@
 // Load in our dependencies
 // DEV: Re-expose jQuery for Bootstrap
-var assert = require('assert');
-var $ = window.$ = window.jQuery = require('jquery');
+window.$ = window.jQuery = require('jquery');
 void require('bootstrap/dist/js/bootstrap.js');
 var D = require('./domo');
-var GlobalState = require('./global-state');
 var ImageSet = require('./image-set');
-var utils = require('./utils');
+var SimilarImageResults = require('./similar-image-results');
 
 // TODO: Consider scrollspy for update buttons
 // TODO: Consider buttons to expand row of images to full screen
@@ -35,21 +33,8 @@ function Application(_containerEl, imageSetInfoArr) {
 
 // Define our button bindings
 Application.bindOnce = function () {
-  // Set up image acceptance binding
-  $('body').on('click', 'button[data-action="accept-changes"]', function handleClick (evt) {
-    // Resolve our image set
-    var imageSet = ImageSet.fetchByEvent(evt);
-
-    // Extract and accept base64 content for image
-    var base64Data = utils.getBase64Content(imageSet.currentImg);
-    imageSet.acceptChanges(base64Data);
-  });
-
-  $('body').on('click', 'button[data-action="find-similar-images"]', function handleClick (evt) {
-    // Find our image set's similar images
-    var imageSet = ImageSet.fetchByEvent(evt);
-    imageSet.findSimilarImages();
-  });
+  ImageSet.bindOnce();
+  SimilarImageResults.bindOnce();
 };
 
 // Export our application
