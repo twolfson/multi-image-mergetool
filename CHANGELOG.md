@@ -1,4 +1,6 @@
 # multi-image-mergetool changelog
+1.20.1 - Added image generation inside of test utilities
+
 1.20.0 - Relocated result container generation ImageSet and moved body level bindings to classes
 
 1.19.0 - Relocated results generation to its own class
