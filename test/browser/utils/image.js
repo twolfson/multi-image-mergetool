@@ -45,36 +45,61 @@ exports._getDiagonalNdarray = function () {
   // Return our ndarray
   return imageNdarray;
 };
+exports._getDotNdarray = function () {
+  // +---------------+
+  // |               |
+  // |               |
+  // |               |
+  // |               |
+  // |               |
+  // |     xxxxx     |
+  // |     xxxxx     |
+  // |     xxxxx     |
+  // |     xxxxx     |
+  // |     xxxxx     |
+  // |               |
+  // |               |
+  // |               |
+  // |               |
+  // |               |
+  // +---------------+
+  var imageNdarray = zeros([15, 15, 4]);
+  ndarrayFill(imageNdarray, function fillImageNdarray (x, y, rgbaIndex) {
+    // If this is the alpha channel, always return it as full
+    if (rgbaIndex === 3) {
+      return 0xFF;
+    }
 
-exports.getDiagonalBase64 = function () {
-  // Grab our ndarray data
-  var imageNdArray = exports._getDiagonalNdarray();
+    // Otherwise, if we are on our black dot, then draw it
+    if (5  <= x && 5  <= y && x < 10 && y < 10) {
+      // Generate black dot (00 00 00)
+      return 0x00;
+    // Otherwise, draw white (FF FF FF)
+    } else {
+      return 0xFF;
+    }
+  });
 
+  // Return our ndarray
+  return imageNdarray;
+};
+
+// Define our base64 helpers
+exports._ndarrayToBase64 = function (imageNdArray) {
   // Create a canvas and write in the data
   // https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/putImageData
   // https://github.com/scijs/save-pixels/blob/f7bf8c831927e3ade93ffe499b04f4013d641b93/save-pixels.js#L126-L136
 
+};
+exports.getDiagonalBase64 = function () {
+  // Grab our ndarray data
+  var imageNdArray = exports._getDiagonalNdarray();
+
+
   // Export the base64 result
 };
 
-exports.getDiagonalBase64 = function () {
-  // +---------------+
-  // |               |
-  // |               |
-  // |               |
-  // |               |
-  // |               |
-  // |     xxxxx     |
-  // |     xxxxx     |
-  // |     xxxxx     |
-  // |     xxxxx     |
-  // |     xxxxx     |
-  // |               |
-  // |               |
-  // |               |
-  // |               |
-  // |               |
-  // +---------------+
+exports.getDotBase64 = function () {
 };
 
 // If this is the main script, then save images to disk
@@ -86,9 +111,11 @@ function main() {
   // Save our ndarrays to file streams
   var diagonalStream = fs.createWriteStream('diagonal.png');
   savePixels(exports._getDiagonalNdarray(), 'png').pipe(diagonalStream);
-  // var dotStream = fs.createWriteStream('dot.png');
+  var dotStream = fs.createWriteStream('dot.png');
+  savePixels(exports._getDotNdarray(), 'png').pipe(dotStream);
 
   // Process will automatically terminate when streams complete
+  // DEV: We could optionally use `merge-stream` as well (as with `gulp` tasks)
 }
 if (require.main === module) {
   main();
