@@ -31,9 +31,9 @@ exports._getDiagonalNdarray = function () {
     }
 
     // Otherwise, if we are on our black dot, then draw it
-    if ((0  < x && 0  < y && x < 5  && y < 5) ||
-        (5  < x && 5  < y && x < 10 && y < 10) ||
-        (10 < x && 10 < y && x < 15 && y < 15)) {
+    if ((0  <= x && 0  <= y && x < 5  && y < 5) ||
+        (5  <= x && 5  <= y && x < 10 && y < 10) ||
+        (10 <= x && 10 <= y && x < 15 && y < 15)) {
       // Generate black dot (00 00 00)
       return 0x00;
     // Otherwise, draw white (FF FF FF)
@@ -41,6 +41,9 @@ exports._getDiagonalNdarray = function () {
       return 0xFF;
     }
   });
+
+  // Return our ndarray
+  return imageNdarray;
 };
 
 exports.getDiagonalBase64 = function () {
@@ -82,7 +85,7 @@ function main() {
 
   // Save our ndarrays to file streams
   var diagonalStream = fs.createWriteStream('diagonal.png');
-  savePixels(exports._getDiagonalNdarray()).pipe(diagonalStream);
+  savePixels(exports._getDiagonalNdarray(), 'png').pipe(diagonalStream);
   // var dotStream = fs.createWriteStream('dot.png');
 
   // Process will automatically terminate when streams complete
