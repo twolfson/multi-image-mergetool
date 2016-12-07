@@ -77,6 +77,7 @@
     "karma-mocha": "~1.2.0",
     "karma-phantomjs-launcher": "~1.0.2",
     "mocha": "~3.1.2",
+    "ndarray-fill": "~1.0.1",
     "request": "~2.78.0",
     "rimraf": "~2.5.4",
     "simulant": "~0.2.2",
@@ -85,7 +86,8 @@
     "twolfson-style": "~1.6.0",
     "unidragger": "~2.1.0",
     "vinyl-source-stream": "~1.1.0",
-    "watchify": "~3.7.0"
+    "watchify": "~3.7.0",
+    "zeros": "~1.0.0"
   },
   "keywords": [
     "image",
