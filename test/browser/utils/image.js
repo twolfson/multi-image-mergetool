@@ -86,12 +86,12 @@ exports._getDotNdarray = function () {
   return imageNdarray;
 };
 
-exports._getLargeDiagonalNdarray = function () {
-  // Generate a large ndarray
-  var imageNdarray = zeros([800, 600, 4]);
-  var baseImageNdarray = exports._getDiagonalNdarray();
+exports._extendImageNdarray = function (baseImageNdarray, width, height) {
+  // Generate our extended ndarray
+  var imageNdarray = zeros([width, height, 4]);
 
   // Fill our image
+  // DEV: We could repeat the image but we'll lose focus of where to test/debug
   ndarrayFill(imageNdarray, function fillImageNdarray (x, y, rgbaIndex) {
     // If values are within our base image, then use them
     if (x < 15 && y < 15) {
@@ -104,6 +104,14 @@ exports._getLargeDiagonalNdarray = function () {
 
   // Return our generated ndarray
   return imageNdarray;
+};
+exports._getLargeDiagonalNdarray = function () {
+  return exports._extendImageNdarray(
+    exports._getDiagonalNdarray(), 800, 600);
+};
+exports._getLargeDotNdarray = function () {
+  return exports._extendImageNdarray(
+    exports._getDotNdarray(), 800, 600);
 };
 
 // If this is the main script, then save images to disk
@@ -120,6 +128,8 @@ function main() {
   if (process.env.DEBUG === '1') {
     var largeDiagonalStream = createWriteStream('large-diagonal.png');
     savePixels(exports._getLargeDiagonalNdarray(), 'png').pipe(largeDiagonalStream);
+    var largeDotStream = createWriteStream('large-dot.png');
+    savePixels(exports._getLargeDotNdarray(), 'png').pipe(largeDotStream);
   }
 
   // Process will automatically terminate when streams complete
