@@ -86,23 +86,6 @@ exports._getDotNdarray = function () {
   return imageNdarray;
 };
 
-// Define our base64 helpers
-exports.getDiagonalBase64 = function () {
-  // Grab our ndarray data
-  var imageNdarray = exports._getDiagonalNdarray();
-
-  // Generate our canvas
-  var canvasEl = savePixels(imageNdarray, 'canvas');
-
-  // Export the base64 result
-  return canvasEl.toDataURL('image/png');
-};
-exports.getDotBase64 = function () {
-  var imageNdarray = exports._getDotNdarray();
-  var canvasEl = savePixels(imageNdarray, 'canvas');
-  return canvasEl.toDataURL('image/png');
-};
-
 // If this is the main script, then save images to disk
 function main() {
   // Save our ndarrays to file streams

@@ -42,18 +42,6 @@ exports.IMAGE_SETS = {
   DEFAULT: [exports.IMAGE_SET_EQUAL, exports.IMAGE_SET_NOT_EQUAL],
   MULTIPLE_NOT_EQUAL: [exports.IMAGE_SET_EQUAL, exports.IMAGE_SET_NOT_EQUAL, exports.IMAGE_SET_NOT_EQUAL2]
 };
-exports.IMAGE_SETS.PERFORMANCE = [];
-(function generatePerformanceImageSet () {
-  var i = 0;
-  for (; i < 200; i += 2) {
-    exports.IMAGE_SETS.PERFORMANCE.push(_.defaults({
-      id: 'mock-img-equal-' + i
-    }, exports.IMAGE_SET_EQUAL));
-    exports.IMAGE_SETS.PERFORMANCE.push(_.defaults({
-      id: 'mock-img-not-equal-' + (i + 1)
-    }, exports.IMAGE_SET_NOT_EQUAL));
-  }
-}());
 
 // Define our application utils
 // DEV: If `applicationUtils` needs to be reused, place it into a `utils` folder,
