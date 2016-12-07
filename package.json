@@ -80,6 +80,7 @@
     "ndarray-fill": "~1.0.1",
     "request": "~2.78.0",
     "rimraf": "~2.5.4",
+    "save-pixels": "~2.3.4",
     "simulant": "~0.2.2",
     "sinon": "~1.17.6",
     "tween.js": "~16.3.5",

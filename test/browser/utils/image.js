@@ -73,3 +73,20 @@ exports.getDiagonalBase64 = function () {
   // |               |
   // +---------------+
 };
+
+// If this is the main script, then save images to disk
+function main() {
+  // Load in main only dependencies
+  var fs = require('fs');
+  var savePixels = require('save-pixels');
+
+  // Save our ndarrays to file streams
+  var diagonalStream = fs.createWriteStream('diagonal.png');
+  savePixels(exports._getDiagonalNdarray()).pipe(diagonalStream);
+  // var dotStream = fs.createWriteStream('dot.png');
+
+  // Process will automatically terminate when streams complete
+}
+if (require.main === module) {
+  main();
+}
