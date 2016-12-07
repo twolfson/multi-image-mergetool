@@ -114,6 +114,21 @@ exports._getLargeDotNdarray = function () {
     exports._getDotNdarray(), 800, 600);
 };
 
+// Define our base64 helpers
+exports.getLargeDiagonalBase64 = function () {
+  // Export our ndarray to a canvas
+  var imageNdarray = exports._getLargeDiagonalNdarray();
+  var canvasEl = savePixels(imageNdarray, 'canvas');
+
+  // Return our canvas' base64 data URI
+  return canvasEl.toDataURL('image/png');
+};
+exports.getLargeDotBase64 = function () {
+  var imageNdarray = exports._getLargeDotNdarray();
+  var canvasEl = savePixels(imageNdarray, 'canvas');
+  return canvasEl.toDataURL('image/png');
+};
+
 // If this is the main script, then save images to disk
 function main() {
   // Save our ndarrays to file streams

@@ -8,6 +8,8 @@ var GlobalState = require('../../../browser/js/global-state');
 var diagonalBase64 = fs.readFileSync(__dirname + '/../../test-files/diagonal.png', 'base64');
 var diagonalDotDiffBase64 = fs.readFileSync(__dirname + '/../../test-files/diagonal-dot-diff.png', 'base64');
 var dotBase64 = fs.readFileSync(__dirname + '/../../test-files/dot.png', 'base64');
+var largeDiagonalBase64 = require('./image').getLargeDiagonalBase64();
+var largeDotBase64 = require('./image').getLargeDotBase64();
 
 // Disable transitions for Bootstrap
 // https://github.com/twbs/bootstrap/blob/v3.3.7/js/transition.js#L45-L46
