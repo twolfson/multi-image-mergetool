@@ -41,14 +41,14 @@ exports.IMAGE_SET_NOT_EQUAL2 = _.defaults({
   id: 'mock-img-not-equal2'
 }, exports.IMAGE_SET_NOT_EQUAL);
 exports.IMAGE_SET_LARGE_EQUAL = {
-  id: 'mock-img-large-equal',
+  id: 'mock-img-equal-large',
   currentImageUrl: largeDiagonalBase64DataUri,
   diffImageUrl: largeDiagonalBase64DataUri,
   refImageUrl: largeDiagonalBase64DataUri,
   imagesEqual: true
 };
 exports.IMAGE_SET_LARGE_NOT_EQUAL = {
-  id: 'mock-img-large-not-equal',
+  id: 'mock-img-not-equal-large',
   currentImageUrl: largeDiagonalBase64DataUri,
   // DEV: Technically we should be using a large diff image but that's generated on disk
   //   which we avoid doing for large images to prevent bloating our repo
@@ -63,12 +63,12 @@ exports.IMAGE_SETS = {
 exports.IMAGE_SETS.PERFORMANCE = [];
 (function generatePerformanceImageSet () {
   var i = 0;
-  for (; i < 200; i += 2) {
+  for (; i < 10; i += 2) {
     exports.IMAGE_SETS.PERFORMANCE.push(_.defaults({
-      id: 'mock-img-performance-equal-' + i
+      id: 'mock-img-equal-' + i
     }, exports.IMAGE_SET_LARGE_EQUAL));
     exports.IMAGE_SETS.PERFORMANCE.push(_.defaults({
-      id: 'mock-img-performance-not-equal-' + (i + 1)
+      id: 'mock-img-not-equal-' + (i + 1)
     }, exports.IMAGE_SET_LARGE_NOT_EQUAL));
   }
 }());

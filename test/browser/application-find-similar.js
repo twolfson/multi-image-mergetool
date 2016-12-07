@@ -67,7 +67,6 @@ describe.only('An application with many similarly failing images', function () {
   applicationUtils.init(applicationUtils.IMAGE_SETS.PERFORMANCE);
 
   describe('when finding similarly failing images', function () {
-    // TODO: Use big images, our small base64 won't cut it for performance
     domUtils.dragOverElement({
       selector: '[data-image-set="mock-img-not-equal-1"] img[data-compare-type=diff]',
       startCoords: {x: 0, y: 0},
