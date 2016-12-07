@@ -95,22 +95,22 @@ exports.getDiagonalBase64 = function () {
   var canvasEl = savePixels(imageNdarray, 'canvas');
 
   // Export the base64 result
-  return canvasEl.getContext('2d')
-    .getImageData(0, 0, imageNdarray.shape[0], imageNdarray.shape[1]);
+  return canvasEl.toDataURL('image/png');
 };
 exports.getDotBase64 = function () {
   var imageNdarray = exports._getDotNdarray();
   var canvasEl = savePixels(imageNdarray, 'canvas');
-  return canvasEl.getContext('2d')
-    .getImageData(0, 0, imageNdarray.shape[0], imageNdarray.shape[1]);
+  return canvasEl.toDataURL('image/png');
 };
 
 // If this is the main script, then save images to disk
 function main() {
   // Save our ndarrays to file streams
-  var diagonalStream = fs.createWriteStream('diagonal.png');
+  // DEV: We need to fallback `createWriteStream` to prevent bundling errors
+  var createWriteStream = fs.createWriteStream || function () {};
+  var diagonalStream = createWriteStream('diagonal.png');
   savePixels(exports._getDiagonalNdarray(), 'png').pipe(diagonalStream);
-  var dotStream = fs.createWriteStream('dot.png');
+  var dotStream = createWriteStream('dot.png');
   savePixels(exports._getDotNdarray(), 'png').pipe(dotStream);
 
   // Process will automatically terminate when streams complete
