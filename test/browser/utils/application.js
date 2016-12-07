@@ -8,8 +8,8 @@ var GlobalState = require('../../../browser/js/global-state');
 var diagonalBase64 = fs.readFileSync(__dirname + '/../../test-files/diagonal.png', 'base64');
 var diagonalDotDiffBase64 = fs.readFileSync(__dirname + '/../../test-files/diagonal-dot-diff.png', 'base64');
 var dotBase64 = fs.readFileSync(__dirname + '/../../test-files/dot.png', 'base64');
-var largeDiagonalBase64 = require('./image').getLargeDiagonalBase64();
-var largeDotBase64 = require('./image').getLargeDotBase64();
+var largeDiagonalBase64DataUri = require('./image').getLargeDiagonalBase64DataUri();
+var largeDotBase64DataUri = require('./image').getLargeDotBase64DataUri();
 
 // Disable transitions for Bootstrap
 // https://github.com/twbs/bootstrap/blob/v3.3.7/js/transition.js#L45-L46
@@ -42,18 +42,18 @@ exports.IMAGE_SET_NOT_EQUAL2 = _.defaults({
 }, exports.IMAGE_SET_NOT_EQUAL);
 exports.IMAGE_SET_LARGE_EQUAL = {
   id: 'mock-img-large-equal',
-  currentImageUrl: base64Prefix + largeDiagonalBase64,
-  diffImageUrl: base64Prefix + largeDiagonalBase64,
-  refImageUrl: base64Prefix + largeDiagonalBase64,
+  currentImageUrl: largeDiagonalBase64DataUri,
+  diffImageUrl: largeDiagonalBase64DataUri,
+  refImageUrl: largeDiagonalBase64DataUri,
   imagesEqual: true
 };
 exports.IMAGE_SET_LARGE_NOT_EQUAL = {
   id: 'mock-img-large-not-equal',
-  currentImageUrl: base64Prefix + largeDiagonalBase64,
+  currentImageUrl: largeDiagonalBase64DataUri,
   // DEV: Technically we should be using a large diff image but that's generated on disk
   //   which we avoid doing for large images to prevent bloating our repo
-  diffImageUrl: base64Prefix + largeDotBase64,
-  refImageUrl: base64Prefix + largeDotBase64,
+  diffImageUrl: largeDotBase64DataUri,
+  refImageUrl: largeDotBase64DataUri,
   imagesEqual: false
 };
 exports.IMAGE_SETS = {

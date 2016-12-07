@@ -115,7 +115,7 @@ exports._getLargeDotNdarray = function () {
 };
 
 // Define our base64 helpers
-exports.getLargeDiagonalBase64 = function () {
+exports.getLargeDiagonalBase64DataUri = function () {
   // Export our ndarray to a canvas
   var imageNdarray = exports._getLargeDiagonalNdarray();
   var canvasEl = savePixels(imageNdarray, 'canvas');
@@ -123,7 +123,7 @@ exports.getLargeDiagonalBase64 = function () {
   // Return our canvas' base64 data URI
   return canvasEl.toDataURL('image/png');
 };
-exports.getLargeDotBase64 = function () {
+exports.getLargeDotBase64DataUri = function () {
   var imageNdarray = exports._getLargeDotNdarray();
   var canvasEl = savePixels(imageNdarray, 'canvas');
   return canvasEl.toDataURL('image/png');
