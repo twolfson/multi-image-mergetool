@@ -1,5 +1,7 @@
 // Load in our dependencies
+var fs = require('fs');
 var ndarrayFill = require('ndarray-fill');
+var savePixels = require('save-pixels');
 var zeros = require('zeros');
 
 // Define image generators
@@ -85,29 +87,26 @@ exports._getDotNdarray = function () {
 };
 
 // Define our base64 helpers
-exports._ndarrayToBase64 = function (imageNdArray) {
-  // Create a canvas and write in the data
-  // https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/putImageData
-  // https://github.com/scijs/save-pixels/blob/f7bf8c831927e3ade93ffe499b04f4013d641b93/save-pixels.js#L126-L136
-
-};
 exports.getDiagonalBase64 = function () {
   // Grab our ndarray data
-  var imageNdArray = exports._getDiagonalNdarray();
+  var imageNdarray = exports._getDiagonalNdarray();
 
+  // Generate our canvas
+  var canvasEl = savePixels(imageNdarray, 'canvas');
 
   // Export the base64 result
+  return canvasEl.getContext('2d')
+    .getImageData(0, 0, imageNdarray.shape[0], imageNdarray.shape[1]);
 };
-
 exports.getDotBase64 = function () {
+  var imageNdarray = exports._getDotNdarray();
+  var canvasEl = savePixels(imageNdarray, 'canvas');
+  return canvasEl.getContext('2d')
+    .getImageData(0, 0, imageNdarray.shape[0], imageNdarray.shape[1]);
 };
 
 // If this is the main script, then save images to disk
 function main() {
-  // Load in main only dependencies
-  var fs = require('fs');
-  var savePixels = require('save-pixels');
-
   // Save our ndarrays to file streams
   var diagonalStream = fs.createWriteStream('diagonal.png');
   savePixels(exports._getDiagonalNdarray(), 'png').pipe(diagonalStream);
