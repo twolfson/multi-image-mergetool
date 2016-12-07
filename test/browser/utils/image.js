@@ -86,6 +86,26 @@ exports._getDotNdarray = function () {
   return imageNdarray;
 };
 
+exports._getLargeDiagonalNdarray = function () {
+  // Generate a large ndarray
+  var imageNdarray = zeros([800, 600, 4]);
+  var baseImageNdarray = exports._getDiagonalNdarray();
+
+  // Fill our image
+  ndarrayFill(imageNdarray, function fillImageNdarray (x, y, rgbaIndex) {
+    // If values are within our base image, then use them
+    if (x < 15 && y < 15) {
+      return baseImageNdarray.get(x, y, rgbaIndex);
+    }
+
+    // Otherwise, return white (rgba(FF, FF, FF, FF))
+    return 0xFF;
+  });
+
+  // Return our generated ndarray
+  return imageNdarray;
+};
+
 // If this is the main script, then save images to disk
 function main() {
   // Save our ndarrays to file streams
@@ -95,6 +115,12 @@ function main() {
   savePixels(exports._getDiagonalNdarray(), 'png').pipe(diagonalStream);
   var dotStream = createWriteStream('dot.png');
   savePixels(exports._getDotNdarray(), 'png').pipe(dotStream);
+
+  // If there's an environment variable to output the large images, then do so
+  if (process.env.DEBUG === '1') {
+    var largeDiagonalStream = createWriteStream('large-diagonal.png');
+    savePixels(exports._getLargeDiagonalNdarray(), 'png').pipe(largeDiagonalStream);
+  }
 
   // Process will automatically terminate when streams complete
   // DEV: We could optionally use `merge-stream` as well (as with `gulp` tasks)
