@@ -34,8 +34,14 @@ module.exports = function (config) {
       transform: ['brfs']
     },
 
-    // Use a separate window for better screenshots (no Karma header)
+    // Configure our client window
     client: {
+      // Increase timeouts for mocha
+      mocha: {
+        timeout: 10000 // 10 seconds
+      },
+
+      // Use a separate window for better screenshots (no Karma header)
       useIframe: false
     },
 

@@ -93,6 +93,7 @@ describe.only('An application with many similarly failing images', function () {
         expect(benchmark.stats.mean).to.be.at.most(0.600); // 600 ms
         done();
       });
+      expect('Need to move performance test back to 200 items or so. Maybe use Firefox and Chrome as they should be better performance than PhantomJS').to.equal(false);
       suite.run();
     });
   });
