@@ -55,7 +55,6 @@
     "yargs": "~6.3.0"
   },
   "devDependencies": {
-    "benchmark": "~2.1.2",
     "bootstrap": "~3.3.7",
     "brfs": "~1.4.3",
     "browserify": "~13.1.1",
