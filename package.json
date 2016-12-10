@@ -33,8 +33,8 @@
     "_test-browser-comment": "We must run `npm build` before `npm run test-karma-single` so CSS is compiled for visibility tests",
     "test-browser": "npm run build && npm run test-karma-single && bin/test-assert-docs-screenshot-up-to-date.sh",
     "test-browser-assert-screenshots": "bin/test-browser-assert-screenshots.sh",
-    "test-karma-continuous": "karma start --no-single-run",
-    "test-karma-single": "karma start",
+    "test-karma-continuous": "xvfb-maybe karma start --no-single-run",
+    "test-karma-single": "xvfb-maybe karma start",
     "test-server": "mocha test/server"
   },
   "dependencies": {
@@ -74,6 +74,7 @@
     "jshint": "~2.9.4",
     "karma": "~1.3.0",
     "karma-browserify": "~5.1.0",
+    "karma-firefox-launcher": "~1.0.0",
     "karma-mocha": "~1.2.0",
     "karma-phantomjs-launcher": "~1.0.2",
     "mocha": "~3.1.2",
@@ -89,6 +90,7 @@
     "unidragger": "~2.1.0",
     "vinyl-source-stream": "~1.1.0",
     "watchify": "~3.7.0",
+    "xvfb-maybe": "~0.1.3",
     "zeros": "~1.0.0"
   },
   "keywords": [
