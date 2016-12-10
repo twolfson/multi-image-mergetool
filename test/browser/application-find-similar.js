@@ -1,7 +1,6 @@
 // Load in our dependencies
-// DEV: Re-expose `window.Benchmark` for test runs
 var $ = require('jquery');
-var Benchmark = window.Benchmark = require('benchmark');
+var async = require('async');
 var expect = require('chai').expect;
 var UAParser = require('ua-parser-js');
 var applicationUtils = require('./utils/application');
@@ -78,26 +77,35 @@ if (browser.name !== 'PhantomJS') {
       });
 
       it('resolve them performantly', function (done) {
+        // Find and prepare our button
         var buttonEl = domUtils._findElement.call(this,
           '[data-image-set="mock-img-not-equal-1"] button[data-action="find-similar-images"]');
         var $button = $(buttonEl);
-        var suite = new Benchmark.Suite();
-        suite.add('Find similar images', {
-          // https://github.com/bestiejs/benchmark.js/issues/172
-          maxTime: 1,
-          fn: function () {
-            $button.click();
-          }
-        });
-        suite.on('complete', function handleCompletion () {
-          // https://benchmarkjs.com/docs
-          var benchmark = this[0];
-          expect(benchmark.stats.sample.length).to.be.at.least(2);
-          expect(benchmark.stats.mean).to.be.at.least(0.100); // 100 ms
-          expect(benchmark.stats.mean).to.be.at.most(0.600); // 600 ms
+
+        // Collect our samples
+        // DEV: We were using `benchmark` but it caused our host system to lag
+        //   Reference code: https://github.com/twolfson/multi-image-mergetool/blob/b36760d6054fc6a47e67b7d87fefeaf24152a6d7/test/browser/application-find-similar.js#L76-L98
+        var samples = [];
+        async.timesSeries(10, function collectSample (i, cb) {
+          // Click our button and record sample
+          var start = Date.now();
+          $button.click();
+          var end = Date.now();
+          samples.push(end - start);
+
+          // Continue to next action
+          // DEV: We use `nextTick` to prevent sync/async zalgo
+          process.nextTick(cb);
+        }, function handleResult (err) {
+          // Assert mean is good
+          var total = samples.reduce(function sumSamples (a, b) {
+            return a + b;
+          }, 0);
+          var mean = total / samples.length;
+          expect(mean).to.be.at.least(100); // ms
+          expect(mean).to.be.at.most(600); // ms
           done();
         });
-        suite.run();
       });
     });
   });
