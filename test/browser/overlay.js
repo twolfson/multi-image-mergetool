@@ -140,16 +140,22 @@ describe('An overlay on a scrolled page', function () {
   before(function scrollPage () {
     this.scrollEl = D.DIV({style: 'width: 2000px; height: 2000px'});
     document.body.appendChild(this.scrollEl);
+    // DEV: Firefox uses `document.documentElement` and PhantomJS uses `document.body` for `window.scrollTo`
+    expect(document.documentElement.scrollTop).to.equal(0);
+    expect(document.documentElement.scrollLeft).to.equal(0);
     expect(document.body.scrollTop).to.equal(0);
     expect(document.body.scrollLeft).to.equal(0);
-    document.body.scrollTop = 200;
-    document.body.scrollLeft = 200;
-    expect(document.body.scrollTop).to.equal(200);
-    expect(document.body.scrollLeft).to.equal(200);
+    window.scrollTo(200, 200);
+    expect(document.documentElement.scrollTop || document.body.scrollTop)
+      .to.equal(200);
+    expect(document.documentElement.scrollLeft || document.body.scrollLeft)
+      .to.equal(200);
   });
   after(function cleanup () {
     document.body.removeChild(this.scrollEl);
     delete this.scrollEl;
+    expect(document.documentElement.scrollTop).to.equal(0);
+    expect(document.documentElement.scrollLeft).to.equal(0);
     expect(document.body.scrollTop).to.equal(0);
     expect(document.body.scrollLeft).to.equal(0);
   });
