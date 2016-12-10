@@ -71,15 +71,16 @@ if (browser.name !== 'PhantomJS') {
 
     describe('when finding similarly failing images', function () {
       domUtils.dragOverElement({
-        selector: '[data-image-set="mock-img-not-equal-1"] img[data-compare-type=diff]',
+        selector: '[data-image-set="mock-img-not-equal1"] img[data-compare-type=diff]',
         startCoords: {x: 0, y: 0},
         endCoords: {x: 10, y: 10}
       });
 
       it('resolve them performantly', function (done) {
         // Find and prepare our button
+        var that = this;
         var buttonEl = domUtils._findElement.call(this,
-          '[data-image-set="mock-img-not-equal-1"] button[data-action="find-similar-images"]');
+          '[data-image-set="mock-img-not-equal1"] button[data-action="find-similar-images"]');
         var $button = $(buttonEl);
 
         // Collect our samples
@@ -97,13 +98,27 @@ if (browser.name !== 'PhantomJS') {
           // DEV: We use `nextTick` to prevent sync/async zalgo
           process.nextTick(cb);
         }, function handleResult (err) {
-          // Assert mean is good
+          // If there was an error, callback with it
+          if (err) {
+            return done(err);
+          }
+
+          // Verify we have 50 matching images
+          // DEV: This is a sanity check
+          var similarImageSetEls = that.containerEl.querySelectorAll('.results [data-similar-image-set]');
+          expect(similarImageSetEls).to.have.length(50);
+          expect(similarImageSetEls[0].getAttribute('data-similar-image-set')).to.equal('mock-img-not-equal1');
+          expect(similarImageSetEls[1].getAttribute('data-similar-image-set')).to.equal('mock-img-not-equal3');
+
+          // Assert average/mean is good
           var total = samples.reduce(function sumSamples (a, b) {
             return a + b;
           }, 0);
           var mean = total / samples.length;
           expect(mean).to.be.at.least(100); // ms
           expect(mean).to.be.at.most(600); // ms
+
+          // Complete our result
           done();
         });
       });

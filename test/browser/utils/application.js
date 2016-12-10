@@ -65,10 +65,10 @@ exports.IMAGE_SETS.PERFORMANCE = [];
   var i = 0;
   for (; i < 100; i += 2) {
     exports.IMAGE_SETS.PERFORMANCE.push(_.defaults({
-      id: 'mock-img-equal-' + i
+      id: 'mock-img-equal' + i
     }, exports.IMAGE_SET_LARGE_EQUAL));
     exports.IMAGE_SETS.PERFORMANCE.push(_.defaults({
-      id: 'mock-img-not-equal-' + (i + 1)
+      id: 'mock-img-not-equal' + (i + 1)
     }, exports.IMAGE_SET_LARGE_NOT_EQUAL));
   }
 }());
