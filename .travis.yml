@@ -25,6 +25,8 @@ addons:
     packages:
     - gcc-4.8
     - g++-4.8
+    # Install Firefox for Karma tests
+    - firefox
 
 before_install:
   - curl --location http://rawgit.com/twolfson/fix-travis-ci/master/lib/install.sh | bash -s
