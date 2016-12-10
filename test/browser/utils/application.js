@@ -94,14 +94,16 @@ exports.init = function (imageSetInfoArr) {
     async.forEach(imgElArr, function waitForImageToLoad (imgEl, cb) {
       // If the image is already loaded, then callback in a second (prevent zalgo)
       // https://developer.mozilla.org/en-US/docs/Web/API/HTMLImageElement
+      // DEV: Firefox runs `cb` multiple times so we use `_.once` to stop it
+      cb = _.once(cb);
       if (imgEl.complete) {
         return process.nextTick(cb);
       }
 
       // Set up onload/onerror bindings
-      imgEl.onload = _.once(function () {
-        cb(null);
-      });
+      imgEl.onload = function (evt) {
+        cb();
+      };
       imgEl.onerror = cb;
     }, done);
   });
