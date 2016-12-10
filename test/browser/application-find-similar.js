@@ -65,7 +65,7 @@ describe('An application with no similarly failing images', function () {
 // DEV: We skip PhantomJS as its performance results are inaccurate
 var browser = new UAParser().getBrowser();
 if (browser.name !== 'PhantomJS') {
-  describe.only('An application with many similarly failing images', function () {
+  describe('An application with many similarly failing images', function () {
     // Create our application
     applicationUtils.init(applicationUtils.IMAGE_SETS.PERFORMANCE);
 
