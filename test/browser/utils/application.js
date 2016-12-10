@@ -63,7 +63,7 @@ exports.IMAGE_SETS = {
 exports.IMAGE_SETS.PERFORMANCE = [];
 (function generatePerformanceImageSet () {
   var i = 0;
-  for (; i < 10; i += 2) {
+  for (; i < 100; i += 2) {
     exports.IMAGE_SETS.PERFORMANCE.push(_.defaults({
       id: 'mock-img-equal-' + i
     }, exports.IMAGE_SET_LARGE_EQUAL));
