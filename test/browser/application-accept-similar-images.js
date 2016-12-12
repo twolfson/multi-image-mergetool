@@ -26,6 +26,9 @@ describe('An application with similarly failing images', function () {
     });
     domUtils.click('[data-image-set="mock-img-not-equal"] ' +
       'button[data-action="accept-similar-images"]');
+    before(function waitForXHRToComplete (done) {
+      setTimeout(done, 100);
+    });
     applicationUtils.screenshot('accept-some-similar-images');
 
     it('updates selected images in full in its image set', function () {
