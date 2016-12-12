@@ -1,4 +1,6 @@
 # multi-image-mergetool changelog
+1.22.1 - Fixed lint error and tests
+
 1.22.0 - Added cachebusting tests
 
 1.21.0 - Added performance tests
