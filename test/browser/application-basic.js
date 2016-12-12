@@ -108,6 +108,5 @@ describe('When we click/drag on a diff image', function () {
   });
 });
 
-// TODO: Add cachebusting tests (method is called via spy, verify method itself)
 // TODO: Test out we don't oversize small images (both in normal and similar results)
 // TODO: Test out we don't let big images be too big (both in normal and similar results)
