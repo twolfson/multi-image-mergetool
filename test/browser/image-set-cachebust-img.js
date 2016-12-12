@@ -28,6 +28,5 @@ describe('An image being cachebusted for a second time', function () {
 
     // Assert our image was updated
     expect(imgEl.src).to.equal('data:image/png;base64,image-url?11');
-
   });
 });
