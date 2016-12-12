@@ -2,6 +2,7 @@
 var expect = require('chai').expect;
 var applicationUtils = require('./utils/application');
 var domUtils = require('./utils/dom');
+var ImageSet = require('../../browser/js/image-set');
 var sinonUtils = require('../utils/sinon');
 var xhrResponses = require('../test-files/http-responses/xhr');
 
@@ -16,6 +17,7 @@ describe('An application with similarly failing images', function () {
     });
     domUtils.click('[data-image-set="mock-img-not-equal"] ' +
       'button[data-action="find-similar-images"]');
+    sinonUtils.spy(ImageSet, 'cachebustImg');
     sinonUtils.mockXHR([xhrResponses.UPDATE_IMAGE_SET_DISAPPROVE]);
     before(function deselectSimilarImageSets () {
       var currentSimilarImageSetEl = this.containerEl.querySelector('[data-similar-image-set="mock-img-not-equal"]');
@@ -53,6 +55,15 @@ describe('An application with similarly failing images', function () {
       var updatedRefBase64 = applicationUtils.getBase64Content(updatedRefImgEl);
       expect(requests[0].requestBody).to.not.equal('ref=' + encodeURIComponent(updatedCurrentBase64));
       expect(requests[0].requestBody).to.not.equal('ref=' + encodeURIComponent(updatedRefBase64));
+
+      // Verify we cachebust our images
+      var updatedDiffImgEl = updatedImageSetEl.querySelector('img[data-compare-type=diff]');
+      updatedRefImgEl = updatedImageSetEl.querySelector('img[data-compare-type=ref]');
+      var cachebustImgSpy = ImageSet.cachebustImg;
+      expect(cachebustImgSpy.callCount).to.equal(2);
+      // DEV: We use `outerHTML` to prevent errors with Mocha's serializer
+      expect(cachebustImgSpy.args[0][0].outerHTML).to.equal(updatedDiffImgEl.outerHTML);
+      expect(cachebustImgSpy.args[1][0].outerHTML).to.equal(updatedRefImgEl.outerHTML);
     });
 
     it('doesn\'t update unselected images', function () {
