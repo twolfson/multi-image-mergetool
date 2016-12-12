@@ -68,7 +68,35 @@ describe('An overlay over an element', function () {
 });
 
 describe('An overlay being dragged multiple times', function () {
-  // TODO: Verify overlay being dragged multiple times is repositioned, not generating multiple
+  // Set up our elements and drag once
+  overlayUtils.init();
+  domUtils.dragOverElement({
+    selector: '#overlay-container',
+    startCoords: {x: 50, y: 60},
+    endCoords: {x: 150, y: 170}
+  });
+  // DEV: Perform a sanity check
+  before(function verifyDragOccurred () {
+    var overlayBounds = this.containerEl.querySelector('.overlay').getBoundingClientRect();
+    expect(overlayBounds.left).to.equal(50);
+    expect(overlayBounds.top).to.equal(60);
+  });
+
+  domUtils.dragOverElement({
+    selector: '#overlay-container',
+    startCoords: {x: 30, y: 20},
+    endCoords: {x: 40, y: 50}
+  });
+
+  it('creates new overlay at expected location', function () {
+    var overlayElArr = this.containerEl.querySelectorAll('.overlay');
+    expect(overlayElArr).to.have.length(1);
+    var overlayBounds = overlayElArr[0].getBoundingClientRect();
+    expect(overlayBounds.left).to.equal(30);
+    expect(overlayBounds.top).to.equal(20);
+    expect(overlayBounds.width).to.equal(10);
+    expect(overlayBounds.height).to.equal(30);
+  });
 });
 
 describe('An overlay that attempts to extend past top boundary', function () {
