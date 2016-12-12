@@ -40,8 +40,8 @@ describe('An application with similarly failing images', function () {
 
     it('updates selected images in full in its image set', function () {
       // Verify image set status updated
-      var updatedImageSet = this.containerEl.querySelector('[data-image-set="mock-img-not-equal2"]');
-      var updatedTitleEl = updatedImageSet.querySelector('.image-set__title');
+      var updatedImageSetEl = this.containerEl.querySelector('[data-image-set="mock-img-not-equal2"]');
+      var updatedTitleEl = updatedImageSetEl.querySelector('.image-set__title');
       expect(updatedTitleEl.getAttribute('data-images-equal')).to.equal('true');
 
       // Assert XHR sent
@@ -53,17 +53,18 @@ describe('An application with similarly failing images', function () {
 
       // Deep assert XHR content
       // DEV: Verifies that updated current image is what was sent
-      var updatedCurrentImgEl = updatedImageSet.querySelector('img[data-compare-type=current]');
+      var updatedCurrentImgEl = updatedImageSetEl.querySelector('img[data-compare-type=current]');
       var expectedBase64 = applicationUtils.getBase64Content(updatedCurrentImgEl);
       expect(requests[0].requestBody).to.equal('ref=' + encodeURIComponent(expectedBase64));
 
       // Verify we cachebust our images
-      var updatedDiffImgEl = updatedImageSet.querySelector('img[data-compare-type=diff]');
-      var updatedRefImgEl = updatedImageSet.querySelector('img[data-compare-type=ref]');
+      var updatedDiffImgEl = updatedImageSetEl.querySelector('img[data-compare-type=diff]');
+      var updatedRefImgEl = updatedImageSetEl.querySelector('img[data-compare-type=ref]');
       var cachebustImgSpy = ImageSet.cachebustImg;
       expect(cachebustImgSpy.callCount).to.equal(2);
-      expect(cachebustImgSpy.args[0][0]).to.equal(updatedDiffImgEl);
-      expect(cachebustImgSpy.args[1][0]).to.equal(updatedRefImgEl);
+      // DEV: We use `outerHTML` to prevent errors with Mocha's serializer
+      expect(cachebustImgSpy.args[0][0].outerHTML).to.equal(updatedDiffImgEl.outerHTML);
+      expect(cachebustImgSpy.args[1][0].outerHTML).to.equal(updatedRefImgEl.outerHTML);
     });
 
     it('doesn\'t update unselected images', function () {
