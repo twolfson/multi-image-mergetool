@@ -1,6 +1,7 @@
 // Load in our dependencies
 var expect = require('chai').expect;
 var applicationUtils = require('./utils/application');
+var ImageSet = require('../../browser/js/image-set');
 var domUtils = require('./utils/dom');
 var sinonUtils = require('../utils/sinon');
 var xhrResponses = require('../test-files/http-responses/xhr');
@@ -16,6 +17,7 @@ describe('An application with similarly failing images', function () {
     });
     domUtils.click('[data-image-set="mock-img-not-equal"] ' +
       'button[data-action="find-similar-images"]');
+    sinonUtils.spy(ImageSet, 'cachebustImg');
     sinonUtils.mockXHR([xhrResponses.UPDATE_IMAGE_SET_APPROVE]);
     before(function deselectSimilarImageSets () {
       var currentSimilarImageSetEl = this.containerEl.querySelector('[data-similar-image-set="mock-img-not-equal"]');
@@ -28,8 +30,13 @@ describe('An application with similarly failing images', function () {
 
     it('updates selected images in full in its image set', function () {
       // Verify image set status updated
-      var imageSetTitleEl = this.containerEl.querySelector('[data-image-set="mock-img-not-equal2"] .image-set__title');
-      expect(imageSetTitleEl.getAttribute('data-images-equal')).to.equal('true');
+      var updatedImageSet = this.containerEl.querySelector('[data-image-set="mock-img-not-equal2"]');
+      var updatedTitleEl = updatedImageSet.querySelector('.image-set__title');
+      expect(updatedTitleEl.getAttribute('data-images-equal')).to.equal('true');
+
+      // Resolve common tested elements
+      var updatedCurrentImgEl = updatedImageSet.querySelector('img[data-compare-type=current]');
+      var updatedRefImgEl = updatedImageSet.querySelector('img[data-compare-type=ref]');
 
       // Assert XHR sent
       var requests = this.sinonServer.requests;
@@ -39,18 +46,22 @@ describe('An application with similarly failing images', function () {
       expect(requests[0].requestBody).to.contain('ref=data');
 
       // Deep assert XHR content
-      var imgEl = this.containerEl.querySelector(
-        '[data-image-set="mock-img-not-equal2"] img[data-compare-type=current]');
-      var expectedBase64 = applicationUtils.getBase64Content(imgEl);
+      // DEV: Verifies that updated current image is what was sent
+      var expectedBase64 = applicationUtils.getBase64Content(updatedCurrentImgEl);
       expect(requests[0].requestBody).to.equal('ref=' + encodeURIComponent(expectedBase64));
 
-      // DEV: We could assert cachebusted URLs but that is redundant at the moment
+      // Verify we cachebust our images
+      var cachebustImgSpy = ImageSet.cachebustImg;
+      expect(cachebustImgSpy.callCount).to.equal(2);
+      expect(cachebustImgSpy.args[0][0]).to.deep.equal(updatedCurrentImgEl);
+      expect(cachebustImgSpy.args[1][0]).to.deep.equal(updatedRefImgEl);
     });
 
     it('doesn\'t update unselected images', function () {
       // Verify image set status not updated
-      var imageSetTitleEl = this.containerEl.querySelector('[data-image-set="mock-img-not-equal"] .image-set__title');
-      expect(imageSetTitleEl.getAttribute('data-images-equal')).to.equal('false');
+      var notUpdatedImageSetEl = this.containerEl.querySelector('[data-image-set="mock-img-not-equal"]');
+      var notUpdatedTitleEl = notUpdatedImageSetEl('.image-set__title');
+      expect(notUpdatedTitleEl.getAttribute('data-images-equal')).to.equal('false');
 
       // DEV: XHR assertions are done in previous `it`
       //   Mostly via length check + url check

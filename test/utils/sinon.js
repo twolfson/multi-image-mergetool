@@ -26,6 +26,19 @@ exports.mockXHR = function (responses) {
   });
 };
 
+// http://sinonjs.org/docs/#sinonspy
+exports.spy = function (obj, method, func) {
+  before(function setupSpy () {
+    if (func) {
+      func = func.bind(this);
+    }
+    sinon.spy.call(sinon, obj, method, func);
+  });
+  after(function cleanup () {
+    obj[method].restore();
+  });
+};
+
 // http://sinonjs.org/docs/#stubs-api
 exports.stub = function (obj, method, func) {
   before(function setupStub () {
