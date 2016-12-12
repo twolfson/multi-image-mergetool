@@ -34,10 +34,6 @@ describe('An application with similarly failing images', function () {
       var updatedTitleEl = updatedImageSet.querySelector('.image-set__title');
       expect(updatedTitleEl.getAttribute('data-images-equal')).to.equal('true');
 
-      // Resolve common tested elements
-      var updatedCurrentImgEl = updatedImageSet.querySelector('img[data-compare-type=current]');
-      var updatedRefImgEl = updatedImageSet.querySelector('img[data-compare-type=ref]');
-
       // Assert XHR sent
       var requests = this.sinonServer.requests;
       expect(requests).to.have.length(1);
@@ -47,20 +43,23 @@ describe('An application with similarly failing images', function () {
 
       // Deep assert XHR content
       // DEV: Verifies that updated current image is what was sent
+      var updatedCurrentImgEl = updatedImageSet.querySelector('img[data-compare-type=current]');
       var expectedBase64 = applicationUtils.getBase64Content(updatedCurrentImgEl);
       expect(requests[0].requestBody).to.equal('ref=' + encodeURIComponent(expectedBase64));
 
       // Verify we cachebust our images
+      var updatedDiffImgEl = updatedImageSet.querySelector('img[data-compare-type=diff]');
+      var updatedRefImgEl = updatedImageSet.querySelector('img[data-compare-type=ref]');
       var cachebustImgSpy = ImageSet.cachebustImg;
       expect(cachebustImgSpy.callCount).to.equal(2);
-      expect(cachebustImgSpy.args[0][0]).to.deep.equal(updatedCurrentImgEl);
-      expect(cachebustImgSpy.args[1][0]).to.deep.equal(updatedRefImgEl);
+      expect(cachebustImgSpy.args[0][0]).to.equal(updatedDiffImgEl);
+      expect(cachebustImgSpy.args[1][0]).to.equal(updatedRefImgEl);
     });
 
     it('doesn\'t update unselected images', function () {
       // Verify image set status not updated
       var notUpdatedImageSetEl = this.containerEl.querySelector('[data-image-set="mock-img-not-equal"]');
-      var notUpdatedTitleEl = notUpdatedImageSetEl('.image-set__title');
+      var notUpdatedTitleEl = notUpdatedImageSetEl.querySelector('.image-set__title');
       expect(notUpdatedTitleEl.getAttribute('data-images-equal')).to.equal('false');
 
       // DEV: XHR assertions are done in previous `it`
