@@ -8,7 +8,6 @@ var xhrResponses = require('../test-files/http-responses/xhr');
 
 // Start our tests
 describe('An application with similarly failing images', function () {
-  // TODO: Test accepting all as initial case then test partial selection as secondary case
   describe('when accepting some similarly failing images', function () {
     // Create an overlay for one of our image sets
     applicationUtils.init(applicationUtils.IMAGE_SETS.MULTIPLE_NOT_EQUAL);
@@ -106,8 +105,12 @@ describe('An application with similarly failing images', function () {
     });
     applicationUtils.screenshot('accept-all-similar-images');
 
-    it('updates all selected images in full', function () {
-      expect(false).to.equal('Need to set up more tests');
+    it('updates all selected images', function () {
+      // DEV: Majority of testing is done by "some similarly" test
+      var requests = this.sinonServer.requests;
+      expect(requests).to.have.length(2);
+      expect(requests[0].url).to.equal('/update-image-set/mock-img-not-equal');
+      expect(requests[1].url).to.equal('/update-image-set/mock-img-not-equal2');
     });
 
     it.skip('collapses current image set', function () {
