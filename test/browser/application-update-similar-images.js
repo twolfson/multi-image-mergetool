@@ -34,8 +34,9 @@ describe('An application with similarly failing images', function () {
 
     it('updates selected images partially in its image set', function () {
       // Verify image set status was updated-ish
-      var imageSetTitleEl = this.containerEl.querySelector('[data-image-set="mock-img-not-equal2"] .image-set__title');
-      expect(imageSetTitleEl.getAttribute('data-images-equal')).to.equal('false');
+      var updatedImageSetEl = this.containerEl.querySelector('[data-image-set="mock-img-not-equal2"]');
+      var updatedTitleEl = updatedImageSetEl.querySelector('.image-set__title');
+      expect(updatedTitleEl.getAttribute('data-images-equal')).to.equal('false');
 
       // Assert XHR sent
       var requests = this.sinonServer.requests;
@@ -45,23 +46,20 @@ describe('An application with similarly failing images', function () {
       expect(requests[0].requestBody).to.contain('ref=data');
 
       // Deep assert XHR content
-      // DEV: It's somewhere in-between so we can't quite assert it
-      var currentImgEl = this.containerEl.querySelector(
-        '[data-image-set="mock-img-not-equal2"] img[data-compare-type=current]');
-      var currentBase64 = applicationUtils.getBase64Content(currentImgEl);
-      var refImgEl = this.containerEl.querySelector(
-        '[data-image-set="mock-img-not-equal2"] img[data-compare-type=ref]');
-      var refBase64 = applicationUtils.getBase64Content(refImgEl);
-      expect(requests[0].requestBody).to.not.equal('ref=' + encodeURIComponent(currentBase64));
-      expect(requests[0].requestBody).to.not.equal('ref=' + encodeURIComponent(refBase64));
-
-      // DEV: We could assert cachebusted URLs but that is redundant at the moment
+      // DEV: Updated image state is somewhere between ref and current so we can't quite assert it
+      var updatedCurrentImgEl = updatedImageSetEl.querySelector('img[data-compare-type=current]');
+      var updatedCurrentBase64 = applicationUtils.getBase64Content(updatedCurrentImgEl);
+      var updatedRefImgEl = updatedImageSetEl.querySelector('img[data-compare-type=ref]');
+      var updatedRefBase64 = applicationUtils.getBase64Content(updatedRefImgEl);
+      expect(requests[0].requestBody).to.not.equal('ref=' + encodeURIComponent(updatedCurrentBase64));
+      expect(requests[0].requestBody).to.not.equal('ref=' + encodeURIComponent(updatedRefBase64));
     });
 
     it('doesn\'t update unselected images', function () {
       // Verify image set status not updated
-      var imageSetTitleEl = this.containerEl.querySelector('[data-image-set="mock-img-not-equal"] .image-set__title');
-      expect(imageSetTitleEl.getAttribute('data-images-equal')).to.equal('false');
+      var notUpdatedImageSetEl = this.containerEl.querySelector('[data-image-set="mock-img-not-equal"]');
+      var notUpdatedTitleEl = notUpdatedImageSetEl.querySelector('.image-set__title');
+      expect(notUpdatedTitleEl.getAttribute('data-images-equal')).to.equal('false');
 
       // DEV: XHR assertions are done in previous `it`
       //   Mostly via length check + url check
@@ -102,6 +100,7 @@ describe('An application with similarly failing images', function () {
       expect(requests[0].requestBody).to.contain('ref=data');
 
       // Deep assert XHR content
+      // DEV: This is verifies we are using overlay selection whereas partial update test couldn't
       var imgEl = this.containerEl.querySelector(
         '[data-image-set="mock-img-not-equal"] img[data-compare-type=current]');
       var expectedBase64 = applicationUtils.getBase64Content(imgEl);
@@ -111,7 +110,7 @@ describe('An application with similarly failing images', function () {
       expectedBase64 = applicationUtils.getBase64Content(imgEl);
       expect(requests[1].requestBody).to.equal('ref=' + encodeURIComponent(expectedBase64));
 
-      // DEV: We could assert cachebusted URLs but that is redundant at the moment
+      // DEV: We don't test cachebusting due to it being fully redundant to partial update
     });
 
     it.skip('collapses current image set', function () {
