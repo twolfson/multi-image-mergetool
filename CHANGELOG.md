@@ -1,4 +1,6 @@
 # multi-image-mergetool changelog
+1.22.0 - Added cachebusting tests
+
 1.21.0 - Added performance tests
 
 1.20.1 - Added image generation inside of test utilities
