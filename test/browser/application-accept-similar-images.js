@@ -77,6 +77,7 @@ describe('An application with similarly failing images', function () {
 
     it.skip('collapses current image set', function () {
       // Placeholder content
+      // TODO: Should we also clear results, remove overlay, and disable button?
     });
   });
 });

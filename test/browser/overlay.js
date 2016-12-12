@@ -67,6 +67,10 @@ describe('An overlay over an element', function () {
   });
 });
 
+describe('An overlay being dragged multiple times', function () {
+  // TODO: Verify overlay being dragged multiple times is repositioned, not generating multiple
+});
+
 describe('An overlay that attempts to extend past top boundary', function () {
   overlayUtils.init();
   domUtils.dragOverElement({

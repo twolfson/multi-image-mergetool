@@ -108,17 +108,6 @@ describe('When we click/drag on a diff image', function () {
   });
 });
 
-// TODO: These are probably ImageSet tests directly
-//   Test out acceptance behavior (hits endpoint, approval/error)
-//   Test out overlay selection with different values, verify it's cleared out and not appended to
-//   Test out accepting all images (hits endpoint, approval/error)
-//      Add TODOs about cleaning results, collapsing section, and disabling "Find similar" button
-//   Test out accepting some images (doesn't hit endpoint for all images)
-//   Test out approving selection for all similar images (hits endpoint, approval/failure/error)
-//      Verify we receive partially updated image at endpoint (not full)
-//   Test out approving selection for some similar images (doesn't hit endpoint for all images)
-//   Test out approving entire image for all similar images (hits endpoint, approval/failure/error)
-//      Verify we receive fully updated image at endpoint (not partial)
-//   Test out approving entire image for some similar images (doesn't hit endpoint for all images)
-//   Test out we don't oversize small images (both in normal and similar results)
-//   Test out we don't let big images be too big (both in normal and similar results)
+// TODO: Add cachebusting tests (method is called via spy, verify method itself)
+// TODO: Test out we don't oversize small images (both in normal and similar results)
+// TODO: Test out we don't let big images be too big (both in normal and similar results)
