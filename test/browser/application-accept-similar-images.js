@@ -8,22 +8,30 @@ var xhrResponses = require('../test-files/http-responses/xhr');
 
 // Start our tests
 describe('An application with similarly failing images', function () {
+  // TODO: Test accepting all as initial case then test partial selection as secondary case
   describe('when accepting some similarly failing images', function () {
+    // Create an overlay for one of our image sets
     applicationUtils.init(applicationUtils.IMAGE_SETS.MULTIPLE_NOT_EQUAL);
     domUtils.dragOverElement({
       selector: '[data-image-set="mock-img-not-equal"] img[data-compare-type=diff]',
       startCoords: {x: 0, y: 0},
       endCoords: {x: 10, y: 10}
     });
+
+    // Find similar images for said image set
     domUtils.click('[data-image-set="mock-img-not-equal"] ' +
       'button[data-action="find-similar-images"]');
-    sinonUtils.spy(ImageSet, 'cachebustImg');
-    sinonUtils.mockXHR([xhrResponses.UPDATE_IMAGE_SET_APPROVE]);
+
+    // Deselect similar images and set up mocks/spies
     before(function deselectSimilarImageSets () {
       var currentSimilarImageSetEl = this.containerEl.querySelector('[data-similar-image-set="mock-img-not-equal"]');
       var saveUpdateEl = currentSimilarImageSetEl.querySelector('[name=save_update]');
       saveUpdateEl.checked = false;
     });
+    sinonUtils.spy(ImageSet, 'cachebustImg');
+    sinonUtils.mockXHR([xhrResponses.UPDATE_IMAGE_SET_APPROVE]);
+
+    // Trigger accept similar images button and wait for it to process
     domUtils.click('[data-image-set="mock-img-not-equal"] ' +
       'button[data-action="accept-similar-images"]');
     before(function waitForXHRToComplete (done) {
@@ -75,18 +83,32 @@ describe('An application with similarly failing images', function () {
   });
 
   describe('when accepting all similarly failing images', function () {
+    // Create an overlay for one of our image sets
     applicationUtils.init(applicationUtils.IMAGE_SETS.MULTIPLE_NOT_EQUAL);
     domUtils.dragOverElement({
       selector: '[data-image-set="mock-img-not-equal"] img[data-compare-type=diff]',
       startCoords: {x: 0, y: 0},
       endCoords: {x: 10, y: 10}
     });
+
+    // Find similar images from overlay
     domUtils.click('[data-image-set="mock-img-not-equal"] ' +
       'button[data-action="find-similar-images"]');
+
+    // Set up mocks
     sinonUtils.mockXHR([xhrResponses.UPDATE_IMAGE_SET_APPROVE]);
+
+    // Trigger accept similar images button and wait for it to process
     domUtils.click('[data-image-set="mock-img-not-equal"] ' +
       'button[data-action="accept-similar-images"]');
+    before(function waitForXHRToComplete (done) {
+      setTimeout(done, 100);
+    });
     applicationUtils.screenshot('accept-all-similar-images');
+
+    it('updates all selected images in full', function () {
+      expect(false).to.equal('Need to set up more tests');
+    });
 
     it.skip('collapses current image set', function () {
       // Placeholder content
