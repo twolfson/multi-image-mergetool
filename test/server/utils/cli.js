@@ -1,7 +1,6 @@
 // Load in our dependencies
 var assert = require('assert');
 var cli = require('../../../server/cli');
-var logger = require('../../../server/logger');
 var sinonUtils = require('../../utils/sinon');
 
 // Define our helpers
@@ -12,11 +11,26 @@ exports.parse = function (argv, options) {
   // Stub out logger.info
   // DEV: We use filler function for convenience of access
   //   We could stil look at `logger.info === spy`
-  sinonUtils.stub(logger, 'info', function saveLoggerInfo (buff) {
-    this.loggerInfo = (this.loggerInfo || '') + buff.toString() + '\n';
+  var _write = process.stdout.write;
+  var writeCaptureList = [
+    /Comparing images\.\.\./,
+    // ✔ /home/todd/github/multi-image-mergetool/test/server/../test-files/dot.png
+    /test-files\/[^\.]+.png/,
+    /Images matched: \d+ of \d+/
+  ];
+  sinonUtils.stub(process.stdout, 'write', function saveLoggerInfo (buff) {
+    var shouldBeCaptured = writeCaptureList.some(function buffMatchesPattern (pattern) {
+      return pattern.exec(buff.toString());
+    });
+    // DEV: We have 'Error: ' here as a sanity check but it's shouldn't be touched as this is `stdout`
+    if (shouldBeCaptured && buff.toString().indexOf('Error: ') === -1) {
+      this.stdoutWrite = (this.stdoutWrite || '') + buff.toString() + '\n';
+    } else {
+      _write.call(process.stdout, buff);
+    }
   });
   after(function cleanup () {
-    delete this.loggerInfo;
+    delete this.stdoutWrite;
   });
 
   // Stub our generateServer and browser opener as well

@@ -27,9 +27,9 @@ describe('An in-process CLI invocation', function () {
     });
 
     it('contains matching output', function () {
-      expect(this.loggerInfo).to.match(/✓.+test-files\/dot\.png/);
-      expect(this.loggerInfo).to.match(/✓.+test-files\/diagonal\.png/);
-      expect(this.loggerInfo).to.contain('Images matched: 2 of 2');
+      expect(this.stdoutWrite).to.match(/✔.+test-files\/dot\.png/);
+      expect(this.stdoutWrite).to.match(/✔.+test-files\/diagonal\.png/);
+      expect(this.stdoutWrite).to.contain('Images matched: 2 of 2');
     });
   });
 
@@ -48,8 +48,8 @@ describe('An in-process CLI invocation', function () {
     });
 
     it('contains non-matching output', function () {
-      expect(this.loggerInfo).to.match(/✘.+test-files\/diagonal\.png/);
-      expect(this.loggerInfo).to.contain('Images matched: 0 of 1');
+      expect(this.stdoutWrite).to.match(/✖.+test-files\/diagonal\.png/);
+      expect(this.stdoutWrite).to.contain('Images matched: 0 of 1');
     });
 
     it('starts a server', function () {
@@ -173,11 +173,11 @@ describe('An in-process CLI invocation', function () {
       // Asserted by `expectedExitCode`
     });
     it('compares our images', function () {
-      expect(this.loggerInfo).to.contain(
+      expect(this.stdoutWrite).to.contain(
         'current image "gemini-report/images/root/default-large/my-browser~current.png"');
-      expect(this.loggerInfo).to.contain(
+      expect(this.stdoutWrite).to.contain(
         'reference image "gemini/screens/root/default-large/my-browser.png"');
-      expect(this.loggerInfo).to.contain(
+      expect(this.stdoutWrite).to.contain(
        'diff image "gemini-report/images/root/default-large/my-browser~diff.png"');
     });
   });
@@ -220,7 +220,7 @@ describe('A CLI invocation', function () {
 
     it('exits cleanly', function () {
       expect(this.err).to.equal(null);
-      expect(this.stdout).to.match(/✓.+test-files\/dot\.png/);
+      expect(this.stdout).to.match(/✔.+test-files\/dot\.png/);
       expect(this.stdout).to.contain('Images matched: 1 of 1');
     });
   });
