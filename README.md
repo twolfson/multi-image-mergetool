@@ -11,7 +11,7 @@ This was built to resolve conflicts in full page test screenshots where auxilary
 
 **Screenshot:**
 
-![Screenshot from tests](https://cloud.githubusercontent.com/assets/902488/20429809/bf9345e6-ad45-11e6-98bf-e334808a2de0.png)
+![Screenshot from tests](https://cloud.githubusercontent.com/assets/902488/21135514/fd7d2346-c0d6-11e6-8a24-2600ae7a5a0c.png)
 
 [gemini-example]: #gemini
 
