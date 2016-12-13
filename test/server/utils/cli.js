@@ -13,9 +13,11 @@ exports.parse = function (argv, options) {
   var _write = process.stdout.write;
   var writeCaptureList = [
     // ✔ /home/todd/github/multi-image-mergetool/test/server/../test-files/dot.png
-    // ✔ gemini-report/images/root/default-large/my-browser~current.png
     /test-files\/[^\.]+.png/,
-    /gemini-report\/.+png/
+    // ✔ gemini-report/images/root/default-large/my-browser~current.png
+    /gemini-report\/images\/.+png/,
+    // ✔ gemini/screens/root/default-large/my-browser.png
+    /gemini\/screens\/.+png/
   ];
   sinonUtils.stub(logger, 'info', function saveLoggerInfo (buff) {
     this.stdoutWrite = (this.stdoutWrite || '') + buff.toString() + '\n';

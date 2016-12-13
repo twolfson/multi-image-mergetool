@@ -9,7 +9,7 @@ var logger = require('./logger');
 // Define our constructor
 function ImageSet(currentImage, refImage, options) {
   // Save our options for later
-  this.id = currentImage;
+  this.id = refImage;
   this.currentImage = currentImage;
   this.refImage = refImage;
   this.diffImage = options.diffImage || null;
@@ -103,7 +103,7 @@ ImageSet.prototype = {
   // DEV: We could use `toJSON` but there is a trust issue of it always being used/not
   serialize: function () {
     return {
-      id: this.refImage,
+      id: this.id,
       currentImageUrl: '/images/' + encodeURIComponent(this.currentImage),
       diffImageUrl: '/images/' + encodeURIComponent(this.diffImage),
       refImageUrl: '/images/' + encodeURIComponent(this.refImage),
