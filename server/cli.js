@@ -193,6 +193,13 @@ exports._parse = function (argv, callback) {
       cb(null);
     });
   }, function handleResults (err) {
+    // Monkey-patch over multispinner instance to prevent waiting for it to finish
+    // DEV: Without this monkey-patch, our output is overwritten =/
+    // https://github.com/codekirei/node-multispinner/blob/318a09dd41acd41eab90ca543f61eff25a12a860/index.js#L94-L112
+    multispinner.allCompleted = function () { return true; };
+    multispinner.loop();
+    multispinner.loop = function () {};
+
     // If there was an error, throw it
     if (err) {
       return callback(err);
