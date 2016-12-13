@@ -13,10 +13,22 @@ exports.parse = function (argv, options) {
   //   We could stil look at `logger.info === spy`
   var _write = process.stdout.write;
   var writeCaptureList = [
+    // CLI arguments received [ 'node', '/home/todd/.../test/server/../../bin/multi-image-mergetool', ...]
+    /CLI arguments received/,
     /Comparing images\.\.\./,
+    // current image "gemini-report/images/root/default-large/my-browser~current.png"
+    // reference image "gemini/screens/root/default-large/my-browser.png"
+    // diff image "gemini-report/images/root/default-large/my-browser~diff.png"
+    /current image "/,
+    /reference image "/,
+    /diff image "/,
     // ✔ /home/todd/github/multi-image-mergetool/test/server/../test-files/dot.png
+    // ✔ gemini-report/images/root/default-large/my-browser~current.png
     /test-files\/[^\.]+.png/,
-    /Images matched: \d+ of \d+/
+    /gemini-report\/.+png/,
+    /Images matched: \d+ of \d+/,
+    // Server is listening on http://localhost:2020/
+    /Server is listening on/
   ];
   sinonUtils.stub(process.stdout, 'write', function saveLoggerInfo (buff) {
     var shouldBeCaptured = writeCaptureList.some(function buffMatchesPattern (pattern) {
