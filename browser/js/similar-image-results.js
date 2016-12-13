@@ -85,9 +85,9 @@ function SimilarImageResults(_containerEl, params) {
           // TODO: Move style out of inline and to classes for more performance
           // DEV: `min-width` is to give us spacing for "Save update text"
           D.TD({style: 'padding-right: 10px; min-width: 120px;'}, 'Save update:'),
-          D.TD('Original current:'),
-          D.TD('Updated diff:'),
-          D.TD('Updated ref:')
+          D.TD('Current (unchanged):'),
+          D.TD('Updated diff (diff + overlay):'),
+          D.TD('Updated ref (ref + overlay):')
         ])
       ]),
       D.TBODY([

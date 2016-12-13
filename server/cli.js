@@ -154,9 +154,13 @@ exports._parse = function (argv, callback) {
   }
 
   // Run our image comparisons
+  // http://caolan.github.io/async/docs.html#eachLimit
+  // DEV: We restrict to 10 comparisons at a time to not overwhelm CPU/RAM
+  // TODO: Explore using cluster for multiple cores
+  // TODO: Consider doing a spinner graphic for each of the loading images
   var imagesEqualCount = 0;
   logger.info('Comparing images...');
-  async.each(imageSets, function compareImageSet (imageSet, cb) {
+  async.eachLimit(imageSets, 10, function compareImageSet (imageSet, cb) {
     imageSet.compare(function handleComparison (err, imagesEqual) {
       // If there was an error (e.g. file not found), callback with it
       if (err) {
