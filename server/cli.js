@@ -154,8 +154,6 @@ exports._parse = function (argv, callback) {
   // Run our image comparisons
   // http://caolan.github.io/async/docs.html#eachLimit
   // DEV: We restrict to 10 comparisons at a time to not overwhelm CPU/RAM
-  // TODO: Explore using cluster for multiple cores
-  // TODO: Consider doing a spinner graphic for each of the loading images
   var imagesEqualCount = 0;
   logger.info('Comparing images...');
   // Output multiple spinners for user feedback
@@ -168,6 +166,7 @@ exports._parse = function (argv, callback) {
     // https://github.com/codekirei/node-multispinner/blob/318a09dd41acd41eab90ca543f61eff25a12a860/index.js#L53-L58
     // https://github.com/codekirei/node-multispinner/blob/318a09dd41acd41eab90ca543f61eff25a12a860/lib/spinners.js#L45-L63
     // https://github.com/codekirei/node-multispinner/blob/318a09dd41acd41eab90ca543f61eff25a12a860/lib/spinners.js#L102-L108
+    // DEV: Relevant issue: https://github.com/codekirei/node-multispinner/issues/2
     var imageSetId = imageSet.id;
     multispinner.spinners[imageSetId] = MultispinnerSpinners.prototype.spinnerObj(imageSetId);
     imageSet.compare(function handleComparison (err, imagesEqual) {
@@ -195,6 +194,7 @@ exports._parse = function (argv, callback) {
   }, function handleResults (err) {
     // Monkey-patch over multispinner instance to prevent waiting for it to finish
     // DEV: Without this monkey-patch, our output is overwritten =/
+    // DEV: Relevant issue: https://github.com/codekirei/node-multispinner/issues/3
     // https://github.com/codekirei/node-multispinner/blob/318a09dd41acd41eab90ca543f61eff25a12a860/index.js#L94-L112
     multispinner.allCompleted = function () { return true; };
     multispinner.loop();
