@@ -1,6 +1,7 @@
 // Load in our dependencies
 var assert = require('assert');
 var cli = require('../../../server/cli');
+var logger = require('../../../server/logger');
 var sinonUtils = require('../../utils/sinon');
 
 // Define our helpers
@@ -8,29 +9,18 @@ exports.parse = function (argv, options) {
   // Fallback our options
   options = options || {};
 
-  // Stub out logger.info
-  // DEV: We use filler function for convenience of access
-  //   We could stil look at `logger.info === spy`
+  // Stub out logger.info and `process.stdout.write` for `multispinner`
   var _write = process.stdout.write;
   var writeCaptureList = [
-    // CLI arguments received [ 'node', '/home/todd/.../test/server/../../bin/multi-image-mergetool', ...]
-    /CLI arguments received/,
-    /Comparing images\.\.\./,
-    // current image "gemini-report/images/root/default-large/my-browser~current.png"
-    // reference image "gemini/screens/root/default-large/my-browser.png"
-    // diff image "gemini-report/images/root/default-large/my-browser~diff.png"
-    /current image "/,
-    /reference image "/,
-    /diff image "/,
     // ✔ /home/todd/github/multi-image-mergetool/test/server/../test-files/dot.png
     // ✔ gemini-report/images/root/default-large/my-browser~current.png
     /test-files\/[^\.]+.png/,
-    /gemini-report\/.+png/,
-    /Images matched: \d+ of \d+/,
-    // Server is listening on http://localhost:2020/
-    /Server is listening on/
+    /gemini-report\/.+png/
   ];
-  sinonUtils.stub(process.stdout, 'write', function saveLoggerInfo (buff) {
+  sinonUtils.stub(logger, 'info', function saveLoggerInfo (buff) {
+    this.stdoutWrite = (this.stdoutWrite || '') + buff.toString() + '\n';
+  });
+  sinonUtils.stub(process.stdout, 'write', function saveStdoutWrite (buff) {
     var shouldBeCaptured = writeCaptureList.some(function buffMatchesPattern (pattern) {
       return pattern.exec(buff.toString());
     });
