@@ -161,10 +161,10 @@ npm test
 [Mocha]: https://github.com/mochajs/mocha
 [Karma]: https://github.com/karma-runner/karma
 
-Additionally, during testing we generate screenshots. We can assert they are as expected via:
+Additionally, during testing we generate screenshots. We can assert and approve they are as expected via:
 
 ```bash
-npm run test-browser-assert-screenshots
+npm run test-browser-mergetool-screenshots
 ```
 
 ### Releasing
