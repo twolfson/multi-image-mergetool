@@ -13,5 +13,9 @@ fi
 
 # Compare our screenshots
 actual_filepath="test/browser/actual-screenshots/find-similar-matching.png"
-node bin/multi-image-mergetool --assert \
-  --current-images "$actual_filepath" --ref-images "$expected_filepath"
+if ! node bin/multi-image-mergetool --assert \
+    --current-images "$actual_filepath" --ref-images "$expected_filepath"; then
+  echo "Documentation screenshot doesn't match latest application screenshot" 1>&2
+  echo "Please post latest screenshot to a GitHub issue and update the reference ($actual_filepath)" 1>&2
+  exit 1
+fi
