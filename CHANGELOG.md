@@ -1,4 +1,6 @@
 # multi-image-mergetool changelog
+1.23.0 - Added throttling to image comparison and loading spinners
+
 1.22.1 - Fixed lint error and tests
 
 1.22.0 - Added cachebusting tests
