@@ -1,18 +1,16 @@
 // Load in our dependencies
 var async = require('async');
 var assert = require('assert');
-var chalk = require('chalk');
+var cliSpinners = require('cli-spinners');
 var glob = require('glob');
 var opener = require('opener');
 var parser = require('yargs');
 var generateServer = require('./index');
+var Multispinner = require('multispinner');
+var MultispinnerSpinners = require('multispinner/lib/spinners');
 var ImageSet = require('./image-set');
 var logger = require('./logger');
 var pkg = require('../package.json');
-
-// Define our constants
-var ICON_SUCCESS = chalk.green('✓');
-var ICON_FAIL = chalk.red('✘');
 
 // Set up our options
 // https://github.com/yargs/yargs/tree/v6.3.0#optionkey-opt
@@ -160,10 +158,22 @@ exports._parse = function (argv, callback) {
   // TODO: Consider doing a spinner graphic for each of the loading images
   var imagesEqualCount = 0;
   logger.info('Comparing images...');
+  // Output multiple spinners for user feedback
+  // https://github.com/codekirei/node-multispinner/blob/318a09dd41acd41eab90ca543f61eff25a12a860/extras/api.md
+  // https://github.com/codekirei/node-multispinner/blob/318a09dd41acd41eab90ca543f61eff25a12a860/extras/api.md#options-optional
+  var multispinner = imageSets.length ? new Multispinner([imageSets[0].id], {frames: cliSpinners.dots.frames}) : null;
+  imageSets = imageSets.slice(0, 20);
   async.eachLimit(imageSets, 10, function compareImageSet (imageSet, cb) {
+    // Add a new spinner for user feedback
+    // https://github.com/codekirei/node-multispinner/blob/318a09dd41acd41eab90ca543f61eff25a12a860/index.js#L53-L58
+    // https://github.com/codekirei/node-multispinner/blob/318a09dd41acd41eab90ca543f61eff25a12a860/lib/spinners.js#L45-L63
+    // https://github.com/codekirei/node-multispinner/blob/318a09dd41acd41eab90ca543f61eff25a12a860/lib/spinners.js#L102-L108
+    var imageSetId = imageSet.id;
+    multispinner.spinners[imageSetId] = MultispinnerSpinners.prototype.spinnerObj(imageSetId);
     imageSet.compare(function handleComparison (err, imagesEqual) {
       // If there was an error (e.g. file not found), callback with it
       if (err) {
+        multispinner.error(imageSetId);
         return cb(err);
       }
 
@@ -173,10 +183,10 @@ exports._parse = function (argv, callback) {
       // Otherwise, log our result and update our counter
       // https://github.com/gemini-testing/gemini/blob/v4.13.0/lib/reporters/flat-factory/flat.js#L41-L78
       if (imagesEqual) {
-        logger.info(ICON_SUCCESS + ' ' + imageSet.refImage);
+        multispinner.success(imageSetId);
         imagesEqualCount += 1;
       } else {
-        logger.info(ICON_FAIL + ' ' + imageSet.refImage);
+        multispinner.error(imageSetId);
       }
 
       // Callback

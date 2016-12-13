@@ -9,6 +9,7 @@ var logger = require('./logger');
 // Define our constructor
 function ImageSet(currentImage, refImage, options) {
   // Save our options for later
+  this.id = currentImage;
   this.currentImage = currentImage;
   this.refImage = refImage;
   this.diffImage = options.diffImage || null;
