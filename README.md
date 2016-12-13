@@ -1,5 +1,8 @@
 # multi-image-mergetool [![Build status](https://travis-ci.org/twolfson/multi-image-mergetool.svg?branch=master)](https://travis-ci.org/twolfson/multi-image-mergetool)
 
+TODO: Remove old and generate mew sha256 at end of each test (e.g. .png.sha256). Verify `git status` is unchanged (e.g. no new files, no removed files)
+  Potential might be we need to have font consistency but we'll see what happens
+
 Resolve multiple image conflicts at the same time
 
 This was built to resolve conflicts in full page test screenshots where auxilary content may have changed (e.g. navigation). We prefer full page screenshots over ignored content/component based screenshots as it is less brittle and catches unexpected issues.
