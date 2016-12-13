@@ -49,7 +49,7 @@
     "jade": "~1.11.0",
     "looks-same": "~3.0.0",
     "mkdirp": "~0.5.1",
-    "multispinner": "~0.2.1",
+    "multispinner": "0.2.1",
     "opener": "~1.4.2",
     "tmp": "0.0.29",
     "underscore": "~1.8.3",
