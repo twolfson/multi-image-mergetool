@@ -1,4 +1,6 @@
 # multi-image-mergetool changelog
+1.24.0 - Added validation for screenshots from test suite
+
 1.23.1 - Updated screenshot in README
 
 1.23.0 - Added throttling to image comparison and loading spinners
