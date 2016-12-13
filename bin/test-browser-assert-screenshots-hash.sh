@@ -6,6 +6,7 @@ set -e
 shopt -s globstar
 
 # Update our sha256 info
+output_file="test/browser/expected-screenshots/contents.sha256"
 bin/test-browser-update-screenshots-hash.sh
 
 # Use `git diff` to detect added/deleted/modified screenshots
