@@ -13,7 +13,7 @@ var dotFilepath = __dirname + '/../test-files/dot.png';
 // Start our tests
 // DEV: `cliUtils.parse` stubs `logger.info`, `generateServer`, and `opener` (browser opener)
 describe('An in-process CLI invocation', function () {
-  describe.only('with matching images', function () {
+  describe('with matching images', function () {
     cliUtils.parse([
       'node', multiImageMergetoolFilepath,
       '--current-images', dotFilepath, diagonalFilepath,
@@ -27,9 +27,9 @@ describe('An in-process CLI invocation', function () {
     });
 
     it('contains matching output', function () {
-      expect(this.stdoutWrite).to.match(/✔.+test-files\/dot\.png/);
-      expect(this.stdoutWrite).to.match(/✔.+test-files\/diagonal\.png/);
-      expect(this.stdoutWrite).to.contain('Images matched: 2 of 2');
+      expect(this.logUpdateContent).to.match(/✔.+test-files\/dot\.png/);
+      expect(this.logUpdateContent).to.match(/✔.+test-files\/diagonal\.png/);
+      expect(this.loggerInfo).to.contain('Images matched: 2 of 2');
     });
   });
 
@@ -48,8 +48,8 @@ describe('An in-process CLI invocation', function () {
     });
 
     it('contains non-matching output', function () {
-      expect(this.stdoutWrite).to.match(/✖.+test-files\/diagonal\.png/);
-      expect(this.stdoutWrite).to.contain('Images matched: 0 of 1');
+      expect(this.logUpdateContent).to.match(/✖.+test-files\/diagonal\.png/);
+      expect(this.loggerInfo).to.contain('Images matched: 0 of 1');
     });
 
     it('starts a server', function () {
@@ -173,11 +173,11 @@ describe('An in-process CLI invocation', function () {
       // Asserted by `expectedExitCode`
     });
     it('compares our images', function () {
-      expect(this.stdoutWrite).to.contain(
+      expect(this.loggerInfo).to.contain(
         'current image "gemini-report/images/root/default-large/my-browser~current.png"');
-      expect(this.stdoutWrite).to.contain(
+      expect(this.loggerInfo).to.contain(
         'reference image "gemini/screens/root/default-large/my-browser.png"');
-      expect(this.stdoutWrite).to.contain(
+      expect(this.loggerInfo).to.contain(
        'diff image "gemini-report/images/root/default-large/my-browser~diff.png"');
     });
   });

@@ -25,13 +25,14 @@ exports.parse = function (argv, options) {
 
   // Stub out `logger.info` and `update` for `multispinner`
   sinonUtils.stub(logger, 'info', function saveLoggerInfo (buff) {
-    this.loggerOutput = (this.stdoutWrite || '') + buff.toString() + '\n';
+    this.loggerInfo = (this.loggerInfo || '') + buff.toString() + '\n';
   });
   sinonUtils.stub(Multispinner.prototype, 'update', {
     get: function () {
       var that = this;
       function logUpdateMock(content) {
-        that.logUpdateOutput = content;
+        // DEV: We overwrite content as `logUpdate` normally would
+        that.logUpdateContent = content;
       }
       logUpdateMock.clear = noop;
       logUpdateMock.done = noop;
@@ -40,8 +41,8 @@ exports.parse = function (argv, options) {
     set: noop
   });
   after(function cleanup () {
-    delete this.loggerOutput;
-    delete this.logUpdateOutput;
+    delete this.loggerInfo;
+    delete this.logUpdateContent;
   });
 
   // Stub our generateServer and browser opener as well

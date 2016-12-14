@@ -1,5 +1,6 @@
 // Load in our dependencies
 // DEV: Please avoid any non-sinon dependencies as this is shared by browser/server
+var _ = require('underscore');
 var sinon = require('sinon');
 
 // Define our utilities
