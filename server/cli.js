@@ -160,7 +160,6 @@ exports._parse = function (argv, callback) {
   // https://github.com/codekirei/node-multispinner/blob/318a09dd41acd41eab90ca543f61eff25a12a860/extras/api.md
   // https://github.com/codekirei/node-multispinner/blob/318a09dd41acd41eab90ca543f61eff25a12a860/extras/api.md#options-optional
   var multispinner = imageSets.length ? new Multispinner([imageSets[0].id], {frames: cliSpinners.dots.frames}) : null;
-  imageSets = imageSets.slice(0, 20);
   async.eachLimit(imageSets, 10, function compareImageSet (imageSet, cb) {
     // Add a new spinner for user feedback
     // https://github.com/codekirei/node-multispinner/blob/318a09dd41acd41eab90ca543f61eff25a12a860/index.js#L53-L58
