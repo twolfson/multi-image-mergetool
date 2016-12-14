@@ -41,6 +41,7 @@ exports.spy = function (obj, method, func) {
 
 // http://sinonjs.org/docs/#stubs-api
 exports.stub = function (obj, method, func) {
+  var stub;
   before(function setupStub () {
     // if (func) {
     //   if (typeof func === 'function') {
@@ -50,9 +51,9 @@ exports.stub = function (obj, method, func) {
     //     if (func.set) { func.set = func.set.bind(this); }
     //   }
     // }
-    sinon.stub.call(sinon, obj, method, func);
+    stub = sinon.stub.call(sinon, obj, method, func);
   });
   after(function cleanup () {
-    obj[method].restore();
+    stub.restore();
   });
 };

@@ -5,52 +5,43 @@ var logger = require('../../../server/logger');
 var sinonUtils = require('../../utils/sinon');
 var Multispinner = require('multispinner');
 
-// Define our helpers
+// Overwrite Multispinner.prototype.update to prevent accidental output
+function noop() {}
 Object.defineProperty(Multispinner.prototype, 'update', {
   configurable: true,
-  enumerable: false,
-  get: function () {},
-  set: function () {}
+  get: function () {
+    var stack = (new Error()).stack;
+    if (stack.indexOf('sinon') === -1) {
+      throw new Error('`Multispinner.prototype.update` was not stubbed. Please use `cliutils.parse` to stub it');
+    }
+  },
+  set: noop
 });
-console.log(Multispinner.prototype.update + '');
+
+// Define our helpers
 exports.parse = function (argv, options) {
   // Fallback our options
   options = options || {};
 
-  // Stub out logger.info and `process.stdout.write` for `multispinner`
-  var _write = process.stdout.write;
-  var writeCaptureList = [
-    // ✔ /home/todd/github/multi-image-mergetool/test/server/../test-files/dot.png
-    /test-files\/[^\.]+.png/,
-    // ✔ gemini-report/images/root/default-large/my-browser~current.png
-    /gemini-report\/images\/.+png/,
-    // ✔ gemini/screens/root/default-large/my-browser.png
-    /gemini\/screens\/.+png/
-  ];
+  // Stub out `logger.info` and `update` for `multispinner`
   sinonUtils.stub(logger, 'info', function saveLoggerInfo (buff) {
-    this.stdoutWrite = (this.stdoutWrite || '') + buff.toString() + '\n';
+    this.loggerOutput = (this.stdoutWrite || '') + buff.toString() + '\n';
   });
   sinonUtils.stub(Multispinner.prototype, 'update', {
     get: function () {
-      console.log('get it');
+      var that = this;
+      function logUpdateMock(content) {
+        that.logUpdateOutput = content;
+      }
+      logUpdateMock.clear = noop;
+      logUpdateMock.done = noop;
+      return logUpdateMock;
     },
-    set: function () {
-      console.log('set it');
-    }
+    set: noop
   });
-  // sinonUtils.stub(process.stdout, 'write', function saveStdoutWrite (buff) {
-  //   var shouldBeCaptured = writeCaptureList.some(function buffMatchesPattern (pattern) {
-  //     return pattern.exec(buff.toString());
-  //   });
-  //   // DEV: We have 'Error: ' here as a sanity check but it's shouldn't be touched as this is `stdout`
-  //   if (shouldBeCaptured && buff.toString().indexOf('Error: ') === -1) {
-  //     this.stdoutWrite = (this.stdoutWrite || '') + buff.toString() + '\n';
-  //   } else {
-  //     _write.call(process.stdout, buff);
-  //   }
-  // });
   after(function cleanup () {
-    delete this.stdoutWrite;
+    delete this.loggerOutput;
+    delete this.logUpdateOutput;
   });
 
   // Stub our generateServer and browser opener as well
