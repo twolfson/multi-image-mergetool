@@ -6,15 +6,8 @@ var sinonUtils = require('../../utils/sinon');
 var Multispinner = require('multispinner');
 
 // Define our helpers
-console.log(Multispinner.prototype.update);
-Object.defineProperty(Multispinner.prototype, 'update', {
-  get: function () {
-    console.log('get it');
-  },
-  set: function () {
-    console.log('set it');
-  }
-});
+Multispinner.prototype.update = function () {};
+console.log(Multispinner.prototype.update + '');
 exports.parse = function (argv, options) {
   // Fallback our options
   options = options || {};
@@ -31,6 +24,14 @@ exports.parse = function (argv, options) {
   ];
   sinonUtils.stub(logger, 'info', function saveLoggerInfo (buff) {
     this.stdoutWrite = (this.stdoutWrite || '') + buff.toString() + '\n';
+  });
+  sinonUtils.stub(Multispinner.prototype, 'update', {
+    get: function () {
+      console.log('get it');
+    },
+    set: function () {
+      console.log('set it');
+    }
   });
   // sinonUtils.stub(process.stdout, 'write', function saveStdoutWrite (buff) {
   //   var shouldBeCaptured = writeCaptureList.some(function buffMatchesPattern (pattern) {
