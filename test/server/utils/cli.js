@@ -6,7 +6,12 @@ var sinonUtils = require('../../utils/sinon');
 var Multispinner = require('multispinner');
 
 // Define our helpers
-Multispinner.prototype.update = function () {};
+Object.defineProperty(Multispinner.prototype, 'update', {
+  configurable: true,
+  enumerable: false,
+  get: function () {},
+  set: function () {}
+});
 console.log(Multispinner.prototype.update + '');
 exports.parse = function (argv, options) {
   // Fallback our options
