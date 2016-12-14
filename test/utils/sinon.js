@@ -28,15 +28,26 @@ exports.mockXHR = function (responses) {
 };
 
 // http://sinonjs.org/docs/#sinonspy
-exports.spy = function (obj, method, func) {
-  before(function setupSpy () {
-    if (func) {
-      func = func.bind(this);
+function bindFunc(func) {
+  if (func) {
+    if (typeof func === 'function') {
+      return func.bind(this);
+    } else if (typeof func === 'object') {
+      var obj = _.clone(func);
+      if (obj.get) { obj.get = obj.get.bind(this); }
+      if (obj.set) { obj.set = obj.set.bind(this); }
+      return obj;
     }
-    sinon.spy.call(sinon, obj, method, func);
+  }
+}
+exports.spy = function (obj, method, func) {
+  var spy;
+  before(function setupSpy () {
+    func = bindFunc.call(this, func);
+    spy = sinon.spy.call(sinon, obj, method, func);
   });
   after(function cleanup () {
-    obj[method].restore();
+    spy.restore();
   });
 };
 
@@ -44,14 +55,7 @@ exports.spy = function (obj, method, func) {
 exports.stub = function (obj, method, func) {
   var stub;
   before(function setupStub () {
-    // if (func) {
-    //   if (typeof func === 'function') {
-    //     func = func.bind(this);
-    //   } else if (typeof func === 'object') {
-    //     if (func.get) { func.get = func.get.bind(this); }
-    //     if (func.set) { func.set = func.set.bind(this); }
-    //   }
-    // }
+    func = bindFunc.call(this, func);
     stub = sinon.stub.call(sinon, obj, method, func);
   });
   after(function cleanup () {
