@@ -3,8 +3,18 @@ var assert = require('assert');
 var cli = require('../../../server/cli');
 var logger = require('../../../server/logger');
 var sinonUtils = require('../../utils/sinon');
+var Multispinner = require('multispinner');
 
 // Define our helpers
+console.log(Multispinner.prototype.update);
+Object.defineProperty(Multispinner.prototype, 'update', {
+  get: function () {
+    console.log('get it');
+  },
+  set: function () {
+    console.log('set it');
+  }
+});
 exports.parse = function (argv, options) {
   // Fallback our options
   options = options || {};
@@ -22,17 +32,17 @@ exports.parse = function (argv, options) {
   sinonUtils.stub(logger, 'info', function saveLoggerInfo (buff) {
     this.stdoutWrite = (this.stdoutWrite || '') + buff.toString() + '\n';
   });
-  sinonUtils.stub(process.stdout, 'write', function saveStdoutWrite (buff) {
-    var shouldBeCaptured = writeCaptureList.some(function buffMatchesPattern (pattern) {
-      return pattern.exec(buff.toString());
-    });
-    // DEV: We have 'Error: ' here as a sanity check but it's shouldn't be touched as this is `stdout`
-    if (shouldBeCaptured && buff.toString().indexOf('Error: ') === -1) {
-      this.stdoutWrite = (this.stdoutWrite || '') + buff.toString() + '\n';
-    } else {
-      _write.call(process.stdout, buff);
-    }
-  });
+  // sinonUtils.stub(process.stdout, 'write', function saveStdoutWrite (buff) {
+  //   var shouldBeCaptured = writeCaptureList.some(function buffMatchesPattern (pattern) {
+  //     return pattern.exec(buff.toString());
+  //   });
+  //   // DEV: We have 'Error: ' here as a sanity check but it's shouldn't be touched as this is `stdout`
+  //   if (shouldBeCaptured && buff.toString().indexOf('Error: ') === -1) {
+  //     this.stdoutWrite = (this.stdoutWrite || '') + buff.toString() + '\n';
+  //   } else {
+  //     _write.call(process.stdout, buff);
+  //   }
+  // });
   after(function cleanup () {
     delete this.stdoutWrite;
   });

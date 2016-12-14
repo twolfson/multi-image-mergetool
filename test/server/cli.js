@@ -13,7 +13,7 @@ var dotFilepath = __dirname + '/../test-files/dot.png';
 // Start our tests
 // DEV: `cliUtils.parse` stubs `logger.info`, `generateServer`, and `opener` (browser opener)
 describe('An in-process CLI invocation', function () {
-  describe('with matching images', function () {
+  describe.only('with matching images', function () {
     cliUtils.parse([
       'node', multiImageMergetoolFilepath,
       '--current-images', dotFilepath, diagonalFilepath,
