@@ -1,4 +1,6 @@
 # multi-image-mergetool changelog
+1.24.2 - Removed development `imageSets` limit of 20
+
 1.24.1 - Moved to stubbing Multispinner via ES5 getters/setters instead of `stdout.write`
 
 1.24.0 - Added validation for screenshots from test suite
