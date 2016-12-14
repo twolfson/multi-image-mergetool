@@ -6,9 +6,12 @@ var sinonUtils = require('../../utils/sinon');
 var Multispinner = require('multispinner');
 
 // Overwrite Multispinner.prototype.update to prevent accidental output
+// DEV: We set `configurable` so Sinon can overwrite our property
+// DEV: We must set the property otherwise Sinon throws a fit about not finding it =/
 function noop() {}
 Object.defineProperty(Multispinner.prototype, 'update', {
   configurable: true,
+  enumerable: false,
   get: function () {
     var stack = (new Error()).stack;
     if (stack.indexOf('sinon') === -1) {
