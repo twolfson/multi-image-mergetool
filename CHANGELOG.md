@@ -1,4 +1,6 @@
 # multi-image-mergetool changelog
+1.24.1 - Moved to stubbing Multispinner via ES5 getters/setters instead of `stdout.write`
+
 1.24.0 - Added validation for screenshots from test suite
 
 1.23.1 - Updated screenshot in README
