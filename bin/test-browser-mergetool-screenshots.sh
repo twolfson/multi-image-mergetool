@@ -11,5 +11,10 @@ bin/multi-image-mergetool \
   --ref-images $(echo test/browser/actual-screenshots/**/*.png | sed "s/actual-screenshots/expected-screenshots/g") \
   --diff-images $(echo test/browser/actual-screenshots/**/*.png | sed "s/actual-screenshots/diff-screenshots/g")
 
-# Update our screenshot hash
-bin/test-browser-update-screenshots-hash.sh
+# Enable globstar
+shopt -s globstar
+
+# Update our sha256 info
+# DEV: We update it relatively so we can `diff` actual contents to expected contents
+cd test/browser/expected-screenshots
+sha256sum **/*.png > contents.sha256
