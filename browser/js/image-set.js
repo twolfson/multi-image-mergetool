@@ -33,9 +33,8 @@ function ImageSet(_containerEl, imageSetInfo) {
 
       // Collapsable container for row
       // DEV: We use `data-id` as `id` has restrictions on characters
-      this.saveEl('contentsEl', h.div('.image-set__collapse.collapse.well', {
+      this.saveEl('contentsEl', h.div({
         // Make our first image set visible
-        // DEV: If class names get too complex, use `classnames` library
         className: classnames('image-set__collapse', 'collapse', 'well', {'in': !imageSetInfo.imagesEqual})
       }, [
         // Action buttons
