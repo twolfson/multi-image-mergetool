@@ -7,7 +7,7 @@ shopt -s globstar
 
 # Verify we received our directories
 directory="$1"
-if test "$directory" != ""; then
+if test "$directory" = ""; then
   echo "Expected directory to be defined but it wasn\'t. Please pass in a directory parameter" 1>&2
   exit 1
 fi
@@ -34,7 +34,7 @@ for filepath in **/*.png; do
         // When our image is done loading, re-pack it
         this.pack().pipe(fs.createWriteStream(filepath));
       });
-    "
+    " -- "$filepath"
 done
 
 # Generate our hash
