@@ -35,7 +35,7 @@
     "test-browser-mergetool-screenshots": "bin/test-browser-mergetool-screenshots.sh",
     "_test-karma-comment": "`xvfb-maybe` checks for DISPLAY environment variable but we hate non-headless browsers so we always shut it off",
     "test-karma-continuous": "DISPLAY=\"\" xvfb-maybe karma start --no-single-run",
-    "test-karma-develop": "nodemon -x \"DISPLAY=\\\"\\\" xvfb-maybe karma start --browsers PhantomJSScreenshot && echo hi\"",
+    "test-karma-develop": "nodemon -x \"DISPLAY=\\\"\\\" xvfb-maybe karma start --browsers PhantomJSScreenshot && bin/test-browser-assert-screenshots-hash.sh\"",
     "test-karma-single": "DISPLAY=\"\" xvfb-maybe karma start",
     "test-server": "mocha test/server"
   },

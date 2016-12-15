@@ -15,6 +15,17 @@ else
 fi
 
 # Compare our screenshot contents
+set +e
 diff --unified \
   test/browser/expected-screenshots/contents.sha256 \
   test/browser/actual-screenshots/contents.sha256
+exit_code="$?"
+set -e
+
+# Output human feedback and exit
+if test "$exit_code" = "0"; then
+  echo "Screenshots are in sync 🎉" 1>&2
+else
+  echo "Screenshots out of sync, update them via \`npm run test-browser-mergetool-screenshots\`" 1>&2
+fi
+exit "$?"
