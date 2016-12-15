@@ -3,6 +3,7 @@ var assert = require('assert');
 var $ = window.$ = window.jQuery = require('jquery');
 var D = require('./domo');
 var h = require('hyperscript-helpers')(require('hyperscript'));
+var classnames = require('classnames');
 var GlobalState = require('./global-state');
 var Overlay = require('./overlay');
 var SimilarImageResults = require('./similar-image-results');
@@ -23,8 +24,7 @@ function ImageSet(_containerEl, imageSetInfo) {
   var imageSetEl = h.ul({'data-image-set': imageSetId}, [
     h.li([
       // Row title
-      this.saveEl('titleEl', D.A({
-        class: 'image-set__title',
+      this.saveEl('titleEl', h.a('.image-set__title', {
         href: 'javascript:void 0;', 'data-toggle': 'collapse',
         'data-target': '[data-image-set="' + imageSetId + '"] .image-set__collapse',
         'data-images-equal': imageSetInfo.imagesEqual,
@@ -33,10 +33,10 @@ function ImageSet(_containerEl, imageSetInfo) {
 
       // Collapsable container for row
       // DEV: We use `data-id` as `id` has restrictions on characters
-      this.saveEl('contentsEl', D.DIV({
+      this.saveEl('contentsEl', h.div('.image-set__collapse.collapse.well', {
         // Make our first image set visible
         // DEV: If class names get too complex, use `classnames` library
-        class: imageSetInfo.imagesEqual ? 'image-set__collapse collapse well' : 'image-set__collapse collapse in well'
+        className: classnames('image-set__collapse', 'collapse', 'well', {'in': !imageSetInfo.imagesEqual})
       }, [
         // Action buttons
         D.DIV([
