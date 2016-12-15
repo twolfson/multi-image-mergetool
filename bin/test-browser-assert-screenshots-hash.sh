@@ -15,4 +15,6 @@ else
 fi
 
 # Compare our screenshot contents
-diff test/browser/expected-screenshots/contents.sha256 test/browser/actual-screenshots/contents.sha256
+diff --unified \
+  test/browser/expected-screenshots/contents.sha256 \
+  test/browser/actual-screenshots/contents.sha256
