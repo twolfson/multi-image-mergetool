@@ -2,20 +2,12 @@
 # Exit on first error
 set -e
 
-# Enable globstar
-shopt -s globstar
-
 # Update our sha256 info for both folders
-# DEV: We update SHA relatively so we can `diff` actual contents to expected contents
-cd test/browser/actual-screenshots
-sha256sum **/*.png > contents.sha256
-cd - &> /dev/null
+bin/test-browser-update-screenshots-hash.sh test/browser/actual-screenshots
 
 # DEV: In CI, we don't have expected screenshots so opt-out of a SHA
 if test "$(echo **/*.png)" != ""; then
-  cd test/browser/expected-screenshots
-  sha256sum **/*.png > contents.sha256
-  cd - &> /dev/null
+  bin/test-browser-update-screenshots-hash.sh test/browser/expected-screenshots
 fi
 
 # Compare our screenshot contents
