@@ -2,6 +2,7 @@
 var assert = require('assert');
 var $ = window.$ = window.jQuery = require('jquery');
 var D = require('./domo');
+var h = require('hyperscript-helpers')(require('hyperscript'));
 var GlobalState = require('./global-state');
 var Overlay = require('./overlay');
 var SimilarImageResults = require('./similar-image-results');
@@ -19,8 +20,8 @@ function ImageSet(_containerEl, imageSetInfo) {
   };
 
   // Generate our image set element
-  var imageSetEl = D.UL({'data-image-set': imageSetId}, [
-    D.LI([
+  var imageSetEl = h.ul({'data-image-set': imageSetId}, [
+    h.li([
       // Row title
       this.saveEl('titleEl', D.A({
         class: 'image-set__title',
