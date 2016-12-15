@@ -158,6 +158,16 @@ npm test
 [Mocha]: https://github.com/mochajs/mocha
 [Karma]: https://github.com/karma-runner/karma
 
+To exclusively run the browser or server tests, use:
+
+```bash
+npm run test-browser # Browser tests
+npm run test-server # Server tests
+
+# Additional helpers
+npm run test-karma-develop # Watches/runs Karma tests on PhantomJS and asserts screenshots
+```
+
 Additionally, during testing we generate screenshots. We can assert and approve they are as expected via:
 
 ```bash
