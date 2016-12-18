@@ -24,7 +24,8 @@ function ImageSet(_containerEl, imageSetInfo) {
   var imageSetEl = h.ul({'data-image-set': imageSetId}, [
     h.li([
       // Row title
-      this.saveEl('titleEl', h.a('.image-set__title', {
+      this.saveEl('titleEl', h.a({
+        className: 'image-set__title',
         href: 'javascript:void 0;', 'data-toggle': 'collapse',
         'data-target': '[data-image-set="' + imageSetId + '"] .image-set__collapse',
         'data-images-equal': imageSetInfo.imagesEqual,
@@ -35,17 +36,18 @@ function ImageSet(_containerEl, imageSetInfo) {
       // DEV: We use `data-id` as `id` has restrictions on characters
       this.saveEl('contentsEl', h.div({
         // Make our first image set visible
-        className: classnames('image-set__collapse', 'collapse', 'well', {'in': !imageSetInfo.imagesEqual})
+        // DEV: If class names get too complex, use `classnames` library
+        className: imageSetInfo.imagesEqual ? 'image-set__collapse collapse well' : 'image-set__collapse collapse in well'
       }, [
         // Action buttons
-        D.DIV([
-          D.BUTTON({
-            class: 'btn btn-default',
+        h.div([
+          h.button({
+            className: 'btn btn-default',
             'data-action': 'accept-changes'
           }, '✓ Accept changes'),
           ' ',
-          D.BUTTON({
-            class: 'btn btn-default',
+          h.button({
+            className: 'btn btn-default',
             'data-action': 'find-similar-images'
             // TODO: Make our button disabled and only enable when an overlay is drawn
             // TODO: When changes are accepted, reset all affected overlays and buttons
@@ -54,33 +56,33 @@ function ImageSet(_containerEl, imageSetInfo) {
         ]),
 
         // Image set
-        D.TABLE({class: 'table'}, [
-          D.THEAD([
-            D.TR([
-              D.TH('Current:'),
-              D.TH('Diff:'),
-              D.TH('Ref:')
+        h.table({className: 'table'}, [
+          h.thead([
+            h.tr([
+              h.th(null, 'Current:'),
+              h.th(null, 'Diff:'),
+              h.th(null, 'Ref:')
             ])
           ]),
-          D.TBODY([
-            D.TR([
+          h.tbody([
+            h.tr([
               // DEV: We use `width: 33%` to guarantee no widths change when images are loading
-              D.TD({style: 'width: 33%'}, [
-                this.saveEl('currentImg', D.IMG({
+              h.td({style: 'width: 33%'}, [
+                this.saveEl('currentImg', h.img({
                   'data-compare-type': 'current',
                   src: imageSetInfo.currentImageUrl,
                   style: 'max-width: 100%'
                 }))
               ]),
-              D.TD({style: 'width: 33%'}, [
-                this.saveEl('diffImg', D.IMG({
+              h.td({style: 'width: 33%'}, [
+                this.saveEl('diffImg', h.img({
                   'data-compare-type': 'diff',
                   src: imageSetInfo.diffImageUrl,
                   style: 'max-width: 100%'
                 }))
               ]),
-              D.TD({style: 'width: 33%'}, [
-                this.saveEl('refImg', D.IMG({
+              h.td({style: 'width: 33%'}, [
+                this.saveEl('refImg', h.img({
                   'data-compare-type': 'ref',
                   src: imageSetInfo.refImageUrl,
                   style: 'max-width: 100%'
