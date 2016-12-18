@@ -24,6 +24,7 @@ function ImageSet(_containerEl, imageSetInfo) {
   var imageSetEl = h.ul({'data-image-set': imageSetId}, [
     h.li([
       // Row title
+      // TODO: Move from link to button styled as link so we can ditch `href`
       this.saveEl('titleEl', h.a({
         className: 'image-set__title',
         href: 'javascript:void 0;', 'data-toggle': 'collapse',
