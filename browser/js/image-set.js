@@ -36,8 +36,7 @@ function ImageSet(_containerEl, imageSetInfo) {
       // DEV: We use `data-id` as `id` has restrictions on characters
       this.saveEl('contentsEl', h.div({
         // Make our first image set visible
-        // DEV: If class names get too complex, use `classnames` library
-        className: imageSetInfo.imagesEqual ? 'image-set__collapse collapse well' : 'image-set__collapse collapse in well'
+        className: classnames('image-set__collapse', 'collapse', 'well', {in: !imageSetInfo.imagesEqual})
       }, [
         // Action buttons
         h.div([

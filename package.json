@@ -62,6 +62,7 @@
     "browserify": "~13.1.1",
     "buffered-spawn": "~3.3.2",
     "chai": "~3.5.0",
+    "classnames": "~2.2.5",
     "domo": "~0.5.9",
     "foundry": "~4.0.3",
     "foundry-release-git": "~2.0.2",
