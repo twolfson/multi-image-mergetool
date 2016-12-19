@@ -266,7 +266,7 @@ ImageSet.prototype = {
     assert.notEqual(matchingImageSets.length, 0,
       'Something went horribly wrong when matching images; not even the original is equal to itself');
     if (matchingImageSets.length === 1) {
-      resultsEl.appendChild(h.div('No similar images found'));
+      resultsEl.appendChild(h.div(null, 'No similar images found'));
       return;
     }
 

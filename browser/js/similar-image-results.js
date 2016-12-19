@@ -1,6 +1,7 @@
 // Load in our dependencies
 var $ = window.$ = window.jQuery = require('jquery');
 var assert = require('assert');
+var h = require('hyperscript-helpers')(require('hyperscript'));
 var D = require('./domo');
 var GlobalState = require('./global-state');
 var utils = require('./utils');
@@ -11,7 +12,7 @@ function SimilarImageResults(_containerEl, params) {
   console.time('bulkUpdateSelection');
 
   // Find our output targets
-  var resultsDocFrag = D.FRAGMENT();
+  var resultsDocFrag = document.createDocumentFragment();
 
   // Localize our parameters
   // DEV: We could generate similar image sets separately but this is to keep performance issues contained
@@ -30,7 +31,7 @@ function SimilarImageResults(_containerEl, params) {
     function createUpdatedCanvas(baseImg, attributes) {
       // Create a canvas
       // https://github.com/scijs/get-pixels/blob/7c447cd979637b31e47e148f238a1e71611af481/dom-pixels.js#L14-L18
-      var canvasEl = D.CANVAS(attributes);
+      var canvasEl = h.canvas(attributes);
       canvasEl.width = refImg.naturalWidth;
       canvasEl.height = refImg.naturalHeight;
       var context = canvasEl.getContext('2d');
@@ -60,8 +61,8 @@ function SimilarImageResults(_containerEl, params) {
     // Generate updated images and clone reference image
     var currentImgClone = currentImg.cloneNode();
     currentImgClone.className = 'original-current';
-    var updatedDiffCanvasEl = createUpdatedCanvas(diffImg, {class: 'updated-diff'});
-    var updatedRefCanvasEl = createUpdatedCanvas(refImg, {class: 'updated-ref'});
+    var updatedDiffCanvasEl = createUpdatedCanvas(diffImg, {className: 'updated-diff'});
+    var updatedRefCanvasEl = createUpdatedCanvas(refImg, {className: 'updated-ref'});
     // Shrink all canvases/images for output
     currentImgClone.style.maxWidth = '100%';
     updatedDiffCanvasEl.style.maxWidth = '100%';
@@ -72,36 +73,36 @@ function SimilarImageResults(_containerEl, params) {
     // DEV: Tables will all use same width due to heuristics
     var imageSetHumanName = imageSet.humanName;
     if (imageSet === expectedImageSet) { imageSetHumanName += ' (current set)'; }
-    var resultGroupEl = D.TABLE({
-      class: 'table',
+    var resultGroupEl = h.table({
+      className: 'table',
       'data-similar-image-set': imageSet.id
     }, [
-      D.THEAD([
-        D.TR([
+      h.thead([
+        h.tr([
           // TODO: Add collapse support like in `gemini-gui`
-          D.TH({colspan: 3}, imageSetHumanName)
+          h.th({colspan: 3}, imageSetHumanName)
         ]),
-        D.TR([
+        h.tr([
           // TODO: Move style out of inline and to classes for more performance
           // DEV: `min-width` is to give us spacing for "Save update text"
-          D.TD({style: 'padding-right: 10px; min-width: 120px;'}, 'Save update:'),
-          D.TD('Current (unchanged):'),
-          D.TD('Updated diff (diff + overlay):'),
-          D.TD('Updated ref (ref + overlay):')
+          h.td({style: 'padding-right: 10px; min-width: 120px;'}, 'Save update:'),
+          h.td(null, 'Current (unchanged):'),
+          h.td(null, 'Updated diff (diff + overlay):'),
+          h.td(null, 'Updated ref (ref + overlay):')
         ])
       ]),
-      D.TBODY([
-        D.TR([
-          D.TD({
+      h.tbody([
+        h.tr([
+          h.td({
             style: 'vertical-align: top;'
           }, [
-            D.INPUT({name: 'save_update', type: 'checkbox', checked: true})
+            h.input({name: 'save_update', type: 'checkbox', checked: true})
           ]),
           // TODO: Consider placing overlay on canvases or muting non-overlay section
           //   It's hard to see the changes as is but maybe the overlay selection will make it more obvious
-          D.TD({style: 'vertical-align: top;'}, [currentImgClone]),
-          D.TD({style: 'vertical-align: top;'}, [updatedDiffCanvasEl]),
-          D.TD({style: 'vertical-align: top;'}, [updatedRefCanvasEl])
+          h.td({style: 'vertical-align: top;'}, [currentImgClone]),
+          h.td({style: 'vertical-align: top;'}, [updatedDiffCanvasEl]),
+          h.td({style: 'vertical-align: top;'}, [updatedRefCanvasEl])
         ])
       ])
     ]);
