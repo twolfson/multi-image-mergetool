@@ -15,6 +15,10 @@ function SimilarImageResults(_containerEl, params) {
   this._containerEl = _containerEl;
   this.params = params;
 
+  // Localize/assert our parameters
+  this.targetArea = this.params.targetArea; assert(this.targetArea);
+  this.expectedImageSet = this.params.expectedImageSet; assert(this.expectedImageSet);
+
   // Set up initial loading state
   // DEV: We render early with loading state to provide visual feedback
   this.state = {
@@ -188,13 +192,13 @@ SimilarImageResults.prototype = {
     // If we are loaded and haven't rendered our results yet, render them
     if (this.state.status === RESULTS_LOADED && !this.resultsDocFrag) {
       // If we have no matching image sets
-      if (this.matchingImageSets.length === 1) {
+      if (this.imageSets.length === 1) {
         this._containerEl.appendChild(h.div(null, 'No similar images found'));
         return;
       }
 
       // Otherwise, update our count and append our buttons
-      this.titleEl.querySelector('.results__count').textContent = ' (' + this.matchingImageSets.length + ')';
+      this.titleEl.querySelector('.results__count').textContent = ' (' + this.imageSets.length + ')';
       this._containerEl.appendChild(h.div([
         h.button({
           className: 'btn btn-default',
@@ -213,13 +217,10 @@ SimilarImageResults.prototype = {
       // Find our output targets
       var resultsDocFrag = this.resultsDocFrag = document.createDocumentFragment();
 
-      // Localize our parameters
-      // DEV: We could generate similar image sets separately but this is to keep performance issues contained
-      var targetArea = this.params.targetArea; assert(targetArea);
-      var imageSets = this.params.imageSets; assert(imageSets);
-      var expectedImageSet = this.params.expectedImageSet; assert(expectedImageSet);
-
       // Generate and updated ref image for each of our comparisons
+      var expectedImageSet = this.expectedImageSet;
+      var targetArea = this.targetArea;
+      var imageSets = this.imageSets; assert(imageSets);
       imageSets.forEach(function generateUpdatedRef (imageSet) {
         // Localize our references
         var currentImg = imageSet.currentImg;
@@ -316,11 +317,17 @@ SimilarImageResults.prototype = {
   },
   findMatchingImageSets: function () {
     // Resolve our similar image sets based on target area
-    var matchingImageSets = SimilarImageResults.findSimilarImageSets(this, this.params.targetArea);
+    var matchingImageSets = SimilarImageResults.findSimilarImageSets(this.expectedImageSet, this.targetArea);
     assert.notEqual(matchingImageSets.length, 0,
       'Something went horribly wrong when matching images; not even the original is equal to itself');
+
+    // Save our image sets, update status, and re-render
+    this.imageSets = matchingImageSets;
+    this.state.status = RESULTS_LOADED;
+    this.render();
   }
 };
 
 // Export our constructor
 module.exports = SimilarImageResults;
+
