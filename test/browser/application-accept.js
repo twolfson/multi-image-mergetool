@@ -20,7 +20,7 @@ describe('A user accepting failing images is successful', function () {
     setTimeout(done, 100);
   });
 
-  it.only('updates image set status', function () {
+  it('updates image set status', function () {
     var imageSetTitleEl = this.containerEl.querySelector('[data-image-set="mock-img-not-equal"] .image-set__title');
     expect(imageSetTitleEl.getAttribute('data-images-equal')).to.equal('true');
   });

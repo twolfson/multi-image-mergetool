@@ -8,7 +8,7 @@ var xhrResponses = require('../test-files/http-responses/xhr');
 
 // Start our tests
 describe('An application with similarly failing images', function () {
-  describe('when updating some similarly failing images partially', function () {
+  describe.only('when updating some similarly failing images partially', function () {
     applicationUtils.init(applicationUtils.IMAGE_SETS.MULTIPLE_NOT_EQUAL);
     domUtils.dragOverElement({
       selector: '[data-image-set="mock-img-not-equal"] img[data-compare-type=diff]',
