@@ -10,8 +10,7 @@ var utils = require('./utils');
 
 // Define our constants
 var RESULTS_NONE = 'results_none';
-var RESULTS_LOADING = 'results_loading';
-var RESULTS_LOADED = 'results_loaded';
+var RESULTS_VISIBLE = 'results_visible';
 
 // Define our constructor
 function ImageSet(_containerEl, imageSetInfo) {
@@ -166,7 +165,7 @@ ImageSet.prototype = {
       this._containerEl.appendChild(imageSetEl);
     }
 
-    // If we are loading our results or they are loaded
+    // If we are rendering results, show them
     if (this.state.resultsState !== RESULTS_NONE) {
       // Remove previously existing content
       // TODO: Relocate removal of results el outside of `this.state` check -- it should be always
@@ -174,60 +173,19 @@ ImageSet.prototype = {
         this.contentsEl.removeChild(this._resultsEl);
       }
 
-      // Generate and append our results
-      // TODO: Relocate results generation/clearing into SimilarImageResults class
-      // DEV: We perform result element generation/append first to improve perceived loading
-      var resultsEl = this._resultsEl = h.div({className: 'results'}, [
-        h.h4([
-          'Similar images',
-          // TODO: Use count directly here
-          h.span({className: 'results__count'}, ''),
-          ':'
-        ])
-      ]);
-      // TODO: Delete results element upon resolution
-      this.contentsEl.appendChild(resultsEl);
-
-      // If we have completed loading
-      if (this.state.resultsState === RESULTS_LOADED) {
-        // If we have no matching image sets
-        if (this.matchingImageSets.length === 1) {
-          resultsEl.appendChild(h.div(null, 'No similar images found'));
-          return;
-        }
-
-        // Otherwise, update our count and append our buttons
-        resultsEl.querySelector('.results__count').textContent = ' (' + this.matchingImageSets.length + ')';
-        resultsEl.appendChild(h.div([
-          h.button({
-            className: 'btn btn-default',
-            'data-action': 'accept-similar-images'
-          }, '✓ Accept similar images'),
-          ' ',
-          h.button({
-            className: 'btn btn-default',
-            'data-action': 'update-similar-images'
-          }, '✓ Update similar images with selection')
-        ]));
-
-        // Generate our new results
-        // DEV: We could generate similar image sets separately but this is to keep performance issues contained
-        void new SimilarImageResults(resultsEl, {
-          imageSets: this.matchingImageSets,
-          targetArea: this.targetArea,
-          expectedImageSet: this
-        });
-      }
+      // Generate our new results
+      // DEV: We could generate similar image sets separately but this is to keep performance issues contained
+      var resultsEl = this._resultsEl = h.div({className: 'results'});
+      void new SimilarImageResults(resultsEl, {
+        targetArea: this.targetArea,
+        expectedImageSet: this
+      });
     }
   },
   acceptChanges: function (imgBase64) {
     this._updateReferenceImage(imgBase64, 'true');
   },
   findSimilarImages: function () {
-    // Set loading state and render
-    this.state.resultsState = RESULTS_LOADING;
-    this.render();
-
     // Localize our expected diff img
     var expectedDiffImg = this.diffImg;
 
@@ -243,15 +201,9 @@ ImageSet.prototype = {
       top: Math.max(Math.floor(scaleRatio * targetArea.top), 0)
     };
 
-    // Resolve our similar image sets based on target area
-    var matchingImageSets = SimilarImageResults.findSimilarImageSets(this, targetArea);
-    assert.notEqual(matchingImageSets.length, 0,
-      'Something went horribly wrong when matching images; not even the original is equal to itself');
-
-    // Save our image set info, update loading state and re-render
-    this.state.resultsState = RESULTS_LOADED;
-    // TODO: Unset `matchingImageSets` and `targetArea` values on destroy/results removal
-    this.matchingImageSets = matchingImageSets;
+    // Save our image set info and trigger results rendering
+    // TODO: Unset `targetArea` values on destroy/results removal
+    this.state.resultsState = RESULTS_VISIBLE;
     this.targetArea = targetArea;
     this.render();
   },

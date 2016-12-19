@@ -5,14 +5,25 @@ var h = require('hyperscript-helpers')(require('hyperscript'));
 var GlobalState = require('./global-state');
 var utils = require('./utils');
 
+// Define our constants
+var RESULTS_LOADING = 'results_loading';
+var RESULTS_LOADED = 'results_loaded';
+
 // Define our constructor
 function SimilarImageResults(_containerEl, params) {
   // Save container element and parameters
   this._containerEl = _containerEl;
   this.params = params;
 
-  // Run our render function
+  // Set up initial loading state
+  // DEV: We render early with loading state to provide visual feedback
+  this.state = {
+    status: RESULTS_LOADING
+  };
   this.render();
+
+  // Resolve our matching image sets (which runs render)
+  this.findMatchingImageSets();
 }
 
 // Define our bindings
@@ -158,9 +169,44 @@ SimilarImageResults.findSimilarImageSets = function (expectedImageSet, targetAre
 
 // Define our prototype
 SimilarImageResults.prototype = {
+  saveEl: function (key, el) {
+    this[key] = el;
+    return el;
+  },
   render: function () {
-    // If we haven't rendered our results yet, render them
-    if (!this.resultsDocFrag) {
+    // If we have no title, set one
+    if (!this.titleEl) {
+      var titleEl = this.saveEl('titleEl', h.h4([
+        'Similar images',
+        // TODO: Use count directly here
+        h.span({className: 'results__count'}, ''),
+        ':'
+      ]));
+      this._containerEl.appendChild(titleEl);
+    }
+
+    // If we are loaded and haven't rendered our results yet, render them
+    if (this.state.status === RESULTS_LOADED && !this.resultsDocFrag) {
+      // If we have no matching image sets
+      if (this.matchingImageSets.length === 1) {
+        this._containerEl.appendChild(h.div(null, 'No similar images found'));
+        return;
+      }
+
+      // Otherwise, update our count and append our buttons
+      this.titleEl.querySelector('.results__count').textContent = ' (' + this.matchingImageSets.length + ')';
+      this._containerEl.appendChild(h.div([
+        h.button({
+          className: 'btn btn-default',
+          'data-action': 'accept-similar-images'
+        }, '✓ Accept similar images'),
+        ' ',
+        h.button({
+          className: 'btn btn-default',
+          'data-action': 'update-similar-images'
+        }, '✓ Update similar images with selection')
+      ]));
+
       // Start our performance check (620ms total for 100 1024x1600 images, 400ms seems to be first `drawImage`)
       console.time('bulkUpdateSelection');
 
@@ -267,6 +313,12 @@ SimilarImageResults.prototype = {
       // End our performance check
       console.timeEnd('bulkUpdateSelection');
     }
+  },
+  findMatchingImageSets: function () {
+    // Resolve our similar image sets based on target area
+    var matchingImageSets = SimilarImageResults.findSimilarImageSets(this, this.params.targetArea);
+    assert.notEqual(matchingImageSets.length, 0,
+      'Something went horribly wrong when matching images; not even the original is equal to itself');
   }
 };
 
