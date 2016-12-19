@@ -1,4 +1,6 @@
 # multi-image-mergetool changelog
+1.27.0 - Refactored render logic into standalone `render` functions, making potential for virtual DOM easier
+
 1.26.0 - Moved from Domo to hyperscript for modern library and virtual DOM/declarative UI flexibility
 
 1.25.0 - Revisited screenshot validation to make it less `git` noisy and more accurate of filesystem expectations
