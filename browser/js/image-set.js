@@ -1,7 +1,6 @@
 // Load in our dependencies
 var assert = require('assert');
 var $ = window.$ = window.jQuery = require('jquery');
-var D = require('./domo');
 var h = require('hyperscript-helpers')(require('hyperscript'));
 var classnames = require('classnames');
 var GlobalState = require('./global-state');
@@ -250,10 +249,10 @@ ImageSet.prototype = {
     // Generate and append our results
     // TODO: Relocate results generation/clearing into ImageSet class
     // DEV: We perform result element generation/append first to improve perceived loading
-    var resultsEl = this._resultsEl = D.DIV({class: 'results'}, [
-      D.H4([
+    var resultsEl = this._resultsEl = h.div({className: 'results'}, [
+      h.h4([
         'Similar images',
-        D.SPAN({class: 'results__count'}, ''),
+        h.span({className: 'results__count'}, ''),
         ':'
       ])
     ]);
@@ -267,20 +266,20 @@ ImageSet.prototype = {
     assert.notEqual(matchingImageSets.length, 0,
       'Something went horribly wrong when matching images; not even the original is equal to itself');
     if (matchingImageSets.length === 1) {
-      resultsEl.appendChild(D.DIV('No similar images found'));
+      resultsEl.appendChild(h.div('No similar images found'));
       return;
     }
 
     // Otherwise, update our count and append our buttons
     resultsEl.querySelector('.results__count').textContent = ' (' + matchingImageSets.length + ')';
-    resultsEl.appendChild(D.DIV([
-      D.BUTTON({
-        class: 'btn btn-default',
+    resultsEl.appendChild(h.div([
+      h.button({
+        className: 'btn btn-default',
         'data-action': 'accept-similar-images'
       }, '✓ Accept similar images'),
       ' ',
-      D.BUTTON({
-        class: 'btn btn-default',
+      h.button({
+        className: 'btn btn-default',
         'data-action': 'update-similar-images'
       }, '✓ Update similar images with selection')
     ]));
