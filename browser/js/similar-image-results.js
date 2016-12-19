@@ -322,6 +322,7 @@ SimilarImageResults.prototype = {
       'Something went horribly wrong when matching images; not even the original is equal to itself');
 
     // Save our image sets, update status, and re-render
+    // TODO: Unset `imageSets` on destroy
     this.imageSets = matchingImageSets;
     this.state.status = RESULTS_LOADED;
     this.render();
