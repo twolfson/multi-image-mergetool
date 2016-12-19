@@ -170,7 +170,9 @@ ImageSet.prototype = {
     if (this.state.resultsState !== RESULTS_NONE) {
       // Remove previously existing content
       // TODO: Relocate removal of results el outside of `this.state` check -- it should be always
-      this.contentsEl.removeChild(this._resultsEl);
+      if (this._resultsEl) {
+        this.contentsEl.removeChild(this._resultsEl);
+      }
 
       // Generate and append our results
       // TODO: Relocate results generation/clearing into SimilarImageResults class
