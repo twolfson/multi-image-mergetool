@@ -1,5 +1,4 @@
 // Load in our dependencies
-var assert = require('assert');
 var $ = window.$ = window.jQuery = require('jquery');
 var h = require('hyperscript-helpers')(require('hyperscript'));
 var classnames = require('classnames');
