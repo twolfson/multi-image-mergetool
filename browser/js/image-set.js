@@ -8,6 +8,11 @@ var Overlay = require('./overlay');
 var SimilarImageResults = require('./similar-image-results');
 var utils = require('./utils');
 
+// Define our constants
+var RESULTS_NONE = 'results_none';
+var RESULTS_LOADING = 'results_loading';
+var RESULTS_LOADED = 'results_loaded';
+
 // Define our constructor
 function ImageSet(_containerEl, imageSetInfo) {
   // Save parameters for later
@@ -20,7 +25,8 @@ function ImageSet(_containerEl, imageSetInfo) {
 
   // Save our state
   this.state = {
-    imagesEqual: imageSetInfo.imagesEqual
+    imagesEqual: imageSetInfo.imagesEqual,
+    resultsState: RESULTS_NONE
   };
 
   // Run our render method
@@ -159,6 +165,58 @@ ImageSet.prototype = {
       // Append our element to the container element
       this._containerEl.appendChild(imageSetEl);
     }
+
+    // If we are loading our results or they are loaded
+    if (this.state.resultsState !== RESULTS_NONE) {
+      // Remove previously existing content
+      // TODO: Relocate removal of results el outside of `this.state` check -- it should be always
+      this.contentsEl.removeChild(this._resultsEl);
+
+      // Generate and append our results
+      // TODO: Relocate results generation/clearing into SimilarImageResults class
+      // DEV: We perform result element generation/append first to improve perceived loading
+      var resultsEl = this._resultsEl = h.div({className: 'results'}, [
+        h.h4([
+          'Similar images',
+          // TODO: Use count directly here
+          h.span({className: 'results__count'}, ''),
+          ':'
+        ])
+      ]);
+      // TODO: Delete results element upon resolution
+      this.contentsEl.appendChild(resultsEl);
+
+      // If we have completed loading
+      if (this.state.resultsState === RESULTS_LOADED) {
+        // If we have no matching image sets
+        if (this.matchingImageSets.length === 1) {
+          resultsEl.appendChild(h.div(null, 'No similar images found'));
+          return;
+        }
+
+        // Otherwise, update our count and append our buttons
+        resultsEl.querySelector('.results__count').textContent = ' (' + this.matchingImageSets.length + ')';
+        resultsEl.appendChild(h.div([
+          h.button({
+            className: 'btn btn-default',
+            'data-action': 'accept-similar-images'
+          }, '✓ Accept similar images'),
+          ' ',
+          h.button({
+            className: 'btn btn-default',
+            'data-action': 'update-similar-images'
+          }, '✓ Update similar images with selection')
+        ]));
+
+        // Generate our new results
+        // DEV: We could generate similar image sets separately but this is to keep performance issues contained
+        void new SimilarImageResults(resultsEl, {
+          imageSets: this.matchingImageSets,
+          targetArea: this.targetArea,
+          expectedImageSet: this
+        });
+      }
+    }
   },
   acceptChanges: function (imgBase64) {
     this._updateReferenceImage(imgBase64, 'true');
@@ -241,6 +299,10 @@ ImageSet.prototype = {
     return matchingImageSets;
   },
   findSimilarImages: function () {
+    // Set loading state and render
+    this.state.resultsState = RESULTS_LOADING;
+    this.render();
+
     // Localize our expected diff img
     var expectedDiffImg = this.diffImg;
 
@@ -255,56 +317,17 @@ ImageSet.prototype = {
       top: Math.max(Math.floor(scaleRatio * targetArea.top), 0)
     };
 
-    // Remove previously existing results
-    if (this._resultsEl) {
-      this.contentsEl.removeChild(this._resultsEl);
-    }
-
-    // Generate and append our results
-    // TODO: Relocate results generation/clearing into ImageSet class
-    // DEV: We perform result element generation/append first to improve perceived loading
-    var resultsEl = this._resultsEl = h.div({className: 'results'}, [
-      h.h4([
-        'Similar images',
-        h.span({className: 'results__count'}, ''),
-        ':'
-      ])
-    ]);
-    // TODO: Delete results element upon resolution
-    this.contentsEl.appendChild(resultsEl);
-
     // Resolve our similar image sets based on target area
     var matchingImageSets = this._findSimilarImageSets(targetArea);
-
-    // If we have no matching image sets
     assert.notEqual(matchingImageSets.length, 0,
       'Something went horribly wrong when matching images; not even the original is equal to itself');
-    if (matchingImageSets.length === 1) {
-      resultsEl.appendChild(h.div(null, 'No similar images found'));
-      return;
-    }
 
-    // Otherwise, update our count and append our buttons
-    resultsEl.querySelector('.results__count').textContent = ' (' + matchingImageSets.length + ')';
-    resultsEl.appendChild(h.div([
-      h.button({
-        className: 'btn btn-default',
-        'data-action': 'accept-similar-images'
-      }, '✓ Accept similar images'),
-      ' ',
-      h.button({
-        className: 'btn btn-default',
-        'data-action': 'update-similar-images'
-      }, '✓ Update similar images with selection')
-    ]));
-
-    // Generate our new results
-    // DEV: We could generate similar image sets separately but this is to keep performance issues contained
-    void new SimilarImageResults(resultsEl, {
-      imageSets: matchingImageSets,
-      targetArea: targetArea,
-      expectedImageSet: this
-    });
+    // Save our image set info, update loading state and re-render
+    this.state.resultsState = RESULTS_LOADED;
+    // TODO: Unset `matchingImageSets` and `targetArea` values on destroy/results removal
+    this.matchingImageSets = matchingImageSets;
+    this.targetArea = targetArea;
+    this.render();
   },
   _updateReferenceImage: function (imgBase64, eagerStatus) {
     // Fade out diff and reference images to "loading" state
