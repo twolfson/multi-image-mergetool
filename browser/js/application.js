@@ -2,7 +2,6 @@
 // DEV: Re-expose jQuery for Bootstrap
 window.$ = window.jQuery = require('jquery');
 void require('bootstrap/dist/js/bootstrap.js');
-var D = require('./domo');
 var ImageSet = require('./image-set');
 var SimilarImageResults = require('./similar-image-results');
 
@@ -18,7 +17,7 @@ function Application(_containerEl, imageSetInfoArr) {
 
   // Generate our document fragment
   // DEV: We use a document fragment instead of the DOM directly to prevent redrawing elements on each append
-  var imageSetsDocFrag = D.FRAGMENT();
+  var imageSetsDocFrag = document.createDcoumentFragment();
 
   // Expose our images
   // TODO: Expose images in tree list like gemini-gui, maybe even simplified variants like GitHub

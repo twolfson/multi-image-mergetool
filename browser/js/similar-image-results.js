@@ -2,7 +2,6 @@
 var $ = window.$ = window.jQuery = require('jquery');
 var assert = require('assert');
 var h = require('hyperscript-helpers')(require('hyperscript'));
-var D = require('./domo');
 var GlobalState = require('./global-state');
 var utils = require('./utils');
 
