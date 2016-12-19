@@ -17,7 +17,7 @@ function Application(_containerEl, imageSetInfoArr) {
 
   // Generate our document fragment
   // DEV: We use a document fragment instead of the DOM directly to prevent redrawing elements on each append
-  var imageSetsDocFrag = document.createDcoumentFragment();
+  var imageSetsDocFrag = document.createDocumentFragment();
 
   // Expose our images
   // TODO: Expose images in tree list like gemini-gui, maybe even simplified variants like GitHub

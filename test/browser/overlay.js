@@ -1,6 +1,6 @@
 // Load in our dependencies
 var expect = require('chai').expect;
-var D = require('../../browser/js/domo');
+var h = require('hyperscript-helpers')(require('hyperscript'));
 var Overlay = require('../../browser/js/overlay');
 var domUtils = require('./utils/dom');
 
@@ -10,7 +10,7 @@ var overlayUtils = {
     // Set up our elements
     before(function createElement () {
       // Create our container element
-      this.containerEl = D.DIV();
+      this.containerEl = h.div();
       document.body.appendChild(this.containerEl);
     });
     after(function cleanup () {
@@ -18,7 +18,7 @@ var overlayUtils = {
       delete this.containerEl;
     });
     before(function bindOverlay () {
-      var el = D.DIV({
+      var el = h.div({
         id: 'overlay-container',
         style: 'width: 300px; height: 200px; background: navy'
       });
@@ -170,7 +170,7 @@ describe('An overlay that attempts to extend past bottom boundary', function () 
 describe('An overlay on a scrolled page', function () {
   overlayUtils.init();
   before(function scrollPage () {
-    this.scrollEl = D.DIV({style: 'width: 2000px; height: 2000px'});
+    this.scrollEl = h.div({style: 'width: 2000px; height: 2000px'});
     document.body.appendChild(this.scrollEl);
     // DEV: Firefox uses `document.documentElement` and PhantomJS uses `document.body` for `window.scrollTo`
     expect(document.documentElement.scrollTop).to.equal(0);
