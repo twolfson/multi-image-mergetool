@@ -78,8 +78,7 @@ function SimilarImageResults(_containerEl, params) {
     }, [
       h.thead([
         h.tr([
-          // TODO: Add collapse support like in `gemini-gui`
-          h.th({colspan: 3}, imageSetHumanName)
+          h.th({colSpan: 3}, imageSetHumanName)
         ]),
         h.tr([
           // TODO: Move style out of inline and to classes for more performance
