@@ -176,6 +176,7 @@ ImageSet.prototype = {
       // Generate our new results
       // DEV: We could generate similar image sets separately but this is to keep performance issues contained
       var resultsEl = this._resultsEl = h.div({className: 'results'});
+      this.contentsEl.appendChild(resultsEl);
       void new SimilarImageResults(resultsEl, {
         targetArea: this.targetArea,
         expectedImageSet: this
