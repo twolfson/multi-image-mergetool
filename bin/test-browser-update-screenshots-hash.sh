@@ -19,7 +19,7 @@ cd "$directory"
 # Normalize our images via ImageMagick
 for filepath in **/*.png; do
   for i in $(seq 1 10); do
-    identify -verbose "$filepath" | grep signature > "$filepath.$i.sig" &
+    identify -format "%#" "$filepath" > "$filepath.$i.sig" &
   done
 done
 wait
