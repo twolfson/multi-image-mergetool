@@ -17,16 +17,10 @@ fi
 cd "$directory"
 
 # Retrieve image signatures via ImageMagick
+# http://www.imagemagick.org/script/identify.php
 # http://www.imagemagick.org/script/escape.php
-# DEV: We could be even faster if we didn't write to disk but we don't know how to preserve parallel results
-for filepath in **/*.png; do
-  # image.png -> image.png abcdef12345...
-  identify -format "%f %#\n" "$filepath" > "$filepath.sig" &
-done
-wait
-
-# Generate our hash
-cat **/*.png.*.sig > contents.sig
+# image.png -> image.png abcdef12345...
+identify -format "%f %#\n" **/*.png > contents.sig
 
 # Move back to the previous directory
 cd - &> /dev/null
