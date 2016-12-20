@@ -6,13 +6,12 @@ set -e
 # DEV: In CI, we don't have expected screenshots so opt-out of a SHA
 if test "$(echo test/browser/expected-screenshots**/*.png)" != ""; then
   # DEV: Run our updates in parallel for performance
-  $(
-    bin/test-browser-update-screenshots-hash.sh test/browser/actual-screenshots &
-    bin/test-browser-update-screenshots-hash.sh test/browser/expected-screenshots &
-  )
+  bin/test-browser-update-screenshots-hash.sh test/browser/actual-screenshots &
+  bin/test-browser-update-screenshots-hash.sh test/browser/expected-screenshots &
 else
-  bin/test-browser-update-screenshots-hash.sh test/browser/actual-screenshots
+  bin/test-browser-update-screenshots-hash.sh test/browser/actual-screenshots &
 fi
+wait
 
 # Compare our screenshot contents
 set +e
