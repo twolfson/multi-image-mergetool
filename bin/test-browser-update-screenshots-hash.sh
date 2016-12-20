@@ -18,8 +18,9 @@ cd "$directory"
 
 # Normalize our images via ImageMagicku
 for filepath in **/*.png; do
-  convert "$filepath" "$filepath.bmp"
+  convert "$filepath" "$filepath.bmp" &
 done
+wait
 
 # Generate our hash
 sha256sum **/*.png.bmp > contents.sha256
