@@ -20,8 +20,14 @@ cd "$directory"
 # http://www.imagemagick.org/script/identify.php
 # http://www.imagemagick.org/script/escape.php
 # DEV: We write signature first so alignment is consistent
-# image.png -> abcdef12345... image.png
-identify -format "%# %f\n" **/*.png > contents.sig
+# image.png -> abcdef12345... path/to/image.png
+for filepath in **/*.png; do
+  identify -format "%# %i\n" "$filepath" > "$filepath.sig" &
+done
+wait
+
+# Concatenate all signatures into a single file
+cat **/*.png.sig > contents.sig
 
 # Move back to the previous directory
 cd - &> /dev/null
