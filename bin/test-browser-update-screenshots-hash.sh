@@ -16,32 +16,13 @@ fi
 # DEV: We update SHA relatively so we can `diff` actual contents to expected contents
 cd "$directory"
 
-# Normalize our images via Node.js
-# DEV: PhantomJS generates images with different data than pngjs so hashes aren't consistent otherwise
-# DEV: We could do this via ImageMagick and pngcrush but this is simpler dependency-wise
-node --eval "
-  // Load in our dependencies
-  var assert = require('assert');
-  var PNG = require('pngjs').PNG;
-  var fs = require('fs');
-
-  // For each of our images
-  // DEV: Node.js will exit automatically when all processes are done
-  var filepathArr = process.argv.slice(1);
-  assert.notEqual(filepathArr.length, 0, 'Expected at least 1 filepath');
-  filepathArr.forEach(function normalizeFilepath (filepath) {
-    // Load our image
-    fs.createReadStream(filepath)
-      .pipe(new PNG())
-      .on('parsed', function () {
-        // When our image is done loading, re-pack it
-        this.pack().pipe(fs.createWriteStream(filepath));
-      });
-  });
-  " -- **/*.png
+# Normalize our images via ImageMagicku
+for filepath in **/*.png; do
+  convert "$filepath" "$filepath.bmp"
+done
 
 # Generate our hash
-sha256sum **/*.png > contents.sha256
+sha256sum **/*.png.bmp > contents.sha256
 
 # Move back to the previous directory
 cd - &> /dev/null
