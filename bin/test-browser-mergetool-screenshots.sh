@@ -12,4 +12,4 @@ bin/multi-image-mergetool \
   --diff-images $(echo test/browser/actual-screenshots/**/*.png | sed "s/actual-screenshots/diff-screenshots/g")
 
 # Update our sha256 info
-bin/test-browser-update-screenshots-hash.sh test/browser/expected-screenshots
+bin/test-browser-update-screenshots-signature.sh test/browser/expected-screenshots
