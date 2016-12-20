@@ -19,8 +19,9 @@ cd "$directory"
 # Retrieve image signatures via ImageMagick
 # http://www.imagemagick.org/script/identify.php
 # http://www.imagemagick.org/script/escape.php
-# image.png -> image.png abcdef12345...
-identify -format "%f %#\n" **/*.png > contents.sig
+# DEV: We write signature first so alignment is consistent
+# image.png -> abcdef12345... image.png
+identify -format "%# %f\n" **/*.png > contents.sig
 
 # Move back to the previous directory
 cd - &> /dev/null
