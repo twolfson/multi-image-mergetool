@@ -14,7 +14,7 @@ npm-debug.log
 /test/browser/actual-screenshots/
 /test/browser/diff-screenshots/
 /test/browser/expected-screenshots/*
-!/test/browser/expected-screenshots/contents.sha256
+!/test/browser/expected-screenshots/contents.sig
 /test/test-files/tmp/
 
 # Debug directories for visual tests
