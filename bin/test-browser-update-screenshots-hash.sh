@@ -16,14 +16,16 @@ fi
 # DEV: We update SHA relatively so we can `diff` actual contents to expected contents
 cd "$directory"
 
-# Normalize our images via ImageMagicku
+# Normalize our images via ImageMagick
 for filepath in **/*.png; do
-  convert "$filepath" "$filepath.bmp" &
+  for i in $(seq 1 10); do
+    convert "$filepath" "$filepath.$i.bmp" &
+  done
 done
 wait
 
 # Generate our hash
-sha256sum **/*.png.bmp > contents.sha256
+sha256sum **/*.png.*.bmp > contents.sha256
 
 # Move back to the previous directory
 cd - &> /dev/null
