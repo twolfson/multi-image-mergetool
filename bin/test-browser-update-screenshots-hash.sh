@@ -19,13 +19,13 @@ cd "$directory"
 # Normalize our images via ImageMagick
 for filepath in **/*.png; do
   for i in $(seq 1 10); do
-    convert "$filepath" "$filepath.$i.bmp" &
+    identify -verbose "$filepath" | grep signature > "$filepath.$i.sig" &
   done
 done
 wait
 
 # Generate our hash
-sha256sum **/*.png.*.bmp > contents.sha256
+cat **/*.png.*.sig > contents.sha256
 
 # Move back to the previous directory
 cd - &> /dev/null
