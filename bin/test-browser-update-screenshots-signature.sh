@@ -13,7 +13,7 @@ if test "$directory" = ""; then
 fi
 
 # Navigate into our directory
-# DEV: We update SHA relatively so we can `diff` actual contents to expected contents
+# DEV: We retrieve the signature relatively so we can `diff` actual contents to expected contents
 cd "$directory"
 
 # Retrieve image signatures via ImageMagick
