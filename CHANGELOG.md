@@ -1,4 +1,6 @@
 # multi-image-mergetool changelog
+1.28.0 - Updated CI image comparison logic to be more performant
+
 1.27.0 - Refactored render logic into standalone `render` functions, making potential for virtual DOM easier
 
 1.26.0 - Moved from Domo to hyperscript for modern library and virtual DOM/declarative UI flexibility
