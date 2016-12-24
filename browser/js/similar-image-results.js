@@ -1,7 +1,9 @@
 // Load in our dependencies
 var $ = window.$ = window.jQuery = require('jquery');
+var _ = require('underscore');
 var assert = require('assert');
 var h = require('hyperscript-helpers')(require('hyperscript'));
+var View = require('backbone').View;
 var GlobalState = require('./global-state');
 var utils = require('./utils');
 
@@ -10,25 +12,26 @@ var RESULTS_LOADING = 'results_loading';
 var RESULTS_LOADED = 'results_loaded';
 
 // Define our constructor
-function SimilarImageResults(options) {
-  // Save container element and options
-  this.el = options.el; assert(this.el);
-  this.options = options;
+var SimilarImageResults = View.extend({
+  initialize: function (options) {
+    // Save options
+    this.options = options;
 
-  // Localize/assert our parameters
-  this.targetArea = this.options.targetArea; assert(this.targetArea);
-  this.expectedImageSet = this.options.expectedImageSet; assert(this.expectedImageSet);
+    // Localize/assert our parameters
+    this.targetArea = this.options.targetArea; assert(this.targetArea);
+    this.expectedImageSet = this.options.expectedImageSet; assert(this.expectedImageSet);
 
-  // Set up initial loading state
-  // DEV: We render early with loading state to provide visual feedback
-  this.state = {
-    status: RESULTS_LOADING
-  };
-  this.render();
+    // Set up initial loading state
+    // DEV: We render early with loading state to provide visual feedback
+    this.state = {
+      status: RESULTS_LOADING
+    };
+    this.render();
 
-  // Resolve our matching image sets (which runs render)
-  this.findMatchingImageSets();
-}
+    // Resolve our matching image sets (which runs render)
+    this.findMatchingImageSets();
+  }
+});
 
 // Define our bindings
 SimilarImageResults.bindOnce = function () {
@@ -172,7 +175,7 @@ SimilarImageResults.findSimilarImageSets = function (expectedImageSet, targetAre
 };
 
 // Define our prototype
-SimilarImageResults.prototype = {
+SimilarImageResults.prototype = _.extend(SimilarImageResults.prototype, {
   saveEl: function (key, el) {
     this[key] = el;
     return el;
@@ -326,7 +329,7 @@ SimilarImageResults.prototype = {
     this.state.status = RESULTS_LOADED;
     this.render();
   }
-};
+});
 
 // Export our constructor
 module.exports = SimilarImageResults;

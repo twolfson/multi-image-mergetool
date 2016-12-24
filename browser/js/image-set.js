@@ -1,8 +1,10 @@
 // Load in our dependencies
 var $ = window.$ = window.jQuery = require('jquery');
 var assert = require('assert');
+var _ = require('underscore');
 var h = require('hyperscript-helpers')(require('hyperscript'));
 var classnames = require('classnames');
+var View = require('backbone').View;
 var GlobalState = require('./global-state');
 var Overlay = require('./overlay');
 var SimilarImageResults = require('./similar-image-results');
@@ -13,28 +15,29 @@ var RESULTS_NONE = 'results_none';
 var RESULTS_VISIBLE = 'results_visible';
 
 // Define our constructor
-function ImageSet(options) {
-  // Save parameters for later
-  this.el = options.el; assert(this.el);
-  var imageSetInfo = this.imageSetInfo = options.imageSetInfo; assert(imageSetInfo);
+var ImageSet = View.extend({
+  initialize: function (options) {
+    // Save parameters for later
+    var imageSetInfo = this.imageSetInfo = options.imageSetInfo; assert(imageSetInfo);
 
-  // Create one-off quick-reference variables
-  this.id = imageSetInfo.id;
-  this.humanName = imageSetInfo.id;
+    // Create one-off quick-reference variables
+    this.id = imageSetInfo.id;
+    this.humanName = imageSetInfo.id;
 
-  // Save our state
-  this.state = {
-    imagesEqual: imageSetInfo.imagesEqual,
-    resultsState: RESULTS_NONE
-  };
+    // Save our state
+    this.state = {
+      imagesEqual: imageSetInfo.imagesEqual,
+      resultsState: RESULTS_NONE
+    };
 
-  // Run our render method
-  // TODO: Add destroy method so we can unreference element
-  this.render();
+    // Run our render method
+    // TODO: Add destroy method so we can unreference element
+    this.render();
 
-  // Register our image set to the global state
-  GlobalState.addImageSet(this);
-}
+    // Register our image set to the global state
+    GlobalState.addImageSet(this);
+  }
+});
 
 // Define class level helpers
 ImageSet.bindOnce = function () {
@@ -70,7 +73,7 @@ ImageSet.fetchByEvent = function (evt) {
 };
 
 // Define prototype methods
-ImageSet.prototype = {
+ImageSet.prototype = _.extend(ImageSet.prototype, {
   render: function () {
     // If we don't have an image set element, create/append one
     if (!this.renderedAlready) {
@@ -255,7 +258,7 @@ ImageSet.prototype = {
     this[key] = el;
     return el;
   }
-};
+});
 
 // Export our constructor
 module.exports = ImageSet;

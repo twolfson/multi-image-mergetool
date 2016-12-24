@@ -4,6 +4,7 @@ var assert = require('assert');
 window.$ = window.jQuery = require('jquery');
 void require('bootstrap/dist/js/bootstrap.js');
 var h = require('hyperscript-helpers')(require('hyperscript'));
+var View = require('backbone').View;
 var ImageSet = require('./image-set');
 var SimilarImageResults = require('./similar-image-results');
 
@@ -12,31 +13,30 @@ var SimilarImageResults = require('./similar-image-results');
 // TODO: Consider magnifying glass zoom on images (e.g. like in ecommerce sites)
 
 // Define our application
-function Application(options) {
-  // Save our element for later
-  // TODO: Add a `destroy` method which removes element as well as any bindings
-  this.el = options.el; assert(this.el);
+var Application = View.extend({
+  initialize: function (options) {
+    // Generate our detached DOM node
+    // DEV: We use a detached node instead of an attached one to prevent repainting elements on each append
+    // TODO: Add a `destroy` method which removes element as well as any bindings
+    var ulEl = h.ul();
 
-  // Generate our detached DOM node
-  // DEV: We use a detached node instead of an attached one to prevent repainting elements on each append
-  var ulEl = h.ul();
-
-  // Expose our images
-  // TODO: Expose images in tree list like gemini-gui, maybe even simplified variants like GitHub
-  //   (e.g. `a/b/c` when only 1 file)
-  var imageSetInfoArr = options.imageSets; assert(imageSetInfoArr);
-  imageSetInfoArr.forEach(function createImageSet (imageSetInfo) {
-    var liEl = h.li();
-    void new ImageSet({
-      el: liEl,
-      imageSetInfo: imageSetInfo
+    // Expose our images
+    // TODO: Expose images in tree list like gemini-gui, maybe even simplified variants like GitHub
+    //   (e.g. `a/b/c` when only 1 file)
+    var imageSetInfoArr = options.imageSets; assert(imageSetInfoArr);
+    imageSetInfoArr.forEach(function createImageSet (imageSetInfo) {
+      var liEl = h.li();
+      void new ImageSet({
+        el: liEl,
+        imageSetInfo: imageSetInfo
+      });
+      ulEl.appendChild(liEl);
     });
-    ulEl.appendChild(liEl);
-  });
 
-  // Apppend our containing element
-  this.el.appendChild(ulEl);
-}
+    // Apppend our containing element
+    this.el.appendChild(ulEl);
+  }
+});
 
 // Define our button bindings
 Application.bindOnce = function () {
