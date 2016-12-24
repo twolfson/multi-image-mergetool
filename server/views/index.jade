@@ -17,7 +17,7 @@ html
     script.
       document.addEventListener('DOMContentLoaded', function handleDOMContentLoaded () {
         window.application = new Application({
-          el: document.body,
+          el: document.getElementById('container'),
           imageSets: window.imageSets
         });
         Application.bindOnce();
