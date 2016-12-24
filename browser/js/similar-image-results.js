@@ -10,14 +10,14 @@ var RESULTS_LOADING = 'results_loading';
 var RESULTS_LOADED = 'results_loaded';
 
 // Define our constructor
-function SimilarImageResults(_containerEl, params) {
-  // Save container element and parameters
-  this._containerEl = _containerEl;
-  this.params = params;
+function SimilarImageResults(options) {
+  // Save container element and options
+  this.el = options.el; assert(this.el);
+  this.options = options;
 
   // Localize/assert our parameters
-  this.targetArea = this.params.targetArea; assert(this.targetArea);
-  this.expectedImageSet = this.params.expectedImageSet; assert(this.expectedImageSet);
+  this.targetArea = this.options.targetArea; assert(this.targetArea);
+  this.expectedImageSet = this.options.expectedImageSet; assert(this.expectedImageSet);
 
   // Set up initial loading state
   // DEV: We render early with loading state to provide visual feedback
@@ -185,20 +185,20 @@ SimilarImageResults.prototype = {
         this.saveEl('resultsCountEl', h.span({className: 'results__count'}, '')),
         ':'
       ]);
-      this._containerEl.appendChild(titleEl);
+      this.el.appendChild(titleEl);
     }
 
     // If we are loaded and haven't rendered our results yet, render them
     if (this.state.status === RESULTS_LOADED && !this.resultsDocFrag) {
       // If we have no matching image sets
       if (this.imageSets.length === 1) {
-        this._containerEl.appendChild(h.div(null, 'No similar images found'));
+        this.el.appendChild(h.div(null, 'No similar images found'));
         return;
       }
 
       // Otherwise, update our count and append our buttons
       this.resultsCountEl.textContent = ' (' + this.imageSets.length + ')';
-      this._containerEl.appendChild(h.div([
+      this.el.appendChild(h.div([
         h.button({
           className: 'btn btn-default',
           'data-action': 'accept-similar-images'
@@ -308,7 +308,7 @@ SimilarImageResults.prototype = {
       });
 
       // Append aggregate content to DOM
-      this._containerEl.appendChild(resultsDocFrag);
+      this.el.appendChild(resultsDocFrag);
 
       // End our performance check
       console.timeEnd('bulkUpdateSelection');

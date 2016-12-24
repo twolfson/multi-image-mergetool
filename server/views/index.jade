@@ -16,6 +16,9 @@ html
     script(src="/browser-dist/js/index.js")
     script.
       document.addEventListener('DOMContentLoaded', function handleDOMContentLoaded () {
-        window.application = new Application(document.body, window.imageSets);
+        window.application = new Application({
+          el: document.body,
+          imageSets: window.imageSets
+        });
         Application.bindOnce();
       });

@@ -1,5 +1,6 @@
 // Load in our dependencies
 var $ = window.$ = window.jQuery = require('jquery');
+var assert = require('assert');
 var h = require('hyperscript-helpers')(require('hyperscript'));
 var classnames = require('classnames');
 var GlobalState = require('./global-state');
@@ -12,10 +13,10 @@ var RESULTS_NONE = 'results_none';
 var RESULTS_VISIBLE = 'results_visible';
 
 // Define our constructor
-function ImageSet(_containerEl, imageSetInfo) {
+function ImageSet(options) {
   // Save parameters for later
-  this._containerEl = _containerEl;
-  this.imageSetInfo = imageSetInfo;
+  this.el = options.el; assert(this.el);
+  var imageSetInfo = this.imageSetInfo = options.imageSetInfo; assert(imageSetInfo);
 
   // Create one-off quick-reference variables
   this.id = imageSetInfo.id;
@@ -161,7 +162,7 @@ ImageSet.prototype = {
       this.imgOverlay = imgOverlay;
 
       // Append our element to the container element
-      this._containerEl.appendChild(imageSetEl);
+      this.el.appendChild(imageSetEl);
     }
 
     // If we are rendering results, show them
@@ -176,7 +177,8 @@ ImageSet.prototype = {
       // DEV: We could generate similar image sets separately but this is to keep performance issues contained
       var resultsEl = this._resultsEl = h.div({className: 'results'});
       this.contentsEl.appendChild(resultsEl);
-      void new SimilarImageResults(resultsEl, {
+      void new SimilarImageResults({
+        el: resultsEl,
         targetArea: this.targetArea,
         expectedImageSet: this
       });

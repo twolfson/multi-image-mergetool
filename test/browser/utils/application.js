@@ -86,7 +86,10 @@ exports.init = function (imageSetInfoArr) {
     this.containerEl = document.createElement('div');
     this.containerEl.className = 'container-fluid';
     document.body.appendChild(this.containerEl);
-    this.app = new Application(this.containerEl, imageSetInfoArr || exports.IMAGE_SETS.DEFAULT);
+    this.app = new Application({
+      el: this.containerEl,
+      imageSets: imageSetInfoArr || exports.IMAGE_SETS.DEFAULT
+    });
   });
   before(function waitForImagesToLoad (done) {
     // Wait for images to load to prevent canvas and screenshot issues
