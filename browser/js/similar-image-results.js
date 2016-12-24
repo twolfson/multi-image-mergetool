@@ -180,12 +180,11 @@ SimilarImageResults.prototype = {
   render: function () {
     // If we have no title, set one
     if (!this.titleEl) {
-      var titleEl = this.saveEl('titleEl', h.h4([
+      var titleEl = this.titleEl = h.h4([
         'Similar images',
-        // TODO: Use count directly here
-        h.span({className: 'results__count'}, ''),
+        this.saveEl('resultsCountEl', h.span({className: 'results__count'}, '')),
         ':'
-      ]));
+      ]);
       this._containerEl.appendChild(titleEl);
     }
 
@@ -198,7 +197,7 @@ SimilarImageResults.prototype = {
       }
 
       // Otherwise, update our count and append our buttons
-      this.titleEl.querySelector('.results__count').textContent = ' (' + this.imageSets.length + ')';
+      this.resultsCountEl.textContent = ' (' + this.imageSets.length + ')';
       this._containerEl.appendChild(h.div([
         h.button({
           className: 'btn btn-default',

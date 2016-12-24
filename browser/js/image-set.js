@@ -153,8 +153,8 @@ ImageSet.prototype = {
       // Bind an overlay to diff image
       // TODO: Explore binding overlay to each of images (that jumps between them)
       // DEV: We use imageSetEl's collapse as a container so it hides on collapse
-      var imgOverlay = new Overlay(imageSetEl.querySelector('img[data-compare-type=diff]'), {
-        containerEl: imageSetEl.querySelector('.image-set__collapse')
+      var imgOverlay = new Overlay(this.diffImg, {
+        containerEl: this.contentsEl
       });
 
       // Save imgOverlay for layer
