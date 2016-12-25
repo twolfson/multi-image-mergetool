@@ -1,17 +1,16 @@
 #!/usr/bin/env node
+// Based on https://github.com/admc/wd/blob/v1.1.1/examples/promise/chrome.js
 // Load in our dependencies
-var async = require('async');
 var wd = require('wd');
 
 // Create our browser
-var browser = wd.remote();
+// DEV: Typically we would prefer callbacks over promises but chaining is quite nice
+var browser = wd.promiseChainRemote();
 
 // Gather our screenshots
-async.series([
-  function (cb) { browser.init({browserName: 'firefox'}, cb); }
-], function handleError (err) {
-  // If there was an error, throw it
-  if (err) {
-    throw err;
-  }
-});
+browser
+  .init({browserName: 'firefox'})
+  .get('http://getbootstrap.com/')
+  .saveScreenshot('hi.png')
+  .fin(function handleFin () { return browser.quit(); })
+  .done();
