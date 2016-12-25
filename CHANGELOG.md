@@ -1,4 +1,6 @@
 # multi-image-mergetool changelog
+1.29.0 - Moved to Backbone with one-way flow and mutation based rendering for consolidated render functions
+
 1.28.0 - Updated CI image comparison logic to be more performant
 
 1.27.0 - Refactored render logic into standalone `render` functions, making potential for virtual DOM easier
