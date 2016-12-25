@@ -197,8 +197,8 @@ ImageSet.prototype = _.extend(ImageSet.prototype, {
         } else {
           // If our image set was new, re-render our images
           if (prevState.isNew) {
-            this.updateSection('diffImg');
-            this.updateSection('refImg');
+            this.replaceSection('diffImg');
+            this.replaceSection('refImg');
           }
 
           // Remove loading classes

@@ -39,19 +39,19 @@ var BaseComponent = View.extend({
     // Verify we aren't double saving
     assert.strictEqual(this._sections[key], undefined,
       '`saveSection` was called by the same key "' + key + '" multiple times. ' +
-      'It can only be generated once, please use `updateSection` instead');
+      'It can only be generated once, please use `replaceSection` instead');
 
     // Save our section function and call an update on it
     this._sections[key] = {
       fn: fn,
       results: null
     };
-    return this.updateSection(key);
+    return this.replaceSection(key);
   },
-  updateSection: function (key) {
+  replaceSection: function (key) {
     // Verify we have our section
     var section = this._sections[key];
-    assert(section, '`updateSection` has no key "' + key + '". Please verify `saveSection` was called first');
+    assert(section, '`replaceSection` has no key "' + key + '". Please verify `saveSection` was called first');
 
     // Replace our results
     var results = section.fn.call(this);
