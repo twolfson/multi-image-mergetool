@@ -182,6 +182,9 @@ exports._parse = function (argv, callback) {
         imagesEqualCount += 1;
       } else {
         multispinner.error(imageSetId);
+        if (imageSet.isNew) {
+          multispinner.spinners[imageSetId].text += ' (new)';
+        }
       }
 
       // Callback
