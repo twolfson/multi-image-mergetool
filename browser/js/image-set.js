@@ -91,7 +91,7 @@ ImageSet.prototype = _.extend(ImageSet.prototype, {
       href: 'javascript:void 0;', 'data-toggle': 'collapse',
       'data-target': '[data-image-set="' + imageSetId + '"] .image-set__collapse',
       'data-images-equal': this.getState('imagesEqual'),
-      'aria-controls': imageSetId
+      attrs: {'aria-controls': imageSetId}
     }, imageSetHumanName)));
 
     // Collapsable container for row
