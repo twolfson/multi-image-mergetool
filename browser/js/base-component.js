@@ -1,5 +1,6 @@
 // Load in our dependencies
 var assert = require('assert');
+var Model = require('backbone').Model;
 var View = require('backbone').View;
 
 // Define our base component
@@ -11,6 +12,9 @@ var BaseComponent = View.extend({
     this.render = this._renderOnce;
     this.renderedOnce = false;
 
+    // Define state for our component
+    this.state = new Model();
+
     // Call our default constructor
     View.prototype.constructor.apply(this, arguments);
   },
@@ -18,15 +22,38 @@ var BaseComponent = View.extend({
     // Verify render hasn't been called before
     // TODO: Move to assert for multiple renders
     // assert.strictEqual(this.renderedOnce, false, '`this.render()` has already been called. ' +
-    //   'Please manage all dynamic state via `.onChange` events');
+    //   'Please manage all dynamic state via `.onStateChange` events');
     if (this.renderedOnce !== false) {
       console.warn('`this.render()` has already been called. ' +
-        'Please manage all dynamic state via `.onChange` events');
+        'Please manage all dynamic state via `.onStateChange` events');
     }
     this.renderedOnce = true;
 
     // Run our render function
     this._render.apply(this, arguments);
+  },
+  setState: function () {
+    // Call normal `set` actions for state
+    this.state.set.apply(this.state, arguments);
+  },
+  onStateChange: function (key, fn) {
+    // If there is no key, bind to all state changes
+    // TODO: Add tests for not persisting unchanged values after multiple sets
+    if (typeof key === 'function') {
+      fn = key;
+      this.state.on('change', function handleEntireChange (state) {
+        var previousState;
+        var newState = state;
+        fn.call(this, {}, state);
+      });
+    // Otherwise, bind to a specific value
+    } else {
+      this.state.on('change:' + key, function handlePropertyChange (state) {
+        var previousProperty;
+        var newProperty;
+        fn.call(this, {}, newProperty);
+      });
+    }
   }
 });
 
