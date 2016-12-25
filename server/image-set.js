@@ -1,6 +1,7 @@
 // Load in our dependencies
 var fs = require('fs');
 var path = require('path');
+var async = require('async');
 var mkdirp = require('mkdirp');
 var tmp = require('tmp');
 var looksSameComparator = require('./image-comparators/looks-same');
@@ -74,7 +75,7 @@ ImageSet.getTemporaryDirectory = function () {
 
 // Define instance methods
 ImageSet.prototype = {
-  compare: function (cb) {
+  compare: function (callback) {
     // If there is no diff image path yet
     var that = this;
     if (!this.diffImage) {
@@ -89,12 +90,40 @@ ImageSet.prototype = {
       this.diffImage = path.join(temporaryDirectory, this.currentImage + '.diff' + ext);
     }
 
-    // Create our diff image's directory
-    // DEV: We could have a custom diff path that doesn't yet exist
-    mkdirp(path.dirname(that.diffImage), function handleMkdirp (err) {
+    // In parallel
+    async.parallel([
+      // Determine if our reference image exists
+      function refImageExistsFn (cb) {
+        fs.stat(that.refImage, function handleStat (err) {
+          // If the no file exists, callback with false
+          if (err && err.code === 'ENOENT') {
+            return cb(null, false);
+          // Otherwise, if there was an error, callback with it
+          } else if (err) {
+            return cb(err);
+          }
+          // Otherwise, callback with true
+          return cb(null, true);
+        });
+      },
+      // Create our diff image's directory
+      // DEV: We could have a custom diff path that doesn't yet exist
+      mkdirp.bind(mkdirp, path.dirname(this.diffImage))
+    ], function handleResults (err, results) {
       // If there was an error, callback with it
       if (err) {
-        return cb(err);
+        return callback(err);
+      }
+
+      // If our reference image doesn't exist, then don't do a comparison yet
+      var refImageExists = results[0];
+      if (refImageExists === false) {
+        that.isNew = true;
+        that.imagesEqual = false;
+        return callback(null, that.imagesEqual);
+      // Otherwise, mark the image as not new
+      } else {
+        that.isNew = false;
       }
 
       // Compare our images
@@ -103,12 +132,12 @@ ImageSet.prototype = {
       looksSameComparator(that, function handleResult (err, imagesEqual) {
         // If there was an error, callback with it
         if (err) {
-          return cb(err);
+          return callback(err);
         }
 
         // Otherwise, save the result and callback
         that.imagesEqual = imagesEqual;
-        cb(null, imagesEqual);
+        callback(null, imagesEqual);
       });
     });
   },
@@ -119,6 +148,7 @@ ImageSet.prototype = {
       currentImageUrl: '/images/' + encodeURIComponent(this.currentImage),
       diffImageUrl: '/images/' + encodeURIComponent(this.diffImage),
       refImageUrl: '/images/' + encodeURIComponent(this.refImage),
+      isNew: this.isNew,
       imagesEqual: this.imagesEqual
     };
   },
