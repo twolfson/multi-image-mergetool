@@ -84,10 +84,9 @@ ImageSet.prototype = {
 
       // Resolve and save our filepath to the diff
       // https://nodejs.org/api/path.html#path_path_extname_path
-      // `path/to/Chrome~current.png` -> `/tmp/123456/path/to/Chrome~current.png.diff.png`
-      // DEV: We use `current` as we assume these are volatile whereas `ref` could be in version control
-      var ext = path.extname(this.currentImage); // .png
-      this.diffImage = path.join(temporaryDirectory, this.currentImage + '.diff' + ext);
+      // `path/to/Chrome.png` -> `/tmp/123456/path/to/Chrome.png.123456789.diff.png`
+      var ext = path.extname(this.refImage); // .png
+      this.diffImage = path.join(temporaryDirectory, this.refImage + Date.now() + '.diff' + ext);
     }
 
     // In parallel
