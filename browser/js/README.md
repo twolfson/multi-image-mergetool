@@ -1,5 +1,7 @@
 # browser/js
-We are using a bespoke framework for our application. We don't want heavy components buy-in at the moment due to wanting flexibility with overlay and such to the point where they can be broken out into their own repos.
+We are using Backbone for our application. We didn't want heavy components buy-in initially due to wanting flexibility with overlay and such to the point where they can be broken out into their own repos.
+
+We are using Backbone for component inheritance.
 
 We are attempting to have a declarative-esque UI and one-way data flow for simplicity a la React.
 
