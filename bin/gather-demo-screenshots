@@ -24,11 +24,19 @@ wd.addPromiseChainMethod('screenshotSmall', function screenshotLargeFn (filepath
 // DEV: Typically we would prefer callbacks over promises but chaining is quite nice
 var browser = wd.promiseChainRemote();
 
+// Add logging for feedback
+browser.on('status', function handleStatus (info) {
+  console.log('Status: ', info);
+});
+browser.on('command', function handleCommand (eventType, command, response) {
+  console.log('Command: ' + eventType, command, (response || ''));
+});
+
 // Gather our screenshots
 browser
   .init({browserName: 'chrome'})
   .get('http://getbootstrap.com/')
-  .executeJS(function cleanPage () {
+  .execute(function cleanPage () {
     // Remove "Bootstrap 4" banner
     var bannerEl = document.querySelector('.v4-tease');
     if (!bannerEl) { throw new Error('Unable to find ".v4-tease"'); }
