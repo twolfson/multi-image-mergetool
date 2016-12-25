@@ -14,6 +14,7 @@ var BaseComponent = View.extend({
 
     // Define state for our component
     this.state = new Model();
+    this._sections = {};
 
     // Call our default constructor (invokes initialize)
     View.prototype.constructor.apply(this, arguments);
@@ -32,6 +33,13 @@ var BaseComponent = View.extend({
   saveEl: function (key, el) {
     this[key] = el;
     return el;
+  },
+  saveSection: function (key, fn) {
+    assert.strictEqual(this._sections[key], undefined,
+      '`saveSection` was called by the same key "' + key + '" multiple times. ' +
+      'It can only be generated once, please use `updateSection` instead');
+    this._sections[key] = fn.call(this);
+    return this._sections[key];
   },
 
   // State managment
