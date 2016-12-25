@@ -97,86 +97,88 @@ ImageSet.prototype = _.extend(ImageSet.prototype, {
 
     // Collapsable container for row
     // DEV: We use `data-id` as `id` has restrictions on characters
+    // DEV: We eagerly save `contentsEl` so overlays can reference their container element
     this.el.appendChild(this.saveEl('contentsEl', h.div({
       // Make our first image set visible
       className: classnames('image-set__collapse', 'collapse', 'well', {in: !this.getState('imagesEqual')})
-    }, [
-      // Action buttons
-      h.div([
-        h.button({
-          className: 'btn btn-default',
-          'data-action': 'accept-changes'
-        }, '✓ Accept changes'),
-        ' ',
-        h.button({
-          className: 'btn btn-default',
-          'data-action': 'find-similar-images'
-          // TODO: Make our button disabled and only enable when an overlay is drawn
-          // TODO: When changes are accepted, reset all affected overlays and buttons
-          // disabled: 'disabled'
-        }, 'Find similar images with selection')
+    })));
+
+    // Action buttons
+    this.contentsEl.appendChild(h.div([
+      h.button({
+        className: 'btn btn-default',
+        'data-action': 'accept-changes'
+      }, '✓ Accept changes'),
+      ' ',
+      h.button({
+        className: 'btn btn-default',
+        'data-action': 'find-similar-images'
+        // TODO: Make our button disabled and only enable when an overlay is drawn
+        // TODO: When changes are accepted, reset all affected overlays and buttons
+        // disabled: 'disabled'
+      }, 'Find similar images with selection')
+    ]));
+
+    // Image set
+    this.contentsEl.appendChild(h.table({className: 'table'}, [
+      h.thead([
+        h.tr([
+          h.th(null, 'Current:'),
+          h.th(null, 'Diff:'),
+          h.th(null, 'Ref:')
+        ])
       ]),
+      h.tbody([
+        h.tr([
+          // DEV: We use `width: 33%` to guarantee no widths change when images are loading
+          h.td({style: 'width: 33%'}, [
+            this.saveEl('currentImg', h.img({
+              'data-compare-type': 'current',
+              src: this.imageSetInfo.currentImageUrl,
+              style: 'max-width: 100%'
+            }))
+          ]),
+          h.td({style: 'width: 33%'}, [
+            this.saveSection('diffImg', function () {
+              if (this.getState('isNew')) {
+                return h.em('No diff image yet, image set is new. Please accept changes first');
+              } else {
+                // Generate our image
+                var retVal = this.saveEl('diffImg', h.img({
+                  'data-compare-type': 'diff',
+                  src: this.imageSetInfo.diffImageUrl,
+                  style: 'max-width: 100%'
+                }));
 
-      // Image set
-      h.table({className: 'table'}, [
-        h.thead([
-          h.tr([
-            h.th(null, 'Current:'),
-            h.th(null, 'Diff:'),
-            h.th(null, 'Ref:')
-          ])
-        ]),
-        h.tbody([
-          h.tr([
-            // DEV: We use `width: 33%` to guarantee no widths change when images are loading
-            h.td({style: 'width: 33%'}, [
-              this.saveEl('currentImg', h.img({
-                'data-compare-type': 'current',
-                src: this.imageSetInfo.currentImageUrl,
-                style: 'max-width: 100%'
-              }))
-            ]),
-            h.td({style: 'width: 33%'}, [
-              this.saveSection('diffImg', function () {
-                if (this.getState('isNew')) {
-                  return h.em('No diff image yet, image set is new. Please accept changes first');
-                } else {
-                  // Generate our image
-                  var retVal = this.saveEl('diffImg', h.img({
-                    'data-compare-type': 'diff',
-                    src: this.imageSetInfo.diffImageUrl,
-                    style: 'max-width: 100%'
-                  }));
+                // Bind an overlay to diff image
+                // TODO: Explore binding overlay to each of images (that jumps between them)
+                // DEV: We use our collapse as a container so it hides on collapse
+                assert(this.contentsEl);
+                this.imgOverlay = new Overlay(this.diffImg, {
+                  containerEl: this.contentsEl
+                });
 
-                  // Bind an overlay to diff image
-                  // TODO: Explore binding overlay to each of images (that jumps between them)
-                  // DEV: We use our collapse as a container so it hides on collapse
-                  this.imgOverlay = new Overlay(this.diffImg, {
-                    containerEl: this.contentsEl
-                  });
-
-                  // Return our retVal
-                  return retVal;
-                }
-              })
-            ]),
-            h.td({style: 'width: 33%'}, [
-              this.saveSection('refImg', function () {
-                if (this.getState('isNew')) {
-                  return h.em('No ref image yet, image set is new. Please accept changes first');
-                } else {
-                  return this.saveEl('refImg', h.img({
-                    'data-compare-type': 'ref',
-                    src: this.imageSetInfo.refImageUrl,
-                    style: 'max-width: 100%'
-                  }));
-                }
-              })
-            ])
+                // Return our retVal
+                return retVal;
+              }
+            })
+          ]),
+          h.td({style: 'width: 33%'}, [
+            this.saveSection('refImg', function () {
+              if (this.getState('isNew')) {
+                return h.em('No ref image yet, image set is new. Please accept changes first');
+              } else {
+                return this.saveEl('refImg', h.img({
+                  'data-compare-type': 'ref',
+                  src: this.imageSetInfo.refImageUrl,
+                  style: 'max-width: 100%'
+                }));
+              }
+            })
           ])
         ])
       ])
-    ])));
+    ]));
 
     // When our XHR state changes (e.g. updating, completed updating)
     this.onStateChange('xhrState', function handleXHRChange (prevXhrState, xhrState) {
