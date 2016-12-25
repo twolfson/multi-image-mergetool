@@ -2,7 +2,15 @@
 // Based on https://github.com/admc/wd/blob/v1.1.1/examples/promise/chrome.js
 // Load in our dependencies
 var functionToString = require('function-to-string');
+var rimraf = require('rimraf');
+var mkdirp = require('mkdirp');
 var wd = require('wd');
+
+// Reset our demo directory
+var demoDir = __dirname + '/../demo';
+rimraf.sync(demoDir);
+mkdirp.sync(demoDir + '/ref');
+mkdirp.sync(demoDir + '/current');
 
 // Add custom methods for screenshots
 // https://github.com/admc/wd/tree/v1.1.1#adding-custom-methods
@@ -13,9 +21,6 @@ wd.addPromiseChainMethod('screenshotLarge', function screenshotLargeFn (filepath
     .setWindowSize(1024, 768)
     // https://github.com/admc/wd/blob/v1.1.1/lib/commands.js#L1108-L1114
     .saveScreenshot(filepath);
-});
-wd.addPromiseChainMethod('screenshotMedium', function screenshotLargeFn (filepath) {
-  return this.setWindowSize(480, 800).saveScreenshot(filepath);
 });
 wd.addPromiseChainMethod('screenshotSmall', function screenshotLargeFn (filepath) {
   return this.setWindowSize(360, 480).saveScreenshot(filepath);
@@ -52,8 +57,21 @@ browser
     if (!adEl) { throw new Error('Unable to find "#carbonads-container"'); }
     adEl.parentNode.removeChild(adEl);
   }).body)
-  .screenshotLarge('root.large.png')
-  .screenshotMedium('root.medium.png')
-  .screenshotSmall('root.small.png')
+  .screenshotLarge(demoDir + '/ref/root.large.png')
+  .screenshotSmall(demoDir + '/ref/root.small.png')
+  .execute(functionToString(function alterPage () {
+    // Alter nav bar to demonstrate changes
+    var componentsLinkEl = document.querySelector('#bs-navbar a[href="../components/"]');
+    if (!componentsLinkEl) { throw new Error('Unable to find "#bs-navbar a[href="../components/"]"'); }
+    componentsLinkEl.textContent = 'Widgets';
+    var expoLinkEl = document.querySelector('#bs-navbar a[href="http://expo.getbootstrap.com"]');
+    if (!expoLinkEl) { throw new Error('Unable to find "#bs-navbar a[href="http://expo.getbootstrap.com"]"'); }
+    // DEV: Remove the `li` containing our expo link
+    var expoLiEl = expoLinkEl.parentNode;
+    if (expoLiEl.tagName !== 'LI') { throw new Error('`expoLinkEl.parentNode` was not an `<li>` as expected'); }
+    expoLiEl.parentNode.removeChild(expoLiEl);
+  }).body)
+  .screenshotLarge(demoDir + '/current/root.large.png')
+  .screenshotSmall(demoDir + '/current/root.small.png')
   .fin(function handleFin () { return browser.quit(); })
   .done();
