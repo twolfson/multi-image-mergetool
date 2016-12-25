@@ -29,6 +29,7 @@ var ImageSet = BaseComponent.extend({
       eagerStatus: null,
       findSimilarImages: false,
       imagesEqual: imageSetInfo.imagesEqual,
+      isNew: imageSetInfo.isNew,
       xhrState: NONE,
       targetArea: null
     });
@@ -136,18 +137,18 @@ ImageSet.prototype = _.extend(ImageSet.prototype, {
               }))
             ]),
             h.td({style: 'width: 33%'}, [
-              this.saveEl('diffImg', h.img({
+              !this.getState('isNew') ? this.saveEl('diffImg', h.img({
                 'data-compare-type': 'diff',
                 src: this.imageSetInfo.diffImageUrl,
                 style: 'max-width: 100%'
-              }))
+              })) : h.em('No diff image yet, image set is new. Please accept changes first')
             ]),
             h.td({style: 'width: 33%'}, [
-              this.saveEl('refImg', h.img({
+              !this.getState('isNew') ? this.saveEl('refImg', h.img({
                 'data-compare-type': 'ref',
                 src: this.imageSetInfo.refImageUrl,
                 style: 'max-width: 100%'
-              }))
+              })) : h.em('No ref image yet, image set is new. Please accept changes first')
             ])
           ])
         ])
@@ -270,6 +271,7 @@ ImageSet.prototype = _.extend(ImageSet.prototype, {
       that.setState({
         eagerStatus: null,
         imagesEqual: data.imagesEqual,
+        isNew: false,
         xhrState: NONE
       });
     });
