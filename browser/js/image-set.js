@@ -78,6 +78,10 @@ ImageSet.fetchByEvent = function (evt) {
 
 // Define prototype methods
 ImageSet.prototype = _.extend(ImageSet.prototype, {
+  isNew: function () {
+    // Expose `isNew` state for external use
+    return this.getState('isNew');
+  },
   render: function () {
     // Create local variables for our image set
     var imageSetId = this.id;

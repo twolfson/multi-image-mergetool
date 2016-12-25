@@ -140,6 +140,11 @@ SimilarImageResults.findSimilarImageSets = function (expectedImageSet, targetAre
 
   // Filter image sets based on matching widths and selection
   var matchingImageSets = GlobalState.getImageSets().filter(function matchImageSetInfo (imageSetInfo) {
+    // If the image set is new, return false
+    if (imageSetInfo.isNew()) {
+      return false;
+    }
+
     // If the images are different widths, return false
     // TODO: Allow this to be a configurable heuristic
     var actualDiffImg = imageSetInfo.diffImg;

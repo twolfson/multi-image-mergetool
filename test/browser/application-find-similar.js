@@ -61,7 +61,7 @@ describe('An application with no similarly failing images', function () {
   });
 });
 
-describe.only('An application with new images', function () {
+describe('An application with new images', function () {
   // Create our application
   applicationUtils.init(applicationUtils.IMAGE_SETS.MULTIPLE_WITH_NEW);
 
