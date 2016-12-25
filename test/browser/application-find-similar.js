@@ -61,6 +61,25 @@ describe('An application with no similarly failing images', function () {
   });
 });
 
+describe.only('An application with new images', function () {
+  // Create our application
+  applicationUtils.init(applicationUtils.IMAGE_SETS.MULTIPLE_WITH_NEW);
+
+  describe('when finding similarly failing images', function () {
+    domUtils.dragOverElement({
+      selector: '[data-image-set="mock-img-not-equal"] img[data-compare-type=diff]',
+      startCoords: {x: 0, y: 0},
+      endCoords: {x: 10, y: 10}
+    });
+    domUtils.click('[data-image-set="mock-img-not-equal"] ' +
+      'button[data-action="find-similar-images"]');
+
+    it('has no errors', function () {
+      // An error would be thrown in `domUtils.click`
+    });
+  });
+});
+
 // Define a performance test
 // DEV: We skip PhantomJS as its performance results are inaccurate
 var browser = new UAParser().getBrowser();
