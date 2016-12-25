@@ -38,6 +38,25 @@ describe('An application with images', function () {
   });
 });
 
+describe('An application with new images', function () {
+  // Create our application
+  applicationUtils.init(applicationUtils.IMAGE_SETS.MULTIPLE_WITH_NEW);
+  applicationUtils.screenshot('new');
+
+  // Assert about our application
+  it('renders placeholder content for new images', function () {
+    // Verify "current" content
+    var newImageSetEl = this.containerEl.querySelector('[data-image-set="mock-img-new"]');
+    var imageEls = newImageSetEl.querySelectorAll('img');
+    expect(imageEls).to.have.length(1);
+    expect(imageEls[0].getAttribute('data-compare-type')).to.equal('current');
+
+    // Verify diff/ref content
+    expect(newImageSetEl.textContent).to.contain('No diff image yet');
+    expect(newImageSetEl.textContent).to.contain('No ref image yet');
+  });
+});
+
 describe('When an image set title is clicked', function () {
   applicationUtils.init();
 
