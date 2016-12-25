@@ -182,27 +182,36 @@ ImageSet.prototype = _.extend(ImageSet.prototype, {
     ]));
 
     // When our XHR state changes (e.g. updating, completed updating)
-    this.onStateChange('xhrState', function handleXHRChange (prevXhrState, xhrState) {
-      // If our image set is updating
-      if (xhrState === IN_PROGRESS) {
-        // Fade out diff and reference images to "loading" state
-        this.diffImg.classList.add('loading');
-        this.refImg.classList.add('loading');
+    this.onStateChange(function handleChange (prevState, newState) {
+      // If our XHR state is updating
+      if (prevState.xhrState !== newState.xhrState) {
+        // If our XHR state
+        if (newState.xhrState === IN_PROGRESS) {
+          // Fade out diff and reference images to "loading" state
+          if (this.diffImg) { this.diffImg.classList.add('loading'); }
+          if (this.refImg) { this.refImg.classList.add('loading'); }
 
-        // Update our status to eager status
-        this.titleEl.setAttribute('data-images-equal', this.getState('eagerStatus'));
-      // Otherwise (update completed)
-      } else {
-        // Remove loading classes
-        this.diffImg.classList.remove('loading');
-        this.refImg.classList.remove('loading');
+          // Update our status to eager status
+          this.titleEl.setAttribute('data-images-equal', this.getState('eagerStatus'));
+        // Otherwise (update completed)
+        } else {
+          // If our image set was new, re-render our images
+          if (prevState.isNew) {
+            this.updateSection('diffImg');
+            this.updateSection('refImg');
+          }
 
-        // Use actual status as status
-        this.titleEl.setAttribute('data-images-equal', this.getState('imagesEqual'));
+          // Remove loading classes
+          this.diffImg.classList.remove('loading');
+          this.refImg.classList.remove('loading');
 
-        // Cachebust our images
-        ImageSet.cachebustImg(this.diffImg);
-        ImageSet.cachebustImg(this.refImg);
+          // Use actual status as status
+          this.titleEl.setAttribute('data-images-equal', this.getState('imagesEqual'));
+
+          // Cachebust our images
+          ImageSet.cachebustImg(this.diffImg);
+          ImageSet.cachebustImg(this.refImg);
+        }
       }
     });
 

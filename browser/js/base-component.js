@@ -1,5 +1,6 @@
 // Load in our dependencies
 var assert = require('assert');
+var $ = require('jquery');
 var Model = require('backbone').Model;
 var View = require('backbone').View;
 
@@ -35,11 +36,30 @@ var BaseComponent = View.extend({
     return el;
   },
   saveSection: function (key, fn) {
+    // Verify we aren't double saving
     assert.strictEqual(this._sections[key], undefined,
       '`saveSection` was called by the same key "' + key + '" multiple times. ' +
       'It can only be generated once, please use `updateSection` instead');
-    this._sections[key] = fn.call(this);
-    return this._sections[key];
+
+    // Save our section function and call an update on it
+    this._sections[key] = {
+      fn: fn,
+      results: null
+    };
+    return this.updateSection(key);
+  },
+  updateSection: function (key) {
+    // Verify we have our section
+    var section = this._sections[key];
+    assert(section, '`updateSection` has no key "' + key + '". Please verify `saveSection` was called first');
+
+    // Replace our results
+    var results = section.fn.call(this);
+    $(section.results).empty().append(results);
+    section.results = results;
+
+    // Return our results
+    return results;
   },
 
   // State managment
