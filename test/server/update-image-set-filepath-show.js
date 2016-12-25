@@ -7,12 +7,17 @@ var httpUtils = require('./utils/http');
 var serverUtils = require('./utils/server');
 var fsUtils = require('./utils/fs');
 
+// Load in reused constants
+var dotFilepath = __dirname + '/../test-files/dot.png';
+var dotBase64 = fs.readFileSync(dotFilepath, 'base64');
+
 // Start our tests
 describe('A request to POST /update-image-set/:filepath', function () {
-  describe('for an existent filepath', function () {
+  describe('for an registered existent filepath', function () {
     // Create a temporary ref file to update
     // DEV: We could use mocking for updating the file but this removes one more contract to maintain
-    var currentFilepath = __dirname + '/../test-files/dot.png';
+    var currentFilepath = dotFilepath;
+    var currentBase64 = dotBase64;
     var originalRefFilepath = __dirname + '/../test-files/diagonal.png';
     var refFilepath = __dirname + '/../test-files/tmp/update-image-set-filepath/existent.png';
     fsUtils.resetDir(__dirname + '/../test-files/tmp/update-image-set-filepath');
@@ -30,15 +35,12 @@ describe('A request to POST /update-image-set/:filepath', function () {
     }));
 
     // Make our request
-    before(function makeRequest (done) {
-      var currentBase64Contents = 'data:image/png;base64,' + fs.readFileSync(currentFilepath).toString('base64');
-      httpUtils._save({
-        method: 'POST', url: serverUtils.getUrl('/update-image-set/' + encodeURIComponent(refFilepath)),
-        form: {
-          ref: currentBase64Contents
-        },
-        expectedStatusCode: 200
-      }).call(this, done);
+    httpUtils.save({
+      method: 'POST', url: serverUtils.getUrl('/update-image-set/' + encodeURIComponent(refFilepath)),
+      form: {
+        ref: 'data:image/png;base64,' + currentBase64
+      },
+      expectedStatusCode: 200
     });
 
     it('updated reference image with new contents', function () {
@@ -69,7 +71,7 @@ describe('A request to POST /update-image-set/:filepath', function () {
     });
   });
 
-  describe('for an existent yet unregistered filepath', function () {
+  describe('for an unregistered existent filepath', function () {
     // Create our server and make our request
     // DEV: This covers scenarios like `/etc/passwd` but in a less egregious manner
     var existentFilepath = path.resolve(__dirname, '../test-files/dot.png');
