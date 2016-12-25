@@ -56,6 +56,41 @@ describe('A user accepting failing images is successful', function () {
   });
 });
 
+describe('A user accepting new images is successful', function () {
+  // Create our application, set up our XHR mocks, and click our button
+  applicationUtils.init(applicationUtils.IMAGE_SETS.MULTIPLE_WITH_NEW);
+  sinonUtils.mockXHR([xhrResponses.UPDATE_IMAGE_SET_APPROVE]);
+  before(function assertBadStatus () {
+    var imageSetTitleEl = this.containerEl.querySelector('[data-image-set="mock-img-new"] .image-set__title');
+    expect(imageSetTitleEl.getAttribute('data-images-equal')).to.equal('false');
+  });
+  domUtils.click('[data-image-set="mock-img-new"] ' +
+    'button[data-action=accept-changes]');
+  before(function waitForXHRToComplete (done) {
+    setTimeout(done, 100);
+  });
+  applicationUtils.screenshot('accept-new');
+
+  it('updates image set status', function () {
+    var imageSetTitleEl = this.containerEl.querySelector('[data-image-set="mock-img-new"] .image-set__title');
+    expect(imageSetTitleEl.getAttribute('data-images-equal')).to.equal('true');
+  });
+
+  it('sends XHR to update image to server', function () {
+    var requests = this.sinonServer.requests;
+    expect(requests).to.have.length(1);
+  });
+
+  it('adds diff and reference images', function () {
+    var diffImgEl = this.containerEl.querySelector(
+      '[data-image-set="mock-img-new"] img[data-compare-type=diff]');
+    var refImgEl = this.containerEl.querySelector(
+      '[data-image-set="mock-img-new"] img[data-compare-type=ref]');
+    expect(diffImgEl).to.not.equal(null);
+    expect(refImgEl).to.not.equal(null);
+  });
+});
+
 describe('A user accepting failing images has an error', function () {
   // Create our application, silence errors, set up our XHR mocks, and click our button
   applicationUtils.init();
