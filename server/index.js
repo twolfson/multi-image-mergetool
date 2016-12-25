@@ -101,9 +101,6 @@ function generateServer(imageSets) {
           return next(err);
         }
 
-        // Update image set
-        req.imageSet.imagesEqual = imagesEqual;
-
         // Otherwise, send back result
         res.json({imagesEqual: imagesEqual});
       });

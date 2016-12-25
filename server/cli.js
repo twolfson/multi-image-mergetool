@@ -175,9 +175,6 @@ exports._parse = function (argv, callback) {
         return cb(err);
       }
 
-      // Save back imagesEqual to imageSet
-      imageSet.imagesEqual = imagesEqual;
-
       // Otherwise, log our result and update our counter
       // https://github.com/gemini-testing/gemini/blob/v4.13.0/lib/reporters/flat-factory/flat.js#L41-L78
       if (imagesEqual) {

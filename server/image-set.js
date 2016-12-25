@@ -13,7 +13,10 @@ function ImageSet(currentImage, refImage, options) {
   this.currentImage = currentImage;
   this.refImage = refImage;
   this.diffImage = options.diffImage || null;
-  // TODO: Define `imagesEqual` here as well as set `imagesEqual` in `diff`
+
+  // Define placeholder attributes for comparison
+  this.imagesEqual = null;
+  this.isNew = null;
 
   // Log image set generation
   logger.verbose.info('Image set generated with current image "' + this.currentImage + '", ' +
@@ -97,7 +100,16 @@ ImageSet.prototype = {
       // Compare our images
       // https://github.com/gemini-testing/gemini/blob/v4.13.0/lib/image/index.js#L79-L104
       // TODO: Support multiple image comparators (e.g. `image-diff`)
-      looksSameComparator(that, cb);
+      looksSameComparator(that, function handleResult (err, imagesEqual) {
+        // If there was an error, callback with it
+        if (err) {
+          return cb(err);
+        }
+
+        // Otherwise, save the result and callback
+        that.imagesEqual = imagesEqual;
+        cb(null, imagesEqual);
+      });
     });
   },
   // DEV: We could use `toJSON` but there is a trust issue of it always being used/not
