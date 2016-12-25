@@ -74,6 +74,36 @@ describe('An in-process CLI invocation', function () {
     });
   });
 
+  describe('with new images', function () {
+    cliUtils.parse([
+      'node', multiImageMergetoolFilepath,
+      '--current-images', dotFilepath,
+      '--ref-images', __dirname + '/../test-files/does-not-exist.png'
+    ], {
+      expectedExitCode: null
+    });
+
+    it('does not exit', function () {
+      expect(this.err).to.equal(null);
+      expect(this.exitCode).to.equal(null);
+    });
+
+    it('contains non-matching output and marks image as new', function () {
+      expect(this.logUpdateContent).to.match(/✖.+test-files\/does-not-exist\.png \(new\)/);
+      expect(this.loggerInfo).to.contain('Images matched: 0 of 1');
+    });
+
+    it('doesn\'t create a diff file', function () {
+      var generateServerSpy = cli.generateServer;
+      expect(generateServerSpy.callCount).to.equal(1);
+      var imageSets = generateServerSpy.args[0][0];
+      expect(imageSets[0].diffImage).to.be.a('String');
+      expect(function statDiffImage () {
+        fs.statSync(imageSets[0].diffImage);
+      }).to.throw(Error, /ENOENT/);
+    });
+  });
+
   describe('with --diff-images argument', function () {
     var diffFilepath = __dirname + '/../test-files/tmp/cli/diff-images-argument/diff.png';
     fsUtils.rimraf(__dirname + '/../test-files/tmp/cli/diff-images-argument');
