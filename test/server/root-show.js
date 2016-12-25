@@ -25,6 +25,15 @@ describe('A request to GET /', function () {
   });
 
   it('receives our image sets', function () {
+    // Assert properties
+    expect(this.body).to.contain('"id":');
+    expect(this.body).to.contain('"currentImageUrl":');
+    expect(this.body).to.contain('"diffImageUrl":');
+    expect(this.body).to.contain('"refImageUrl":');
+    expect(this.body).to.contain('"imagesEqual":');
+    expect(this.body).to.contain('"isNew":');
+
+    // Assert URLs
     expect(this.body).to.contain('/images/' + encodeURIComponent('mock-image-1/current.png'));
     expect(this.body).to.contain('/images/' + encodeURIComponent('mock-image-1/ref.png'));
     expect(this.body).to.contain('/images/' + encodeURIComponent('mock-image-1/diff.png'));
