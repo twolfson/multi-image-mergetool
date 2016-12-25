@@ -13,6 +13,12 @@ wd.addPromiseChainMethod('screenshotLarge', function screenshotLargeFn (filepath
     // https://github.com/admc/wd/blob/v1.1.1/lib/commands.js#L1108-L1114
     .saveScreenshot(filepath);
 });
+wd.addPromiseChainMethod('screenshotMedium', function screenshotLargeFn (filepath) {
+  return this.setWindowSize(480, 800).saveScreenshot(filepath);
+});
+wd.addPromiseChainMethod('screenshotSmall', function screenshotLargeFn (filepath) {
+  return this.setWindowSize(360, 480).saveScreenshot(filepath);
+});
 
 // Create our browser
 // DEV: Typically we would prefer callbacks over promises but chaining is quite nice
@@ -22,6 +28,8 @@ var browser = wd.promiseChainRemote();
 browser
   .init({browserName: 'chrome'})
   .get('http://getbootstrap.com/')
-  .screenshotLarge('hi.png')
+  .screenshotLarge('root.large.png')
+  .screenshotMedium('root.medium.png')
+  .screenshotSmall('root.small.png')
   .fin(function handleFin () { return browser.quit(); })
   .done();
