@@ -4,7 +4,7 @@ var assert = require('assert');
 var _ = require('underscore');
 var h = require('hyperscript-helpers')(require('hyperscript'));
 var classnames = require('classnames');
-var View = require('backbone').View;
+var BaseComponent = require('./base-component');
 var GlobalState = require('./global-state');
 var Overlay = require('./overlay');
 var SimilarImageResults = require('./similar-image-results');
@@ -15,7 +15,7 @@ var RESULTS_NONE = 'results_none';
 var RESULTS_VISIBLE = 'results_visible';
 
 // Define our constructor
-var ImageSet = View.extend({
+var ImageSet = BaseComponent.extend({
   initialize: function (options) {
     // Save parameters for later
     var imageSetInfo = this.imageSetInfo = options.imageSetInfo; assert(imageSetInfo);
