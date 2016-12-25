@@ -1,0 +1,17 @@
+#!/usr/bin/env node
+// Load in our dependencies
+var async = require('async');
+var wd = require('wd');
+
+// Create our browser
+var browser = wd.remote();
+
+// Gather our screenshots
+async.series([
+  function (cb) { browser.init({browserName: 'firefox'}, cb); }
+], function handleError (err) {
+  // If there was an error, throw it
+  if (err) {
+    throw err;
+  }
+});
