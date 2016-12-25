@@ -137,31 +137,46 @@ ImageSet.prototype = _.extend(ImageSet.prototype, {
               }))
             ]),
             h.td({style: 'width: 33%'}, [
-              !this.getState('isNew') ? this.saveEl('diffImg', h.img({
-                'data-compare-type': 'diff',
-                src: this.imageSetInfo.diffImageUrl,
-                style: 'max-width: 100%'
-              })) : h.em('No diff image yet, image set is new. Please accept changes first')
+              this.saveSection('diffImg', function () {
+                if (this.getState('isNew')) {
+                  return h.em('No diff image yet, image set is new. Please accept changes first');
+                } else {
+                  // Generate our image
+                  var retVal = this.saveEl('diffImg', h.img({
+                    'data-compare-type': 'diff',
+                    src: this.imageSetInfo.diffImageUrl,
+                    style: 'max-width: 100%'
+                  }));
+
+                  // Bind an overlay to diff image
+                  // TODO: Explore binding overlay to each of images (that jumps between them)
+                  // DEV: We use our collapse as a container so it hides on collapse
+                  this.imgOverlay = new Overlay(this.diffImg, {
+                    containerEl: this.contentsEl
+                  });
+
+                  // Return our retVal
+                  return retVal;
+                }
+              })
             ]),
             h.td({style: 'width: 33%'}, [
-              !this.getState('isNew') ? this.saveEl('refImg', h.img({
-                'data-compare-type': 'ref',
-                src: this.imageSetInfo.refImageUrl,
-                style: 'max-width: 100%'
-              })) : h.em('No ref image yet, image set is new. Please accept changes first')
+              this.saveSection('refImg', function () {
+                if (this.getState('isNew')) {
+                  return h.em('No ref image yet, image set is new. Please accept changes first');
+                } else {
+                  return this.saveEl('refImg', h.img({
+                    'data-compare-type': 'ref',
+                    src: this.imageSetInfo.refImageUrl,
+                    style: 'max-width: 100%'
+                  }));
+                }
+              })
             ])
           ])
         ])
       ])
     ])));
-
-    // Bind an overlay to diff image
-    // TODO: Explore binding overlay to each of images (that jumps between them)
-    // DEV: We use our collapse as a container so it hides on collapse
-    var imgOverlay = new Overlay(this.diffImg, {
-      containerEl: this.contentsEl
-    });
-    this.imgOverlay = imgOverlay;
 
     // When our XHR state changes (e.g. updating, completed updating)
     this.onStateChange('xhrState', function handleXHRChange (prevXhrState, xhrState) {
