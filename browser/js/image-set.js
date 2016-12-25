@@ -153,6 +153,7 @@ ImageSet.prototype = _.extend(ImageSet.prototype, {
                 // Bind an overlay to diff image
                 // TODO: Explore binding overlay to each of images (that jumps between them)
                 // DEV: We use our collapse as a container so it hides on collapse
+                // DEV: We assert to prevent overlay generation being contained in `this.contentsEl` generation
                 assert(this.contentsEl);
                 this.imgOverlay = new Overlay(this.diffImg, {
                   containerEl: this.contentsEl
