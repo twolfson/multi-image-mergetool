@@ -28,14 +28,24 @@ exports.IMAGE_SET_EQUAL = {
   currentImageUrl: base64Prefix + diagonalBase64,
   diffImageUrl: base64Prefix + diagonalBase64,
   refImageUrl: base64Prefix + diagonalBase64,
-  imagesEqual: true
+  imagesEqual: true,
+  isNew: false
 };
 exports.IMAGE_SET_NOT_EQUAL = {
   id: 'mock-img-not-equal',
   currentImageUrl: base64Prefix + diagonalBase64,
   diffImageUrl: base64Prefix + diagonalDotDiffBase64,
   refImageUrl: base64Prefix + dotBase64,
-  imagesEqual: false
+  imagesEqual: false,
+  isNew: false
+};
+exports.IMAGE_SET_NEW = {
+  id: 'mock-img-new',
+  currentImageUrl: base64Prefix + diagonalBase64,
+  diffImageUrl: base64Prefix + diagonalDotDiffBase64,
+  refImageUrl: base64Prefix + dotBase64,
+  imagesEqual: false,
+  isNew: true
 };
 exports.IMAGE_SET_NOT_EQUAL2 = _.defaults({
   id: 'mock-img-not-equal2'
@@ -45,7 +55,8 @@ exports.IMAGE_SET_LARGE_EQUAL = {
   currentImageUrl: largeDiagonalBase64DataUri,
   diffImageUrl: largeDiagonalBase64DataUri,
   refImageUrl: largeDiagonalBase64DataUri,
-  imagesEqual: true
+  imagesEqual: true,
+  isNew: false
 };
 exports.IMAGE_SET_LARGE_NOT_EQUAL = {
   id: 'mock-img-not-equal-large',
@@ -54,10 +65,12 @@ exports.IMAGE_SET_LARGE_NOT_EQUAL = {
   //   which we avoid doing for large images to prevent bloating our repo
   diffImageUrl: largeDotBase64DataUri,
   refImageUrl: largeDotBase64DataUri,
-  imagesEqual: false
+  imagesEqual: false,
+  isNew: false
 };
 exports.IMAGE_SETS = {
   DEFAULT: [exports.IMAGE_SET_EQUAL, exports.IMAGE_SET_NOT_EQUAL],
+  NEW: [exports.IMAGE_SET_EQUAL, exports.IMAGE_SET_NEW],
   MULTIPLE_NOT_EQUAL: [exports.IMAGE_SET_EQUAL, exports.IMAGE_SET_NOT_EQUAL, exports.IMAGE_SET_NOT_EQUAL2]
 };
 exports.IMAGE_SETS.PERFORMANCE = [];
