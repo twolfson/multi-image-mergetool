@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 // Based on https://github.com/admc/wd/blob/v1.1.1/examples/promise/chrome.js
 // Load in our dependencies
+var functionToString = require('function-to-string');
 var wd = require('wd');
 
 // Add custom methods for screenshots
@@ -26,17 +27,21 @@ var browser = wd.promiseChainRemote();
 
 // Add logging for feedback
 browser.on('status', function handleStatus (info) {
-  console.log('Status: ', info);
+  console.log('Status:', info.trim());
 });
 browser.on('command', function handleCommand (eventType, command, response) {
-  console.log('Command: ' + eventType, command, (response || ''));
+  // If this is a response, ignore it
+  if (eventType === 'RESPONSE') {
+    return;
+  }
+  console.log('Command:', eventType, command, (response || ''));
 });
 
 // Gather our screenshots
 browser
   .init({browserName: 'chrome'})
   .get('http://getbootstrap.com/')
-  .execute(function cleanPage () {
+  .execute(functionToString(function cleanPage () {
     // Remove "Bootstrap 4" banner
     var bannerEl = document.querySelector('.v4-tease');
     if (!bannerEl) { throw new Error('Unable to find ".v4-tease"'); }
@@ -46,7 +51,7 @@ browser
     var adEl = document.querySelector('#carbonads-container');
     if (!adEl) { throw new Error('Unable to find "#carbonads-container"'); }
     adEl.parentNode.removeChild(adEl);
-  })
+  }).body)
   .screenshotLarge('root.large.png')
   .screenshotMedium('root.medium.png')
   .screenshotSmall('root.small.png')
