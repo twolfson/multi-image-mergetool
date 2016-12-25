@@ -28,6 +28,17 @@ var browser = wd.promiseChainRemote();
 browser
   .init({browserName: 'chrome'})
   .get('http://getbootstrap.com/')
+  .executeJS(function cleanPage () {
+    // Remove "Bootstrap 4" banner
+    var bannerEl = document.querySelector('.v4-tease');
+    if (!bannerEl) { throw new Error('Unable to find ".v4-tease"'); }
+    bannerEl.parentNode.removeChild(bannerEl);
+
+    // Remove ads
+    var adEl = document.querySelector('#carbonads-container');
+    if (!adEl) { throw new Error('Unable to find "#carbonads-container"'); }
+    adEl.parentNode.removeChild(adEl);
+  })
   .screenshotLarge('root.large.png')
   .screenshotMedium('root.medium.png')
   .screenshotSmall('root.small.png')
