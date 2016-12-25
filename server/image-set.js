@@ -152,19 +152,28 @@ ImageSet.prototype = {
     };
   },
   updateRef: function (refBuff, cb) {
-    // Update our reference image
-    // DEV: We could load a single file handler at start of application and persist it to avoid path shifting hacks
-    //   but we shouldn't be run as root so we should be fine
+    // Create a directory for our reference image
+    // DEV: It could be new and lacking a directory
     var that = this;
-    fs.writeFile(this.refImage, refBuff, function handleWriteFile (err) {
+    mkdirp(path.dirname(this.refImage), function handleMkdirp (err) {
       // If there was an error, callback with it
       if (err) {
         return cb(err);
       }
 
-      // Otherwise, compare our images and callback with that result
-      // DEV: We run this so we update our diff image
-      that.compare(cb);
+      // Update our reference image
+      // DEV: We could load a single file handler at start of application and persist it to avoid path shifting hacks
+      //   but we shouldn't be run as root so we should be fine
+      fs.writeFile(that.refImage, refBuff, function handleWriteFile (err) {
+        // If there was an error, callback with it
+        if (err) {
+          return cb(err);
+        }
+
+        // Otherwise, compare our images and callback with that result
+        // DEV: We run this so we update our diff image
+        that.compare(cb);
+      });
     });
   }
 };
