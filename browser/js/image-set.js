@@ -276,10 +276,6 @@ ImageSet.prototype = _.extend(ImageSet.prototype, {
   },
   updateReferenceImage: function (imgBase64) {
     this._updateReferenceImage(imgBase64);
-  },
-  saveEl: function (key, el) {
-    this[key] = el;
-    return el;
   }
 });
 

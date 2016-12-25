@@ -169,10 +169,6 @@ SimilarImageResults.findSimilarImageSets = function (expectedImageSet, targetAre
 
 // Define our prototype
 SimilarImageResults.prototype = _.extend(SimilarImageResults.prototype, {
-  saveEl: function (key, el) {
-    this[key] = el;
-    return el;
-  },
   render: function () {
     // Render our title element
     var titleEl = this.titleEl = h.h4([

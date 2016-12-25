@@ -15,9 +15,11 @@ var BaseComponent = View.extend({
     // Define state for our component
     this.state = new Model();
 
-    // Call our default constructor
+    // Call our default constructor (invokes initialize)
     View.prototype.constructor.apply(this, arguments);
   },
+
+  // Rendering
   _renderOnce: function () {
     // Verify render hasn't been called before
     assert.strictEqual(this.renderedOnce, false, '`this.render()` has already been called. ' +
@@ -27,6 +29,12 @@ var BaseComponent = View.extend({
     // Run our render function
     this._render.apply(this, arguments);
   },
+  saveEl: function (key, el) {
+    this[key] = el;
+    return el;
+  },
+
+  // State managment
   setState: function () {
     // Call normal `set` actions for state
     return this.state.set.apply(this.state, arguments);
