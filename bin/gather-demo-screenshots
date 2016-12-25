@@ -27,24 +27,25 @@ wd.addPromiseChainMethod('screenshotSmall', function screenshotLargeFn (filepath
   return this.setWindowSize(360, 480).saveScreenshot(filepath);
 });
 
-// Create our browser
-// DEV: Typically we would prefer callbacks over promises but chaining is quite nice
-var browser = wd.promiseChainRemote();
+// Define a function to gather screenshots
+function gatherScreenshots(name, urlPath, cb) {
+  // Create our browser
+  // DEV: Typically we would prefer callbacks over promises but chaining is quite nice
+  var browser = wd.promiseChainRemote();
 
-// Add logging for feedback
-browser.on('status', function handleStatus (info) {
-  console.log('Status:', info.trim());
-});
-browser.on('command', function handleCommand (eventType, command, response) {
-  // If this is a response, ignore it
-  if (eventType === 'RESPONSE') {
-    return;
-  }
-  console.log('Command:', eventType, command, (response || ''));
-});
+  // Add logging for feedback
+  browser.on('status', function handleStatus (info) {
+    console.log('Status (' + name + '):', info.trim());
+  });
+  browser.on('command', function handleCommand (eventType, command, response) {
+    // If this is a response, ignore it
+    if (eventType === 'RESPONSE') {
+      return;
+    }
+    console.log('Command (' + name + '):', eventType, command, (response || ''));
+  });
 
-// Gather our screenshots
-function gatherScreenshots(urlPath, cb) {
+  // Perform our screenshot collection
   browser
     .init({browserName: 'chrome'})
     .get('http://getbootstrap.com' + urlPath)
@@ -59,8 +60,8 @@ function gatherScreenshots(urlPath, cb) {
       if (!adEl) { throw new Error('Unable to find "#carbonads-container"'); }
       adEl.parentNode.removeChild(adEl);
     }).body)
-    .screenshotLarge(demoDir + '/ref/root.large.png')
-    .screenshotSmall(demoDir + '/ref/root.small.png')
+    .screenshotLarge(demoDir + '/ref/' + name + '.large.png')
+    .screenshotSmall(demoDir + '/ref/' + name + '.small.png')
     .execute(functionToString(function alterPage () {
       // Alter nav bar to demonstrate changes
       var componentsLinkEl = document.querySelector('#bs-navbar a[href="../components/"]');
@@ -73,17 +74,19 @@ function gatherScreenshots(urlPath, cb) {
       if (expoLiEl.tagName !== 'LI') { throw new Error('`expoLinkEl.parentNode` was not an `<li>` as expected'); }
       expoLiEl.parentNode.removeChild(expoLiEl);
     }).body)
-    .screenshotLarge(demoDir + '/current/root.large.png')
-    .screenshotSmall(demoDir + '/current/root.small.png')
+    .screenshotLarge(demoDir + '/current/' + name + '.large.png')
+    .screenshotSmall(demoDir + '/current/' + name + '.small.png')
     .fin(function handleFin () { return browser.quit(); })
-    .done(cb);
+    .done(function handleDone () { cb(); });
 }
+
+// Gather our screenshots
 async.parallel([
   function gatherRootScreenshots (cb) {
-    gatherScreenshots('/', cb);
+    gatherScreenshots('root', '/', cb);
   },
   function gatherGettingStartedScreenshots (cb) {
-    gatherScreenshots('/getting-started/', cb);
+    gatherScreenshots('getting-started', '/getting-started/', cb);
   }
 ], function handleError (err) {
   // If there was an error, throw it
