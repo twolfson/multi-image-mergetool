@@ -10,10 +10,6 @@ var Overlay = require('./overlay');
 var SimilarImageResults = require('./similar-image-results');
 var utils = require('./utils');
 
-// Define our constants
-var RESULTS_NONE = 'results_none';
-var RESULTS_VISIBLE = 'results_visible';
-
 // Define our constructor
 var ImageSet = BaseComponent.extend({
   initialize: function (options) {
@@ -26,8 +22,9 @@ var ImageSet = BaseComponent.extend({
 
     // Save our state
     this.setState({
+      findSimilarImages: false,
       imagesEqual: imageSetInfo.imagesEqual,
-      resultsState: RESULTS_NONE
+      targetArea: null
     });
 
     // Run our render method
@@ -163,23 +160,26 @@ ImageSet.prototype = _.extend(ImageSet.prototype, {
     }
 
     // If we are rendering results, show them
-    if (this.getState('resultsState') !== RESULTS_NONE) {
+    this.onStateChange('findSimilarImages', function handleStateChange (prevVal, newVal) {
       // Remove previously existing content
       // TODO: Relocate removal of results el outside of `this.state` check -- it should be always
       if (this._resultsEl) {
         this.contentsEl.removeChild(this._resultsEl);
+        delete this._resultsEl;
       }
 
-      // Generate our new results
+      // If we are generating results, then populate them
       // DEV: We could generate similar image sets separately but this is to keep performance issues contained
-      var resultsEl = this._resultsEl = h.div({className: 'results'});
-      this.contentsEl.appendChild(resultsEl);
-      void new SimilarImageResults({
-        el: resultsEl,
-        targetArea: this.targetArea,
-        expectedImageSet: this
-      });
-    }
+      if (newVal !== false) {
+        var resultsEl = this._resultsEl = h.div({className: 'results'});
+        this.contentsEl.appendChild(resultsEl);
+        void new SimilarImageResults({
+          el: resultsEl,
+          targetArea: this.getState('targetArea'),
+          expectedImageSet: this
+        });
+      }
+    });
   },
   acceptChanges: function (imgBase64) {
     this._updateReferenceImage(imgBase64, 'true');
@@ -202,9 +202,10 @@ ImageSet.prototype = _.extend(ImageSet.prototype, {
 
     // Save our image set info and trigger results rendering
     // TODO: Unset `targetArea` values on destroy/results removal
-    this.setState('resultsState', RESULTS_VISIBLE);
-    this.targetArea = targetArea;
-    this.render();
+    this.setState({
+      targetArea: targetArea,
+      findSimilarImages: Date.now()
+    });
   },
   _updateReferenceImage: function (imgBase64, eagerStatus) {
     // Fade out diff and reference images to "loading" state
