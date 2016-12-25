@@ -39,19 +39,20 @@ var BaseComponent = View.extend({
   onStateChange: function (key, fn) {
     // If there is no key, bind to all state changes
     // TODO: Add tests for not persisting unchanged values after multiple sets
+    var that = this;
     if (typeof key === 'function') {
       fn = key;
       this.state.on('change', function handleEntireChange (state) {
-        var previousState;
-        var newState = state;
-        fn.call(this, {}, state);
+        var previousState = state.previousAttributes();
+        var newState = state.toJSON();
+        fn.call(that, previousState, newState);
       });
     // Otherwise, bind to a specific value
     } else {
       this.state.on('change:' + key, function handlePropertyChange (state) {
-        var previousProperty;
-        var newProperty;
-        fn.call(this, {}, newProperty);
+        var previousProperty = state.previous(key);
+        var newProperty = state.get(key);
+        fn.call(that, previousProperty, newProperty);
       });
     }
   }
