@@ -14,12 +14,9 @@ var RESULTS_LOADED = 'results_loaded';
 // Define our constructor
 var SimilarImageResults = View.extend({
   initialize: function (options) {
-    // Save options
-    this.options = options;
-
     // Localize/assert our parameters
-    this.targetArea = this.options.targetArea; assert(this.targetArea);
-    this.expectedImageSet = this.options.expectedImageSet; assert(this.expectedImageSet);
+    this.targetArea = options.targetArea; assert(this.targetArea);
+    this.expectedImageSet = options.expectedImageSet; assert(this.expectedImageSet);
 
     // Set up initial loading state
     // DEV: We render early with loading state to provide visual feedback
