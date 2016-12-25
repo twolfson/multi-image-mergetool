@@ -58,7 +58,41 @@ describe('A request to POST /update-image-set/:filepath', function () {
     });
   });
 
-  describe('for a non-existent filepath', function () {
+  describe('for an registered non-existent filepath', function () {
+    // Create a temporary directory to update
+    // DEV: We could use mocking for updating the file but this removes one more contract to maintain
+    // DEV: By using a nested directory, we guarantee `mkdirp` is being used
+    var currentFilepath = dotFilepath;
+    var currentBase64 = dotBase64;
+    var refFilepath = __dirname + '/../test-files/tmp/update-image-set-filepath/path/to/non-existent.png';
+    fsUtils.resetDir(__dirname + '/../test-files/tmp/update-image-set-filepath');
+
+    // Run a server
+    serverUtils.run(ImageSet.generateSets([
+      currentFilepath
+    ], [
+      refFilepath
+    ], {
+      diffImages: ['/dev/null']
+    }));
+
+    // Make our request
+    httpUtils.save({
+      method: 'POST', url: serverUtils.getUrl('/update-image-set/' + encodeURIComponent(refFilepath)),
+      form: {
+        ref: 'data:image/png;base64,' + currentBase64
+      },
+      expectedStatusCode: 200
+    });
+
+    it('updated reference image with new contents', function () {
+      var actualContents = fs.readFileSync(refFilepath);
+      var expectedContents = fs.readFileSync(currentFilepath);
+      expect(actualContents).to.deep.equal(expectedContents);
+    });
+  });
+
+  describe('for an unregistered non-existent filepath', function () {
     // Create our server and make our request
     serverUtils.run([]);
     httpUtils.save({
