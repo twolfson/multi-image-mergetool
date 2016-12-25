@@ -25,10 +25,10 @@ var ImageSet = BaseComponent.extend({
     this.humanName = imageSetInfo.id;
 
     // Save our state
-    this.state = {
+    this.setState({
       imagesEqual: imageSetInfo.imagesEqual,
       resultsState: RESULTS_NONE
-    };
+    });
 
     // Run our render method
     // TODO: Add destroy method so we can unreference element
@@ -89,7 +89,7 @@ ImageSet.prototype = _.extend(ImageSet.prototype, {
         className: 'image-set__title',
         href: 'javascript:void 0;', 'data-toggle': 'collapse',
         'data-target': '[data-image-set="' + imageSetId + '"] .image-set__collapse',
-        'data-images-equal': this.state.imagesEqual,
+        'data-images-equal': this.getState('imagesEqual'),
         'aria-controls': imageSetId
       }, imageSetHumanName)));
 
@@ -97,7 +97,7 @@ ImageSet.prototype = _.extend(ImageSet.prototype, {
       // DEV: We use `data-id` as `id` has restrictions on characters
       this.el.appendChild(this.saveEl('contentsEl', h.div({
         // Make our first image set visible
-        className: classnames('image-set__collapse', 'collapse', 'well', {in: !this.state.imagesEqual})
+        className: classnames('image-set__collapse', 'collapse', 'well', {in: !this.getState('imagesEqual')})
       }, [
         // Action buttons
         h.div([
@@ -163,7 +163,7 @@ ImageSet.prototype = _.extend(ImageSet.prototype, {
     }
 
     // If we are rendering results, show them
-    if (this.state.resultsState !== RESULTS_NONE) {
+    if (this.getState('resultsState') !== RESULTS_NONE) {
       // Remove previously existing content
       // TODO: Relocate removal of results el outside of `this.state` check -- it should be always
       if (this._resultsEl) {
@@ -202,7 +202,7 @@ ImageSet.prototype = _.extend(ImageSet.prototype, {
 
     // Save our image set info and trigger results rendering
     // TODO: Unset `targetArea` values on destroy/results removal
-    this.state.resultsState = RESULTS_VISIBLE;
+    this.setState('resultsState', RESULTS_VISIBLE);
     this.targetArea = targetArea;
     this.render();
   },
@@ -216,7 +216,7 @@ ImageSet.prototype = _.extend(ImageSet.prototype, {
     eagerStatus = eagerStatus || 'loading';
 
     // Update our status while updating
-    var oldStatus = this.state.imagesEqual;
+    var oldStatus = this.getState('imagesEqual');
     this.titleEl.setAttribute('data-images-equal', eagerStatus);
 
     // Make an AJAX call to accept our image
@@ -239,7 +239,7 @@ ImageSet.prototype = _.extend(ImageSet.prototype, {
     jqXHR.done(function handleDone (data, textStatus, jqXHR) {
       // Save new state and update status
       // data = {imagesEqual: true}
-      that.state.imagesEqual = data.imagesEqual;
+      that.setState('imagesEqual', data.imagesEqual);
       that.titleEl.setAttribute('data-images-equal', data.imagesEqual);
     });
 

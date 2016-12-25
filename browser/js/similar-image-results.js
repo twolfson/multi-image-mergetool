@@ -3,7 +3,7 @@ var $ = window.$ = window.jQuery = require('jquery');
 var _ = require('underscore');
 var assert = require('assert');
 var h = require('hyperscript-helpers')(require('hyperscript'));
-var View = require('backbone').View;
+var BaseComponent = require('./base-component');
 var GlobalState = require('./global-state');
 var utils = require('./utils');
 
@@ -12,7 +12,7 @@ var RESULTS_LOADING = 'results_loading';
 var RESULTS_LOADED = 'results_loaded';
 
 // Define our constructor
-var SimilarImageResults = View.extend({
+var SimilarImageResults = BaseComponent.extend({
   initialize: function (options) {
     // Localize/assert our parameters
     this.targetArea = options.targetArea; assert(this.targetArea);
@@ -20,9 +20,9 @@ var SimilarImageResults = View.extend({
 
     // Set up initial loading state
     // DEV: We render early with loading state to provide visual feedback
-    this.state = {
+    this.setState({
       status: RESULTS_LOADING
-    };
+    });
     this.render();
 
     // Resolve our matching image sets (which runs render)
@@ -189,7 +189,7 @@ SimilarImageResults.prototype = _.extend(SimilarImageResults.prototype, {
     }
 
     // If we are loaded and haven't rendered our results yet, render them
-    if (this.state.status === RESULTS_LOADED && !this.resultsDocFrag) {
+    if (this.getState('status') === RESULTS_LOADED && !this.resultsDocFrag) {
       // If we have no matching image sets
       if (this.imageSets.length === 1) {
         this.el.appendChild(h.div(null, 'No similar images found'));
@@ -323,7 +323,7 @@ SimilarImageResults.prototype = _.extend(SimilarImageResults.prototype, {
     // Save our image sets, update status, and re-render
     // TODO: Unset `imageSets` on destroy
     this.imageSets = matchingImageSets;
-    this.state.status = RESULTS_LOADED;
+    this.setState('status', RESULTS_LOADED);
     this.render();
   }
 });

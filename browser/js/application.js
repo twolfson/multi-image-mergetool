@@ -4,7 +4,7 @@ var assert = require('assert');
 window.$ = window.jQuery = require('jquery');
 void require('bootstrap/dist/js/bootstrap.js');
 var h = require('hyperscript-helpers')(require('hyperscript'));
-var View = require('backbone').View;
+var BaseComponent = require('./base-component');
 var ImageSet = require('./image-set');
 var SimilarImageResults = require('./similar-image-results');
 
@@ -13,7 +13,7 @@ var SimilarImageResults = require('./similar-image-results');
 // TODO: Consider magnifying glass zoom on images (e.g. like in ecommerce sites)
 
 // Define our application
-var Application = View.extend({
+var Application = BaseComponent.extend({
   initialize: function (options) {
     // Generate our detached DOM node
     // DEV: We use a detached node instead of an attached one to prevent repainting elements on each append

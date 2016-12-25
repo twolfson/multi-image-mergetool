@@ -34,7 +34,11 @@ var BaseComponent = View.extend({
   },
   setState: function () {
     // Call normal `set` actions for state
-    this.state.set.apply(this.state, arguments);
+    return this.state.set.apply(this.state, arguments);
+  },
+  getState: function () {
+    // Call normal `get` actions for state
+    return this.state.get.apply(this.state, arguments);
   },
   onStateChange: function (key, fn) {
     // If there is no key, bind to all state changes
