@@ -10,6 +10,10 @@ var Overlay = require('./overlay');
 var SimilarImageResults = require('./similar-image-results');
 var utils = require('./utils');
 
+// Define our constants
+var IN_PROGRESS = 'IN_PROGRESS';
+var NONE = 'NONE';
+
 // Define our constructor
 var ImageSet = BaseComponent.extend({
   initialize: function (options) {
@@ -22,8 +26,10 @@ var ImageSet = BaseComponent.extend({
 
     // Save our state
     this.setState({
+      eagerStatus: null,
       findSimilarImages: false,
       imagesEqual: imageSetInfo.imagesEqual,
+      xhrState: NONE,
       targetArea: null
     });
 
@@ -156,6 +162,31 @@ ImageSet.prototype = _.extend(ImageSet.prototype, {
     });
     this.imgOverlay = imgOverlay;
 
+    // When our XHR state changes (e.g. updating, completed updating)
+    this.onStateChange('xhrState', function handleXHRChange (prevXhrState, xhrState) {
+      // If our image set is updating
+      if (xhrState === IN_PROGRESS) {
+        // Fade out diff and reference images to "loading" state
+        this.diffImg.classList.add('loading');
+        this.refImg.classList.add('loading');
+
+        // Update our status to eager status
+        this.titleEl.setAttribute('data-images-equal', this.getState('eagerStatus'));
+      // Otherwise (update completed)
+      } else {
+        // Remove loading classes
+        this.diffImg.classList.remove('loading');
+        this.refImg.classList.remove('loading');
+
+        // Use actual status as status
+        this.titleEl.setAttribute('data-images-equal', this.getState('imagesEqual'));
+
+        // Cachebust our images
+        ImageSet.cachebustImg(this.diffImg);
+        ImageSet.cachebustImg(this.refImg);
+      }
+    });
+
     // When we toggle finding similar images/not
     this.onStateChange('findSimilarImages', function handleStateChange (prevVal, newVal) {
       // Remove previously existing content
@@ -206,17 +237,12 @@ ImageSet.prototype = _.extend(ImageSet.prototype, {
     });
   },
   _updateReferenceImage: function (imgBase64, eagerStatus) {
-    // Fade out diff and reference images to "loading" state
-    this.diffImg.classList.add('loading');
-    this.refImg.classList.add('loading');
-
-    // If we have an eager status, use it
-    // DEV: For an acceptance, we will eagerly update to 'imagesEqual: true'
-    eagerStatus = eagerStatus || 'loading';
-
-    // Update our status while updating
-    var oldStatus = this.getState('imagesEqual');
-    this.titleEl.setAttribute('data-images-equal', eagerStatus);
+    // Set our state as loading and an eager status
+    // DEV: For an acceptance request, we will eagerly update to 'imagesEqual: true'
+    this.setState({
+      eagerStatus: eagerStatus || 'loading',
+      xhrState: IN_PROGRESS
+    });
 
     // Make an AJAX call to accept our image
     // http://api.jquery.com/jQuery.ajax/#jqXHR
@@ -230,24 +256,22 @@ ImageSet.prototype = _.extend(ImageSet.prototype, {
       // TODO: Expose error to user so they can retry
       console.error('Error encountered "' + errorThrown + '" when updating image "' + that.id + '"');
 
-      // Reset status to previous state
-      that.titleEl.setAttribute('data-images-equal', oldStatus);
+      // Remove loading state (triggers re-render)
+      that.setState({
+        eagerStatus: null,
+        xhrState: NONE
+      });
     });
 
     // When we complete updating
     jqXHR.done(function handleDone (data, textStatus, jqXHR) {
-      // Save new state and update status
+      // Save our new state (triggers re-render)
       // data = {imagesEqual: true}
-      that.setState('imagesEqual', data.imagesEqual);
-      that.titleEl.setAttribute('data-images-equal', data.imagesEqual);
-    });
-
-    // When loading completes, remove loading state and update image references
-    jqXHR.always(function handleAlways (dataOrJqXHR, textStatus, jqXHROrErrorThrown) {
-      that.diffImg.classList.remove('loading');
-      that.refImg.classList.remove('loading');
-      ImageSet.cachebustImg(that.diffImg);
-      ImageSet.cachebustImg(that.refImg);
+      that.setState({
+        eagerStatus: null,
+        imagesEqual: data.imagesEqual,
+        xhrState: NONE
+      });
     });
   },
   updateReferenceImage: function (imgBase64) {
