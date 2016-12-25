@@ -174,17 +174,15 @@ SimilarImageResults.prototype = _.extend(SimilarImageResults.prototype, {
     return el;
   },
   render: function () {
-    // If we have no title, set one
-    if (!this.titleEl) {
-      var titleEl = this.titleEl = h.h4([
-        'Similar images',
-        this.saveEl('resultsCountEl', h.span({className: 'results__count'}, '')),
-        ':'
-      ]);
-      this.el.appendChild(titleEl);
-    }
+    // Render our title element
+    var titleEl = this.titleEl = h.h4([
+      'Similar images',
+      this.saveEl('resultsCountEl', h.span({className: 'results__count'}, '')),
+      ':'
+    ]);
+    this.el.appendChild(titleEl);
 
-    // If we are loaded and haven't rendered our results yet, render them
+    // When our image sets load, render them
     this.onStateChange('imageSets', function handleImageSets (previousImageSets, imageSets) {
       // Sanity check that we are only finding image sets once
       assert.strictEqual(previousImageSets, null);

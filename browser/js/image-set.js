@@ -72,94 +72,91 @@ ImageSet.fetchByEvent = function (evt) {
 // Define prototype methods
 ImageSet.prototype = _.extend(ImageSet.prototype, {
   render: function () {
-    // If we don't have an image set element, create/append one
-    if (!this.renderedAlready) {
-      // Create local variables for our image set
-      var imageSetId = this.id;
-      var imageSetHumanName = this.humanName;
-      this.renderedAlready = true;
-      this.el.setAttribute('data-image-set', imageSetId);
+    // Create local variables for our image set
+    var imageSetId = this.id;
+    var imageSetHumanName = this.humanName;
+    this.renderedAlready = true;
+    this.el.setAttribute('data-image-set', imageSetId);
 
-      // Row title
-      // TODO: Move from link to button styled as link so we can ditch `href`
-      this.el.appendChild(this.saveEl('titleEl', h.a({
-        className: 'image-set__title',
-        href: 'javascript:void 0;', 'data-toggle': 'collapse',
-        'data-target': '[data-image-set="' + imageSetId + '"] .image-set__collapse',
-        'data-images-equal': this.getState('imagesEqual'),
-        'aria-controls': imageSetId
-      }, imageSetHumanName)));
+    // Row title
+    // TODO: Move from link to button styled as link so we can ditch `href`
+    this.el.appendChild(this.saveEl('titleEl', h.a({
+      className: 'image-set__title',
+      href: 'javascript:void 0;', 'data-toggle': 'collapse',
+      'data-target': '[data-image-set="' + imageSetId + '"] .image-set__collapse',
+      'data-images-equal': this.getState('imagesEqual'),
+      'aria-controls': imageSetId
+    }, imageSetHumanName)));
 
-      // Collapsable container for row
-      // DEV: We use `data-id` as `id` has restrictions on characters
-      this.el.appendChild(this.saveEl('contentsEl', h.div({
-        // Make our first image set visible
-        className: classnames('image-set__collapse', 'collapse', 'well', {in: !this.getState('imagesEqual')})
-      }, [
-        // Action buttons
-        h.div([
-          h.button({
-            className: 'btn btn-default',
-            'data-action': 'accept-changes'
-          }, '✓ Accept changes'),
-          ' ',
-          h.button({
-            className: 'btn btn-default',
-            'data-action': 'find-similar-images'
-            // TODO: Make our button disabled and only enable when an overlay is drawn
-            // TODO: When changes are accepted, reset all affected overlays and buttons
-            // disabled: 'disabled'
-          }, 'Find similar images with selection')
+    // Collapsable container for row
+    // DEV: We use `data-id` as `id` has restrictions on characters
+    this.el.appendChild(this.saveEl('contentsEl', h.div({
+      // Make our first image set visible
+      className: classnames('image-set__collapse', 'collapse', 'well', {in: !this.getState('imagesEqual')})
+    }, [
+      // Action buttons
+      h.div([
+        h.button({
+          className: 'btn btn-default',
+          'data-action': 'accept-changes'
+        }, '✓ Accept changes'),
+        ' ',
+        h.button({
+          className: 'btn btn-default',
+          'data-action': 'find-similar-images'
+          // TODO: Make our button disabled and only enable when an overlay is drawn
+          // TODO: When changes are accepted, reset all affected overlays and buttons
+          // disabled: 'disabled'
+        }, 'Find similar images with selection')
+      ]),
+
+      // Image set
+      h.table({className: 'table'}, [
+        h.thead([
+          h.tr([
+            h.th(null, 'Current:'),
+            h.th(null, 'Diff:'),
+            h.th(null, 'Ref:')
+          ])
         ]),
-
-        // Image set
-        h.table({className: 'table'}, [
-          h.thead([
-            h.tr([
-              h.th(null, 'Current:'),
-              h.th(null, 'Diff:'),
-              h.th(null, 'Ref:')
-            ])
-          ]),
-          h.tbody([
-            h.tr([
-              // DEV: We use `width: 33%` to guarantee no widths change when images are loading
-              h.td({style: 'width: 33%'}, [
-                this.saveEl('currentImg', h.img({
-                  'data-compare-type': 'current',
-                  src: this.imageSetInfo.currentImageUrl,
-                  style: 'max-width: 100%'
-                }))
-              ]),
-              h.td({style: 'width: 33%'}, [
-                this.saveEl('diffImg', h.img({
-                  'data-compare-type': 'diff',
-                  src: this.imageSetInfo.diffImageUrl,
-                  style: 'max-width: 100%'
-                }))
-              ]),
-              h.td({style: 'width: 33%'}, [
-                this.saveEl('refImg', h.img({
-                  'data-compare-type': 'ref',
-                  src: this.imageSetInfo.refImageUrl,
-                  style: 'max-width: 100%'
-                }))
-              ])
+        h.tbody([
+          h.tr([
+            // DEV: We use `width: 33%` to guarantee no widths change when images are loading
+            h.td({style: 'width: 33%'}, [
+              this.saveEl('currentImg', h.img({
+                'data-compare-type': 'current',
+                src: this.imageSetInfo.currentImageUrl,
+                style: 'max-width: 100%'
+              }))
+            ]),
+            h.td({style: 'width: 33%'}, [
+              this.saveEl('diffImg', h.img({
+                'data-compare-type': 'diff',
+                src: this.imageSetInfo.diffImageUrl,
+                style: 'max-width: 100%'
+              }))
+            ]),
+            h.td({style: 'width: 33%'}, [
+              this.saveEl('refImg', h.img({
+                'data-compare-type': 'ref',
+                src: this.imageSetInfo.refImageUrl,
+                style: 'max-width: 100%'
+              }))
             ])
           ])
         ])
-      ])));
+      ])
+    ])));
 
-      // Bind an overlay to diff image
-      // TODO: Explore binding overlay to each of images (that jumps between them)
-      // DEV: We use our collapse as a container so it hides on collapse
-      var imgOverlay = new Overlay(this.diffImg, {
-        containerEl: this.contentsEl
-      });
-      this.imgOverlay = imgOverlay;
-    }
+    // Bind an overlay to diff image
+    // TODO: Explore binding overlay to each of images (that jumps between them)
+    // DEV: We use our collapse as a container so it hides on collapse
+    var imgOverlay = new Overlay(this.diffImg, {
+      containerEl: this.contentsEl
+    });
+    this.imgOverlay = imgOverlay;
 
-    // If we are rendering results, show them
+    // When we toggle finding similar images/not
     this.onStateChange('findSimilarImages', function handleStateChange (prevVal, newVal) {
       // Remove previously existing content
       // TODO: Relocate removal of results el outside of `this.state` check -- it should be always
@@ -202,6 +199,7 @@ ImageSet.prototype = _.extend(ImageSet.prototype, {
 
     // Save our image set info and trigger results rendering
     // TODO: Unset `targetArea` values on destroy/results removal
+    // DEV: We use `Date.now()` to guarantee a different value on multiple presses
     this.setState({
       targetArea: targetArea,
       findSimilarImages: Date.now()
