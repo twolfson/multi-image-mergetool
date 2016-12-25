@@ -16,8 +16,13 @@ var BaseComponent = View.extend({
   },
   _renderOnce: function () {
     // Verify render hasn't been called before
-    assert.strictEqual(this.renderedOnce, false, '`this.render()` has already been called. ' +
-      'Please manage all dynamic state via `.onChange` events');
+    // TODO: Move to assert for multiple renders
+    // assert.strictEqual(this.renderedOnce, false, '`this.render()` has already been called. ' +
+    //   'Please manage all dynamic state via `.onChange` events');
+    if (this.renderedOnce !== false) {
+      console.warn('`this.render()` has already been called. ' +
+        'Please manage all dynamic state via `.onChange` events');
+    }
     this.renderedOnce = true;
 
     // Run our render function
