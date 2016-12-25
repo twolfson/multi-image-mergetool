@@ -7,10 +7,6 @@ var BaseComponent = require('./base-component');
 var GlobalState = require('./global-state');
 var utils = require('./utils');
 
-// Define our constants
-var RESULTS_LOADING = 'results_loading';
-var RESULTS_LOADED = 'results_loaded';
-
 // Define our constructor
 var SimilarImageResults = BaseComponent.extend({
   initialize: function (options) {
@@ -18,14 +14,14 @@ var SimilarImageResults = BaseComponent.extend({
     this.targetArea = options.targetArea; assert(this.targetArea);
     this.expectedImageSet = options.expectedImageSet; assert(this.expectedImageSet);
 
-    // Set up initial loading state
+    // Set up initial loading state and render now
     // DEV: We render early with loading state to provide visual feedback
     this.setState({
-      status: RESULTS_LOADING
+      imageSets: null
     });
     this.render();
 
-    // Resolve our matching image sets (which runs render)
+    // Resolve our matching image sets
     this.findMatchingImageSets();
   }
 });
@@ -189,15 +185,18 @@ SimilarImageResults.prototype = _.extend(SimilarImageResults.prototype, {
     }
 
     // If we are loaded and haven't rendered our results yet, render them
-    if (this.getState('status') === RESULTS_LOADED && !this.resultsDocFrag) {
+    this.onStateChange('imageSets', function handleImageSets (previousImageSets, imageSets) {
+      // Sanity check that we are only finding image sets once
+      assert.strictEqual(previousImageSets, null);
+
       // If we have no matching image sets
-      if (this.imageSets.length === 1) {
+      if (imageSets.length === 1) {
         this.el.appendChild(h.div(null, 'No similar images found'));
         return;
       }
 
       // Otherwise, update our count and append our buttons
-      this.resultsCountEl.textContent = ' (' + this.imageSets.length + ')';
+      this.resultsCountEl.textContent = ' (' + imageSets.length + ')';
       this.el.appendChild(h.div([
         h.button({
           className: 'btn btn-default',
@@ -219,7 +218,6 @@ SimilarImageResults.prototype = _.extend(SimilarImageResults.prototype, {
       // Generate and updated ref image for each of our comparisons
       var expectedImageSet = this.expectedImageSet;
       var targetArea = this.targetArea;
-      var imageSets = this.imageSets; assert(imageSets);
       imageSets.forEach(function generateUpdatedRef (imageSet) {
         // Localize our references
         var currentImg = imageSet.currentImg;
@@ -312,7 +310,7 @@ SimilarImageResults.prototype = _.extend(SimilarImageResults.prototype, {
 
       // End our performance check
       console.timeEnd('bulkUpdateSelection');
-    }
+    });
   },
   findMatchingImageSets: function () {
     // Resolve our similar image sets based on target area
@@ -320,11 +318,9 @@ SimilarImageResults.prototype = _.extend(SimilarImageResults.prototype, {
     assert.notEqual(matchingImageSets.length, 0,
       'Something went horribly wrong when matching images; not even the original is equal to itself');
 
-    // Save our image sets, update status, and re-render
-    // TODO: Unset `imageSets` on destroy
-    this.imageSets = matchingImageSets;
-    this.setState('status', RESULTS_LOADED);
-    this.render();
+    // Save our image sets (causes re-render)
+    // TODO: Unset `imageSets`/sate on destroy
+    this.setState('imageSets', matchingImageSets);
   }
 });
 
