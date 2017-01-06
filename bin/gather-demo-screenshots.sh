@@ -13,4 +13,5 @@ node bin/multi-image-mergetool \
     --diff-images $(echo demo/current/*.png | sed "s/current/diff/g")
 
 # Update our image signatures
+# TODO: Add signature comparison to test suite -- likely via Travis CI (generate demo, verify no git changes)
 bin/test-browser-update-screenshots-signature.sh demo
