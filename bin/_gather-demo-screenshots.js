@@ -126,6 +126,11 @@ function gatherScreenshots(params, cb) {
       var adEl = document.querySelector('#carbonads-container');
       if (!adEl) { throw new Error('Unable to find "#carbonads-container"'); }
       adEl.parentNode.removeChild(adEl);
+
+      // Normalize background gradient to be solid color for easier matching
+      var contentEl = document.querySelector('#content');
+      if (!contentEl) { throw new Error('Unable to find "#content"'); }
+      contentEl.style.backgroundImage = 'none';
     }).body);
   if (saveRefImages) {
     browser = browser
