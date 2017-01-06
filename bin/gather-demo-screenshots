@@ -9,7 +9,8 @@ var wd = require('wd');
 
 // Reset our demo directory
 var demoDir = __dirname + '/../demo';
-rimraf.sync(demoDir);
+rimraf.sync(demoDir + '/ref');
+rimraf.sync(demoDir + '/current');
 mkdirp.sync(demoDir + '/ref');
 mkdirp.sync(demoDir + '/current');
 
