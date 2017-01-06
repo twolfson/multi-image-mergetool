@@ -4,22 +4,25 @@ var _ = require('underscore');
 var sinon = require('sinon');
 
 // Define our utilities
+exports._mockXHR = function enableSinonXHR (responses) {
+  // Create our server
+  // http://sinonjs.org/docs/#fakeServer
+  var sinonServer = this.sinonServer = sinon.fakeServer.create();
+
+  // Set up auto-responses
+  this.sinonServer.autoRespond = true;
+  this.sinonServer.autoRespondAfter = 100;
+
+  // Bind our responses
+  responses.forEach(function bindResponse (response) {
+    sinonServer.respondWith(response.method, response.url, [
+      response.statusCode, response.headers || {}, response.body
+    ]);
+  });
+};
 exports.mockXHR = function (responses) {
-  before(function enableSinonXHR () {
-    // Create our server
-    // http://sinonjs.org/docs/#fakeServer
-    var sinonServer = this.sinonServer = sinon.fakeServer.create();
-
-    // Set up auto-responses
-    this.sinonServer.autoRespond = true;
-    this.sinonServer.autoRespondAfter = 100;
-
-    // Bind our responses
-    responses.forEach(function bindResponse (response) {
-      sinonServer.respondWith(response.method, response.url, [
-        response.statusCode, response.headers || {}, response.body
-      ]);
-    });
+  before(function callMockXHR () {
+    exports._mockXHR.call(this, responses);
   });
   after(function cleanup () {
     this.sinonServer.restore();
