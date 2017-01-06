@@ -81,15 +81,24 @@ wd.addPromiseChainMethod('screenshotLarge', function screenshotLargeFn (filepath
   return this
     // https://github.com/admc/wd/blob/v1.1.1/lib/commands.js#L569-L577
     .setWindowSize(1024, 768)
-    .getWindowSize(function handleWindowSize (err, dimensions) {
-      assert.strictEqual(err, null);
-      console.log(filepath, dimensions);
-    })
+    // Wait for browser to handle CSS changes due to resize
+    // https://seleniumhq.github.io/selenium/docs/api/java/org/openqa/selenium/JavascriptExecutor.html#executeAsyncScript-java.lang.String-java.lang.Object...-
+    .setAsyncScriptTimeout(1000)
+    .executeAsync(functionToString(function waitForAnimationFrame () {
+      var cb = arguments[arguments.length - 1];
+      requestAnimationFrame(cb);
+    }).body)
     // https://github.com/admc/wd/blob/v1.1.1/lib/commands.js#L1108-L1114
     .saveScreenshot(filepath);
 });
 wd.addPromiseChainMethod('screenshotSmall', function screenshotLargeFn (filepath) {
-  return this.setWindowSize(360, 480).saveScreenshot(filepath);
+  return this.setWindowSize(360, 480)
+    .setAsyncScriptTimeout(1000)
+    .executeAsync(functionToString(function waitForAnimationFrame () {
+      var cb = arguments[arguments.length - 1];
+      requestAnimationFrame(cb);
+    }).body)
+    .saveScreenshot(filepath);
 });
 
 // Define a function to gather screenshots
