@@ -81,8 +81,10 @@ wd.addPromiseChainMethod('screenshotLarge', function screenshotLargeFn (filepath
   return this
     // https://github.com/admc/wd/blob/v1.1.1/lib/commands.js#L569-L577
     .setWindowSize(1024, 768)
-    // Give our browser time to handle resize, it caused some weird UI issues
-    .then(function () { return new Promise(function (resolve) { setTimeout(resolve, 100); }); })
+    .getWindowSize(function handleWindowSize (err, dimensions) {
+      assert.strictEqual(err, null);
+      console.log(filepath, dimensions);
+    })
     // https://github.com/admc/wd/blob/v1.1.1/lib/commands.js#L1108-L1114
     .saveScreenshot(filepath);
 });

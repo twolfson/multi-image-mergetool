@@ -16,7 +16,7 @@ node bin/multi-image-mergetool \
 set -e
 
 # Update our image signatures
-# TODO: Add signature comparison to test suite -- likely via Travis CI (generate demo, verify no git changes)
+# DEV: If image signatures continue to break, look into using `getWindowSize()` and `waitFor()` to wait for browser to update
 bin/test-browser-update-screenshots-signature.sh demo
 
 # Compile and copy our latest assets
