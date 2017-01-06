@@ -12,10 +12,8 @@ var ImageSet = require('../server/image-set');
 
 // Reset our demo directory
 var demoDir = __dirname + '/../demo';
-rimraf.sync(demoDir + '/ref');
-rimraf.sync(demoDir + '/current');
-mkdirp.sync(demoDir + '/ref');
-mkdirp.sync(demoDir + '/current');
+rimraf.sync(demoDir + '/images');
+mkdirp.sync(demoDir + '/images');
 
 // Define image sets to be used for `index.html`
 var imageSets = [];
@@ -127,8 +125,10 @@ function gatherScreenshots(params, cb) {
     }).body);
   if (saveRefImages) {
     browser = browser
-      .screenshotLarge(demoDir + '/ref/' + name + '.large.png')
-      .screenshotSmall(demoDir + '/ref/' + name + '.small.png');
+      .screenshotLarge(demoDir + '/images/' +
+        encodeURIComponent('ref/' + name + '.large') + '.png')
+      .screenshotSmall(demoDir + '/images/' +
+        encodeURIComponent('ref/' + name + '.small') + '.png');
   }
 
   // Modified current image setup
@@ -145,8 +145,10 @@ function gatherScreenshots(params, cb) {
       if (expoLiEl.tagName !== 'LI') { throw new Error('`expoLinkEl.parentNode` was not an `<li>` as expected'); }
       expoLiEl.parentNode.removeChild(expoLiEl);
     }).body)
-    .screenshotLarge(demoDir + '/current/' + name + '.large.png')
-    .screenshotSmall(demoDir + '/current/' + name + '.small.png');
+    .screenshotLarge(demoDir + '/images/' +
+      encodeURIComponent('current/' + name + '.large') + '.png')
+    .screenshotSmall(demoDir + '/images/' +
+      encodeURIComponent('current/' + name + '.small') + '.png');
 
   // Close our our browser on finish
   browser
