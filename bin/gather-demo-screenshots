@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 // Based on https://github.com/admc/wd/blob/v1.1.1/examples/promise/chrome.js
 // Load in our dependencies
+var assert = require('assert');
 var async = require('async');
 var functionToString = require('function-to-string');
 var rimraf = require('rimraf');
@@ -24,7 +25,6 @@ wd.addPromiseChainMethod('screenshotLarge', function screenshotLargeFn (filepath
     // Give our browser time to handle resize, it caused some weird UI issues
     // TODO: Consider adding signature tracking to screenshots to prevent undesired screenshot issues
     //   On screenshot generation for demo, assert final images match expected signatures. Includes after diffs
-    // TODO: Add a "new" screenshot?
     .then(function () { return new Promise(function (resolve) { setTimeout(resolve, 100); }); })
     // https://github.com/admc/wd/blob/v1.1.1/lib/commands.js#L1108-L1114
     .saveScreenshot(filepath);
@@ -34,10 +34,13 @@ wd.addPromiseChainMethod('screenshotSmall', function screenshotLargeFn (filepath
 });
 
 // Define a function to gather screenshots
-function gatherScreenshots(name, urlPath, cb) {
+function gatherScreenshots(params, cb) {
   // Create our browser
   // DEV: Typically we would prefer callbacks over promises but chaining is quite nice
   var browser = wd.promiseChainRemote();
+  var name = params.name; assert(name);
+  var urlPath = params.urlPath; assert(urlPath);
+  var saveRefImages = params.saveRefImages !== false;
 
   // Add logging for feedback
   browser.on('status', function handleStatus (info) {
@@ -52,6 +55,7 @@ function gatherScreenshots(name, urlPath, cb) {
   });
 
   // Perform our screenshot collection
+  // Initial ref image setup
   browser
     .init({browserName: 'chrome'})
     .get('http://getbootstrap.com' + urlPath)
@@ -65,9 +69,15 @@ function gatherScreenshots(name, urlPath, cb) {
       var adEl = document.querySelector('#carbonads-container');
       if (!adEl) { throw new Error('Unable to find "#carbonads-container"'); }
       adEl.parentNode.removeChild(adEl);
-    }).body)
-    .screenshotLarge(demoDir + '/ref/' + name + '.large.png')
-    .screenshotSmall(demoDir + '/ref/' + name + '.small.png')
+    }).body);
+  if (saveRefImages) {
+    browser
+      .screenshotLarge(demoDir + '/ref/' + name + '.large.png')
+      .screenshotSmall(demoDir + '/ref/' + name + '.small.png');
+  }
+
+  // Modified current image setup
+  browser
     .execute(functionToString(function alterPage () {
       // Alter nav bar to demonstrate changes
       var componentsLinkEl = document.querySelector('#bs-navbar a[href="../components/"]');
@@ -89,10 +99,16 @@ function gatherScreenshots(name, urlPath, cb) {
 // Gather our screenshots
 async.parallel([
   function gatherRootScreenshots (cb) {
-    gatherScreenshots('root', '/', cb);
+    gatherScreenshots({name: 'root', urlPath: '/'}, cb);
   },
   function gatherGettingStartedScreenshots (cb) {
-    gatherScreenshots('getting-started', '/getting-started/', cb);
+    gatherScreenshots({name: 'getting-started', urlPath: '/getting-started/'}, cb);
+  },
+  function gatherCSSScreenshots (cb) {
+    gatherScreenshots({
+      name: 'css', urlPath: '/css/',
+      saveRefImages: false
+    }, cb);
   }
 ], function handleError (err) {
   // If there was an error, throw it
