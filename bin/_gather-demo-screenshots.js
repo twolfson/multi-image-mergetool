@@ -125,10 +125,8 @@ function gatherScreenshots(params, cb) {
     }).body);
   if (saveRefImages) {
     browser = browser
-      .screenshotLarge(demoDir + '/images/' +
-        encodeURIComponent('ref/' + name + '.large') + '.png')
-      .screenshotSmall(demoDir + '/images/' +
-        encodeURIComponent('ref/' + name + '.small') + '.png');
+      .screenshotLarge(demoDir + '/images/ref/' + name + '.large.png')
+      .screenshotSmall(demoDir + '/images/ref/' + name + '.small.png');
   }
 
   // Modified current image setup
@@ -145,10 +143,8 @@ function gatherScreenshots(params, cb) {
       if (expoLiEl.tagName !== 'LI') { throw new Error('`expoLinkEl.parentNode` was not an `<li>` as expected'); }
       expoLiEl.parentNode.removeChild(expoLiEl);
     }).body)
-    .screenshotLarge(demoDir + '/images/' +
-      encodeURIComponent('current/' + name + '.large') + '.png')
-    .screenshotSmall(demoDir + '/images/' +
-      encodeURIComponent('current/' + name + '.small') + '.png');
+    .screenshotLarge(demoDir + '/images/current/' + name + '.large.png')
+    .screenshotSmall(demoDir + '/images/current/' + name + '.small.png');
 
   // Close our our browser on finish
   browser
