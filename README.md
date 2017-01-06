@@ -11,7 +11,7 @@ This was built to resolve conflicts in full page test screenshots where auxilary
 
 **Demo:**
 
-<http://twolfson.github.io/multi-image-mergetool>
+<https://twolfson.github.io/multi-image-mergetool/index.html>
 
 **Screenshot:**
 
