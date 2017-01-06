@@ -56,7 +56,7 @@ function gatherScreenshots(params, cb) {
 
   // Perform our screenshot collection
   // Initial ref image setup
-  browser
+  browser = browser
     .init({browserName: 'chrome'})
     .get('http://getbootstrap.com' + urlPath)
     .execute(functionToString(function cleanPage () {
@@ -71,13 +71,13 @@ function gatherScreenshots(params, cb) {
       adEl.parentNode.removeChild(adEl);
     }).body);
   if (saveRefImages) {
-    browser
+    browser = browser
       .screenshotLarge(demoDir + '/ref/' + name + '.large.png')
       .screenshotSmall(demoDir + '/ref/' + name + '.small.png');
   }
 
   // Modified current image setup
-  browser
+  browser = browser
     .execute(functionToString(function alterPage () {
       // Alter nav bar to demonstrate changes
       var componentsLinkEl = document.querySelector('#bs-navbar a[href="../components/"]');
@@ -91,7 +91,10 @@ function gatherScreenshots(params, cb) {
       expoLiEl.parentNode.removeChild(expoLiEl);
     }).body)
     .screenshotLarge(demoDir + '/current/' + name + '.large.png')
-    .screenshotSmall(demoDir + '/current/' + name + '.small.png')
+    .screenshotSmall(demoDir + '/current/' + name + '.small.png');
+
+  // Close our our browser on finish
+  browser
     .fin(function handleFin () { return browser.quit(); })
     .done(function handleDone () { cb(); });
 }
