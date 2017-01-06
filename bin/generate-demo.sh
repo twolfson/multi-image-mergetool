@@ -23,5 +23,10 @@ bin/test-browser-update-screenshots-signature.sh demo
 npm run build
 cp -r browser-dist demo/browser-dist
 
-# Generate our demo page
-./node_modules/.bin/jade server/views/index.jade --obj demo/index.json --out demo
+# Generate our demo page with injected JS
+# DEV: By using `stdin`, we can get `stdout` output
+# DEV: We inject before the first script tag to guarantee precedence
+cat server/views/index.jade | \
+  ./node_modules/.bin/jade --obj demo/index.json | \
+  sed "s/<script>/<script src=\"\/browser-dist\/js\/demo.js\"><\/script><script>/" \
+  > demo/index.html
