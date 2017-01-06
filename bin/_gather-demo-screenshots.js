@@ -12,8 +12,12 @@ var ImageSet = require('../server/image-set');
 
 // Reset our demo directory
 var demoDir = __dirname + '/../demo';
-rimraf.sync(demoDir + '/images');
-mkdirp.sync(demoDir + '/images');
+rimraf.sync(demoDir + '/images/current');
+rimraf.sync(demoDir + '/images/diff');
+rimraf.sync(demoDir + '/images/ref');
+mkdirp.sync(demoDir + '/images/current');
+mkdirp.sync(demoDir + '/images/diff');
+mkdirp.sync(demoDir + '/images/ref');
 
 // Define image sets to be used for `index.html`
 var imageSets = [];

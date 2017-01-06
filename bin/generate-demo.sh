@@ -10,9 +10,9 @@ node bin/_gather-demo-screenshots.js
 set +e
 node bin/multi-image-mergetool \
     --assert \
-    --current-images demo/images/current*.png \
-    --ref-images $(echo demo/images/current*.png | sed "s/current/ref/g") \
-    --diff-images $(echo demo/images/current*.png | sed "s/current/diff/g")
+    --current-images demo/images/current/*.png \
+    --ref-images $(echo demo/images/current/*.png | sed "s/current/ref/g") \
+    --diff-images $(echo demo/images/current/*.png | sed "s/current/diff/g")
 set -e
 
 # Update our image signatures
