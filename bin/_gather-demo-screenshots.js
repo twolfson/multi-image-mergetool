@@ -65,7 +65,12 @@ IMAGE_SET_CSS_SMALL.isNew = true;
 imageSets.push(IMAGE_SET_CSS_SMALL);
 
 // Output image set info to `demo`
-fs.writeFileSync('demo/index.json', JSON.stringify({image_sets: imageSets}, null, 2));
+var indexJson = {
+  image_sets: imageSets.map(function serializeImageSet (imageSet) {
+    return imageSet.serialize();
+  })
+};
+fs.writeFileSync('demo/index.json', JSON.stringify(indexJson, null, 2));
 
 // Add custom methods for screenshots
 // https://github.com/admc/wd/tree/v1.1.1#adding-custom-methods
