@@ -3,6 +3,7 @@
 // Load in our dependencies
 var assert = require('assert');
 var async = require('async');
+var fs = require('fs');
 var functionToString = require('function-to-string');
 var rimraf = require('rimraf');
 var mkdirp = require('mkdirp');
@@ -17,18 +18,21 @@ mkdirp.sync(demoDir + '/ref');
 mkdirp.sync(demoDir + '/current');
 
 // Define image sets to be used for `index.html`
+var imageSets = [];
 var IMAGE_SET_ROOT_LARGE = new ImageSet(
   'current/root.large.png', 'ref/root.large.png', {
     diffImage: 'diff/root.large.png'
   });
 IMAGE_SET_ROOT_LARGE.imagesEqual = false;
 IMAGE_SET_ROOT_LARGE.isNew = false;
+imageSets.push(IMAGE_SET_ROOT_LARGE);
 var IMAGE_SET_ROOT_SMALL = new ImageSet(
   'current/root.small.png', 'ref/root.small.png', {
     diffImage: 'diff/root.small.png'
   });
 IMAGE_SET_ROOT_SMALL.imagesEqual = true;
 IMAGE_SET_ROOT_SMALL.isNew = false;
+imageSets.push(IMAGE_SET_ROOT_SMALL);
 
 var IMAGE_SET_GETTING_STARTED_LARGE = new ImageSet(
   'current/getting-started.large.png', 'ref/getting-started.large.png', {
@@ -36,12 +40,14 @@ var IMAGE_SET_GETTING_STARTED_LARGE = new ImageSet(
   });
 IMAGE_SET_GETTING_STARTED_LARGE.imagesEqual = false;
 IMAGE_SET_GETTING_STARTED_LARGE.isNew = false;
+imageSets.push(IMAGE_SET_GETTING_STARTED_LARGE);
 var IMAGE_SET_GETTING_STARTED_SMALL = new ImageSet(
   'current/getting-started.small.png', 'ref/getting-started.small.png', {
     diffImage: 'diff/getting-started.small.png'
   });
 IMAGE_SET_GETTING_STARTED_SMALL.imagesEqual = true;
 IMAGE_SET_GETTING_STARTED_SMALL.isNew = false;
+imageSets.push(IMAGE_SET_GETTING_STARTED_SMALL);
 
 var IMAGE_SET_CSS_LARGE = new ImageSet(
   'current/css.large.png', 'ref/css.large.png', {
@@ -49,12 +55,17 @@ var IMAGE_SET_CSS_LARGE = new ImageSet(
   });
 IMAGE_SET_CSS_LARGE.imagesEqual = false;
 IMAGE_SET_CSS_LARGE.isNew = true;
+imageSets.push(IMAGE_SET_CSS_LARGE);
 var IMAGE_SET_CSS_SMALL = new ImageSet(
   'current/css.small.png', 'ref/css.small.png', {
     diffImage: 'diff/css.small.png'
   });
 IMAGE_SET_CSS_SMALL.imagesEqual = false;
 IMAGE_SET_CSS_SMALL.isNew = true;
+imageSets.push(IMAGE_SET_CSS_SMALL);
+
+// Output image set info to `demo`
+fs.writeFileSync('demo/index.json', JSON.stringify({image_sets: imageSets}, null, 2));
 
 // Add custom methods for screenshots
 // https://github.com/admc/wd/tree/v1.1.1#adding-custom-methods
