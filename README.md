@@ -9,6 +9,10 @@ This was built to resolve conflicts in full page test screenshots where auxilary
 - Find/resolve common image changes via overlay selection
 - Support for any image configuration (e.g. same directory, same name/different directory, [Gemini][gemini-example], specific names)
 
+**Demo:**
+
+<http://twolfson.github.io/multi-image-mergetool>
+
 **Screenshot:**
 
 ![Screenshot from tests](https://cloud.githubusercontent.com/assets/902488/21469486/c1308b5c-ca05-11e6-83a1-094b7f37ac98.png)
