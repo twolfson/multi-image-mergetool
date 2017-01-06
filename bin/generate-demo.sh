@@ -27,9 +27,8 @@ cp -r browser-dist demo/browser-dist
 ./node_modules/.bin/browserify --transform brfs browser/js/demo.js > demo/demo.js
 
 # Generate our demo page with injected JS
-# DEV: By using `stdin`, we can get `stdout` output
-# DEV: We inject before the first script tag to guarantee precedence
-cat server/views/index.jade | \
-  ./node_modules/.bin/jade --obj demo/index.json | \
-  sed "s/<script>/<script src=\"\/demo.js\"><\/script><script>/" \
+# DEV: By using `stdin`, we can get `stdout` output and easily rename
+jade_src="server/views/demo.jade"
+cat "$jade_src" | \
+  ./node_modules/.bin/jade --path "$jade_src" --obj demo/index.json \
   > demo/index.html

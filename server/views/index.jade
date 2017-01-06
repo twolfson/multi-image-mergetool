@@ -5,7 +5,14 @@ html
     link(rel="stylesheet", href="/browser-dist/css/bootstrap.css", text="text/css")
     link(rel="stylesheet", href="/browser-dist/css/index.css", text="text/css")
   body
-    <div id="container" class="container-fluid"></div>
+    //- Define content hook for demo page
+    block before-content
+
+    //- Define our main container
+    #container.container-fluid
+
+    //- Define script hook for demo page
+    block before-scripts
 
     //- Expose our data directly to `window`
     script
