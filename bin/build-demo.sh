@@ -20,6 +20,7 @@ bin/test-browser-update-screenshots-signature.sh demo
 
 # Compile and copy our latest assets
 npm run build
+rm -r demo/browser-dist || true
 cp -r browser-dist demo/browser-dist
 
 # Generate our demo JS
@@ -34,4 +35,4 @@ cat "$jade_src" | \
   sed "s/\/browser-dist/\/multi-image-mergetool\/browser-dist/g" | \
   sed "s/\/images/\/multi-image-mergetool\/images/g" | \
   sed "s/\/demo.js/\/multi-image-mergetool\/demo.js/g" | \
-  > demo/index.html
+  cat > demo/index.html
