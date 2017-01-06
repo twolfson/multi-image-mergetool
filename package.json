@@ -122,6 +122,11 @@
         "updateFiles": "npm run build"
       },
       {
+        "_comment": "We could build demo via `updateFiles` and then publish on `publish` but this catches errors earlier",
+        "type": "customCommand",
+        "updateFiles": "npm run publish-demo"
+      },
+      {
         "type": "customCommand",
         "updateFiles": "cat .gitignore | grep --invert-match browser-dist > .npmignore"
       },
