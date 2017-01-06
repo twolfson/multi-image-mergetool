@@ -3,7 +3,7 @@
 set -e
 
 # Collect our screenshots
-node bin/_gather-demo-screenshots.js
+node bin/_build-demo-screenshots.js
 
 # Generate diffs for our images
 # DEV: We ignore failure as it's expected
