@@ -36,6 +36,10 @@ script:
   # Run tests (upon failure, upload to Imgur)
   - 'npm test || ((test "$UPLOAD_RESULTS" = "TRUE" && bin/test-browser-upload-screenshots.sh) && exit 1)'
 
+  # Verify demo generates and there are no changes
+  - npm run generate-demo
+  - git diff --exit-code
+
 notifications:
   email:
     recipients:
