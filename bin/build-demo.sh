@@ -9,7 +9,7 @@ npm run verify-webdriver-running
 # DEV: We download Firefox@47 for Selenium support
 # https://github.com/angular/protractor/issues/3750
 # https://ftp.mozilla.org/pub/firefox/releases/47.0.2/linux-x86_64/en-US/
-FIREFOX_BIN="$PWD/vendor/firefox/firefox"
+export FIREFOX_BIN="$PWD/vendor/firefox/firefox"
 if ! test -f "$FIREFOX_BIN"; then
   mkdir -p vendor
   cd vendor

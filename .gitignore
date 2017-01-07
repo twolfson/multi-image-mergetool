@@ -18,6 +18,7 @@ npm-debug.log
 /test/browser/expected-screenshots/*
 !/test/browser/expected-screenshots/contents.sig
 /test/test-files/tmp/
+/vendor/
 
 # Debug directories for visual tests
 /tmp/
