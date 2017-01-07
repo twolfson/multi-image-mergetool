@@ -3,11 +3,15 @@
 set -e
 
 # Start our webdriver server
-xvfb-run ./node_modules/.bin/webdriver-manager start &
+export DISPLAY=":99"
+Xvfb "$DISPLAY" &
+xvfb_pid="$!"
+./node_modules/.bin/webdriver-manager start &
 webdriver_pid="$!"
-echo "pid $webdriver_pid"
-ps ax | grep "$webdriver_pid"
-trap -- 'echo "exiting" && kill "$webdriver_pid"' EXIT
+echo "$xvfb_pid $webdriver_pid"
+jobs
+jobs -x -r
+trap -- 'kill -s SIGINT -$xvfb_pid; kill -s SIGINT -$webdriver_pid' EXIT
 
 # Wait for our server to start
 sleep 3
