@@ -72,25 +72,6 @@ var indexJson = {
 };
 fs.writeFileSync('demo/index.json', JSON.stringify(indexJson, null, 2));
 
-// Define helper functions
-// https://github.com/segmentio/nightmare/tree/2.9.1#nightmareactionname-electronactionelectronnamespace-actionnamespace
-Nightmare.action('screenshotLarge', function (filepath, done) {
-  return this
-    .viewport(1024, 768)
-    // Wait for Electron to recognize UI changes
-    // DEV: Ideally we would use `window.requestAnimationFrame` but that seems to not work
-    .wait(100)
-    .screenshot(filepath, done);
-});
-Nightmare.action('screenshotSmall', function (filepath, done) {
-  return this
-    .viewport(360, 480)
-    // Wait for Electron to recognize UI changes
-    // DEV: Ideally we would use `window.requestAnimationFrame` but that seems to not work
-    .wait(100)
-    .screenshot(filepath, done);
-});
-
 // Define a function to gather screenshots
 function gatherScreenshots(params, cb) {
   // Expand our parameters
@@ -123,8 +104,12 @@ function gatherScreenshots(params, cb) {
     });
   if (saveRefImages) {
     nightmare = nightmare
-      .screenshotLarge(demoDir + '/images/ref/' + name + '.large.png')
-      .screenshotSmall(demoDir + '/images/ref/' + name + '.small.png');
+      .viewport(1024, 768)
+      .wait(100)
+      .screenshot(demoDir + '/images/ref/' + name + '.large.png')
+      .viewport(360, 480)
+      .wait(100)
+      .screenshot(demoDir + '/images/ref/' + name + '.small.png');
   }
 
   // Modified current image setup
@@ -141,8 +126,12 @@ function gatherScreenshots(params, cb) {
       if (expoLiEl.tagName !== 'LI') { throw new Error('`expoLinkEl.parentNode` was not an `<li>` as expected'); }
       expoLiEl.parentNode.removeChild(expoLiEl);
     })
-    .screenshotLarge(demoDir + '/images/current/' + name + '.large.png')
-    .screenshotSmall(demoDir + '/images/current/' + name + '.small.png');
+    .viewport(1024, 768)
+    .wait(100)
+    .screenshot(demoDir + '/images/current/' + name + '.large.png')
+    .viewport(360, 480)
+    .wait(100)
+    .screenshot(demoDir + '/images/current/' + name + '.small.png');
 
   // Close our our browser on finish
   nightmare
