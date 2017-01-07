@@ -97,6 +97,9 @@ function gatherScreenshots(params, cb) {
       if (!adEl) { throw new Error('Unable to find "#carbonads-container"'); }
       adEl.parentNode.removeChild(adEl);
 
+      // Disable scrollbars for Travis CI
+      document.body.style.overflowY = 'hidden';
+
       // Normalize background gradient to be solid color for easier matching
       var contentEl = document.querySelector('#content');
       if (!contentEl) { throw new Error('Unable to find "#content"'); }
