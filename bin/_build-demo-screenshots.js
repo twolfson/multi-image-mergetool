@@ -1,15 +1,18 @@
-#!/usr/bin/env node
-// Based on https://github.com/admc/wd/blob/v1.1.1/examples/promise/chrome.js
 // Load in our dependencies
+var app = require('electron').app;
 var assert = require('assert');
 var async = require('async');
-var electronPath = require('electron');
+var BrowserWindow = require('electron').BrowserWindow;
 var fs = require('fs');
-var functionToString = require('function-to-string');
 var rimraf = require('rimraf');
 var mkdirp = require('mkdirp');
-var wd = require('wd');
 var ImageSet = require('../server/image-set');
+
+// When we encounter an uncaught exception, bail
+// DEV: Without this line, Electron would log the error or warn us
+process.on('uncaughtException', function handleUncaughtException (err) {
+  throw err;
+});
 
 // Reset our demo directory
 var demoDir = __dirname + '/../demo';
@@ -77,6 +80,7 @@ fs.writeFileSync('demo/index.json', JSON.stringify(indexJson, null, 2));
 
 // Add custom methods for screenshots
 // https://github.com/admc/wd/tree/v1.1.1#adding-custom-methods
+var wd = {addPromiseChainMethod: function () {}};
 wd.addPromiseChainMethod('screenshotLarge', function screenshotLargeFn (filepath) {
   // Resize browser and screenshot
   return this
@@ -173,23 +177,29 @@ function gatherScreenshots(params, cb) {
     .done(function handleDone () { cb(); });
 }
 
-// Gather our screenshots
-async.parallel([
-  function gatherRootScreenshots (cb) {
-    gatherScreenshots({name: 'root', urlPath: '/'}, cb);
-  },
-  function gatherGettingStartedScreenshots (cb) {
-    gatherScreenshots({name: 'getting-started', urlPath: '/getting-started/'}, cb);
-  },
-  function gatherCSSScreenshots (cb) {
-    gatherScreenshots({
-      name: 'css', urlPath: '/css/',
-      saveRefImages: false
-    }, cb);
-  }
-], function handleError (err) {
-  // If there was an error, throw it
-  if (err) {
-    throw err;
-  }
+// Wait for our app to be ready
+app.on('ready', function handleReady () {
+  // Gather our screenshots
+  async.parallel([
+    function gatherRootScreenshots (cb) {
+      gatherScreenshots({name: 'root', urlPath: '/'}, cb);
+    },
+    function gatherGettingStartedScreenshots (cb) {
+      gatherScreenshots({name: 'getting-started', urlPath: '/getting-started/'}, cb);
+    },
+    function gatherCSSScreenshots (cb) {
+      gatherScreenshots({
+        name: 'css', urlPath: '/css/',
+        saveRefImages: false
+      }, cb);
+    }
+  ], function handleError (err) {
+    // If there was an error, throw it
+    if (err) {
+      throw err;
+    }
+
+    // Otherwise, exit
+    process.exit(0);
+  });
 });

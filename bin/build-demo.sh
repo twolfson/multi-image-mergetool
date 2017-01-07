@@ -2,11 +2,8 @@
 # Exit on first error
 set -e
 
-# Verify our webdriver server is running
-npm run verify-webdriver-running
-
 # Collect our screenshots
-node bin/_build-demo-screenshots.js
+./node_modules/electron bin/_build-demo-screenshots.js
 
 # Generate diffs for our images
 # DEV: We ignore failure as it's expected
