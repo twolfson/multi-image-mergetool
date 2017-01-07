@@ -21,7 +21,15 @@ cd "$directory"
 # http://www.imagemagick.org/script/escape.php
 # DEV: We write signature first so alignment is consistent
 # image.png -> abcdef12345... path/to/image.png
-parallel --keep-order "identify -format \"%# %i\" \"{}\"" ::: **/*.png > contents.sig
+if which parallel &> /dev/null; then
+  parallel --keep-order "identify -format \"%# %i\" \"{}\"" ::: **/*.png > contents.sig
+else
+  # DEV: We support non-parallel on Travis CI where it's parallel version is causing issues
+  > contents.sig
+  for filepath in **/*.png; do
+    identify -format "%# %i" "$filepath" >> contents.sig
+  done
+fi
 
 # Move back to the previous directory
 cd - &> /dev/null
