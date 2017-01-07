@@ -130,7 +130,7 @@ function gatherScreenshots(params, cb) {
   // Perform our screenshot collection
   // Initial ref image setup
   browser = browser
-    .init({browserName: 'firefox'})
+    .init({browserName: 'firefox', firefox_binary: process.env.FIREFOX_BIN})
     .get('http://getbootstrap.com' + urlPath)
     .execute(functionToString(function cleanPage () {
       // Remove "Bootstrap 4" banner
