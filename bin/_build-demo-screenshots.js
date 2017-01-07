@@ -3,17 +3,13 @@
 // Load in our dependencies
 var assert = require('assert');
 var async = require('async');
+var electronPath = require('electron');
 var fs = require('fs');
 var functionToString = require('function-to-string');
 var rimraf = require('rimraf');
 var mkdirp = require('mkdirp');
 var wd = require('wd');
 var ImageSet = require('../server/image-set');
-
-// Resolve our Firefox URL
-// https://github.com/angular/protractor/issues/3750
-assert(process.env.FIREFOX_BIN, 'Expected `FIREFOX_BIN` to be defined but it was not. ' +
-  'Please define `FIREFOX_BIN` with a path to Firefox@47 (Firefox>=50 cannot be hooked on via Selenium at the moment)');
 
 // Reset our demo directory
 var demoDir = __dirname + '/../demo';
@@ -130,7 +126,7 @@ function gatherScreenshots(params, cb) {
   // Perform our screenshot collection
   // Initial ref image setup
   browser = browser
-    .init({browserName: 'firefox', firefox_binary: process.env.FIREFOX_BIN})
+    .init({chromeOptions: {binary: electronPath}})
     .get('http://getbootstrap.com' + urlPath)
     .execute(functionToString(function cleanPage () {
       // Remove "Bootstrap 4" banner

@@ -5,19 +5,6 @@ set -e
 # Verify our webdriver server is running
 npm run verify-webdriver-running
 
-# If we haven't downloaded Firefox@47, then retrieve it
-# DEV: We download Firefox@47 for Selenium support
-# https://github.com/angular/protractor/issues/3750
-# https://ftp.mozilla.org/pub/firefox/releases/47.0.2/linux-x86_64/en-US/
-export FIREFOX_BIN="$PWD/vendor/firefox/firefox"
-if ! test -f "$FIREFOX_BIN"; then
-  mkdir -p vendor
-  cd vendor
-  wget https://ftp.mozilla.org/pub/firefox/releases/47.0.2/linux-x86_64/en-US/firefox-47.0.2.tar.bz2
-  bunzip2 firefox-47.0.2.tar.bz2
-  tar xf firefox-47.0.2.tar
-fi
-
 # Collect our screenshots
 node bin/_build-demo-screenshots.js
 
