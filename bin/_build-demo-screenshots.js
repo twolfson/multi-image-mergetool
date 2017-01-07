@@ -1,18 +1,12 @@
+#!/usr/bin/env node
 // Load in our dependencies
-var app = require('electron').app;
 var assert = require('assert');
 var async = require('async');
-var BrowserWindow = require('electron').BrowserWindow;
 var fs = require('fs');
-var rimraf = require('rimraf');
 var mkdirp = require('mkdirp');
+var Nightmare = require('nightmare');
+var rimraf = require('rimraf');
 var ImageSet = require('../server/image-set');
-
-// When we encounter an uncaught exception, bail
-// DEV: Without this line, Electron would log the error or warn us
-process.on('uncaughtException', function handleUncaughtException (err) {
-  throw err;
-});
 
 // Reset our demo directory
 var demoDir = __dirname + '/../demo';
@@ -78,61 +72,21 @@ var indexJson = {
 };
 fs.writeFileSync('demo/index.json', JSON.stringify(indexJson, null, 2));
 
-// Add custom methods for screenshots
-// https://github.com/admc/wd/tree/v1.1.1#adding-custom-methods
-var wd = {addPromiseChainMethod: function () {}};
-wd.addPromiseChainMethod('screenshotLarge', function screenshotLargeFn (filepath) {
-  // Resize browser and screenshot
-  return this
-    // https://github.com/admc/wd/blob/v1.1.1/lib/commands.js#L569-L577
-    .setWindowSize(1024, 768)
-    // Wait for browser to handle CSS changes due to resize
-    // https://seleniumhq.github.io/selenium/docs/api/java/org/openqa/selenium/JavascriptExecutor.html#executeAsyncScript-java.lang.String-java.lang.Object...-
-    .setAsyncScriptTimeout(1000)
-    .executeAsync(functionToString(function waitForAnimationFrame () {
-      var cb = arguments[arguments.length - 1];
-      requestAnimationFrame(cb);
-    }).body)
-    // https://github.com/admc/wd/blob/v1.1.1/lib/commands.js#L1108-L1114
-    .saveScreenshot(filepath);
-});
-wd.addPromiseChainMethod('screenshotSmall', function screenshotLargeFn (filepath) {
-  return this.setWindowSize(360, 480)
-    .setAsyncScriptTimeout(1000)
-    .executeAsync(functionToString(function waitForAnimationFrame () {
-      var cb = arguments[arguments.length - 1];
-      requestAnimationFrame(cb);
-    }).body)
-    .saveScreenshot(filepath);
-});
-
 // Define a function to gather screenshots
 function gatherScreenshots(params, cb) {
-  // Create our browser
-  // DEV: Typically we would prefer callbacks over promises but chaining is quite nice
-  var browser = wd.promiseChainRemote();
+  // Expand our parameters
   var name = params.name; assert(name);
   var urlPath = params.urlPath; assert(urlPath);
   var saveRefImages = params.saveRefImages !== false;
 
-  // Add logging for feedback
-  browser.on('status', function handleStatus (info) {
-    console.log('Status (' + name + '):', info.trim());
-  });
-  browser.on('command', function handleCommand (eventType, command, response) {
-    // If this is a response, ignore it
-    if (eventType === 'RESPONSE') {
-      return;
-    }
-    console.log('Command (' + name + '):', eventType, command, (response || ''));
-  });
+  // Create our browser window
+  var nightmare = new Nightmare({show: false});
 
   // Perform our screenshot collection
   // Initial ref image setup
-  browser = browser
-    .init({chromeOptions: {binary: electronPath}})
-    .get('http://getbootstrap.com' + urlPath)
-    .execute(functionToString(function cleanPage () {
+  nightmare = nightmare
+    .goto('http://getbootstrap.com' + urlPath)
+    .evaluate(function cleanPage () {
       // Remove "Bootstrap 4" banner
       var bannerEl = document.querySelector('.v4-tease');
       if (!bannerEl) { throw new Error('Unable to find ".v4-tease"'); }
@@ -147,16 +101,18 @@ function gatherScreenshots(params, cb) {
       var contentEl = document.querySelector('#content');
       if (!contentEl) { throw new Error('Unable to find "#content"'); }
       contentEl.style.backgroundImage = 'none';
-    }).body);
+    });
   if (saveRefImages) {
-    browser = browser
-      .screenshotLarge(demoDir + '/images/ref/' + name + '.large.png')
-      .screenshotSmall(demoDir + '/images/ref/' + name + '.small.png');
+    nightmare = nightmare
+      .viewport(1024, 768)
+      .screenshot(demoDir + '/images/ref/' + name + '.large.png')
+      .viewport(360, 480)
+      .screenshot(demoDir + '/images/ref/' + name + '.small.png');
   }
 
   // Modified current image setup
-  browser = browser
-    .execute(functionToString(function alterPage () {
+  nightmare = nightmare
+    .evaluate(function alterPage () {
       // Alter nav bar to demonstrate changes
       var componentsLinkEl = document.querySelector('#bs-navbar a[href="../components/"]');
       if (!componentsLinkEl) { throw new Error('Unable to find "#bs-navbar a[href="../components/"]"'); }
@@ -167,39 +123,35 @@ function gatherScreenshots(params, cb) {
       var expoLiEl = expoLinkEl.parentNode;
       if (expoLiEl.tagName !== 'LI') { throw new Error('`expoLinkEl.parentNode` was not an `<li>` as expected'); }
       expoLiEl.parentNode.removeChild(expoLiEl);
-    }).body)
-    .screenshotLarge(demoDir + '/images/current/' + name + '.large.png')
-    .screenshotSmall(demoDir + '/images/current/' + name + '.small.png');
+    })
+    .viewport(1024, 768)
+    .screenshot(demoDir + '/images/current/' + name + '.large.png')
+    .viewport(360, 480)
+    .screenshot(demoDir + '/images/current/' + name + '.small.png');
 
   // Close our our browser on finish
-  browser
-    .fin(function handleFin () { return browser.quit(); })
-    .done(function handleDone () { cb(); });
+  nightmare
+    .end()
+    .then(function handleEnd () { cb(); });
 }
 
-// Wait for our app to be ready
-app.on('ready', function handleReady () {
-  // Gather our screenshots
-  async.parallel([
-    function gatherRootScreenshots (cb) {
-      gatherScreenshots({name: 'root', urlPath: '/'}, cb);
-    },
-    function gatherGettingStartedScreenshots (cb) {
-      gatherScreenshots({name: 'getting-started', urlPath: '/getting-started/'}, cb);
-    },
-    function gatherCSSScreenshots (cb) {
-      gatherScreenshots({
-        name: 'css', urlPath: '/css/',
-        saveRefImages: false
-      }, cb);
-    }
-  ], function handleError (err) {
-    // If there was an error, throw it
-    if (err) {
-      throw err;
-    }
-
-    // Otherwise, exit
-    process.exit(0);
-  });
+// Gather our screenshots
+async.parallel([
+  function gatherRootScreenshots (cb) {
+    gatherScreenshots({name: 'root', urlPath: '/'}, cb);
+  },
+  function gatherGettingStartedScreenshots (cb) {
+    gatherScreenshots({name: 'getting-started', urlPath: '/getting-started/'}, cb);
+  },
+  function gatherCSSScreenshots (cb) {
+    gatherScreenshots({
+      name: 'css', urlPath: '/css/',
+      saveRefImages: false
+    }, cb);
+  }
+], function handleError (err) {
+  // If there was an error, throw it
+  if (err) {
+    throw err;
+  }
 });
