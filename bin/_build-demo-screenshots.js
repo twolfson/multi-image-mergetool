@@ -80,7 +80,7 @@ function gatherScreenshots(params, cb) {
   var saveRefImages = params.saveRefImages !== false;
 
   // Create our browser window
-  var nightmare = new Nightmare({show: false});
+  var nightmare = new Nightmare({show: true});
 
   // Perform our screenshot collection
   // Initial ref image setup
@@ -105,8 +105,10 @@ function gatherScreenshots(params, cb) {
   if (saveRefImages) {
     nightmare = nightmare
       .viewport(1024, 768)
+      .wait(100)
       .screenshot(demoDir + '/images/ref/' + name + '.large.png')
       .viewport(360, 480)
+      .wait(100)
       .screenshot(demoDir + '/images/ref/' + name + '.small.png');
   }
 
@@ -125,8 +127,10 @@ function gatherScreenshots(params, cb) {
       expoLiEl.parentNode.removeChild(expoLiEl);
     })
     .viewport(1024, 768)
+    .wait(100)
     .screenshot(demoDir + '/images/current/' + name + '.large.png')
     .viewport(360, 480)
+    .wait(100)
     .screenshot(demoDir + '/images/current/' + name + '.small.png');
 
   // Close our our browser on finish
