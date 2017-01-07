@@ -25,6 +25,7 @@ addons:
     packages:
     - gcc-4.8
     - g++-4.8
+    - parallel
   # Install Firefox for Karma tests
   # https://docs.travis-ci.com/user/firefox/#Version-aliases
   firefox: latest
