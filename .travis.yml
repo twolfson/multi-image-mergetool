@@ -7,10 +7,10 @@ node_js:
 matrix:
   allow_failures:
     - node_js: "5"
-  # # Add a build with screenshot uploads for Node.js@6
-  # include:
-  #   - node_js: "6"
-  #     env: UPLOAD_RESULTS="TRUE"
+  # Add a build with screenshot uploads for Node.js@6
+  include:
+    - node_js: "6"
+      env: UPLOAD_RESULTS="TRUE"
 
 # Set up g++ dependencies for png-img
 # https://github.com/gemini-testing/gemini/blob/v4.13.4/.travis.yml#L12
@@ -34,11 +34,11 @@ before_install:
 
 script:
   # Run tests (upon failure, upload to Imgur)
-  - 'npm test || ((test "$UPLOAD_RESULTS" = "TRUE" && bin/test-browser-upload-screenshots.sh) && exit 1)'
+  - 'npm test || ((test "$UPLOAD_RESULTS" = "TRUE" && bin/test-browser-upload-screenshots.sh test/browser/actual-screenshots) && exit 1)'
 
   # Verify demo generates and there are no changes
   - npm run build-demo
-  - git diff --exit-code -- demo
+  - 'git diff --exit-code -- demo/contents.sig || ((test "$UPLOAD_RESULTS" = "TRUE" && bin/test-browser-upload-screenshots.sh demo/images/current) && exit 1)'
 
 notifications:
   email:

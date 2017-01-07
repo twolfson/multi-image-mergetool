@@ -4,13 +4,20 @@
 # Exit on first error
 set -e
 
+# Verify we received our directories
+directory="$1"
+if test "$directory" = ""; then
+  echo "Expected directory to be defined but it wasn\'t. Please pass in a directory parameter" 1>&2
+  exit 1
+fi
+
 # Install underscore-cli for hacking
 if ! which underscore &> /dev/null; then
   npm install -g underscore-cli
 fi
 
-# Navigate to pereceptual-test directory
-cd test/browser
+# Navigate to image directory
+cd "$directory"
 
 # Prepare location to collect delete commands
 if test "$TRAVIS_BUILD_NUMBER" = ""; then
@@ -20,7 +27,7 @@ output_dir="tmp/travis/$TRAVIS_BUILD_NUMBER"
 download_cmds=""
 delete_cmds=""
 
-for filepath in actual-screenshots/*.png; do
+for filepath in *.png; do
   filename="$(basename filepath)"
   content_type="image/png"
   result="$(curl -X POST "http://imgur.com/upload" \
@@ -43,6 +50,6 @@ done
 echo "All uploads complete!"
 echo ""
 echo "Download via:"
-echo "    mkdir -p $output_dir/actual-screenshots"
+echo "    mkdir -p $output_dir"
 # DEV: `echo -e` processes line feeds
 echo -e "    $download_cmds"
