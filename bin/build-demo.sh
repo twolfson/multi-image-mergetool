@@ -2,6 +2,22 @@
 # Exit on first error
 set -e
 
+# Start our webdriver server
+xvfb-run ./node_modules/.bin/webdriver-manager start &
+webdriver_pid="$!"
+echo "pid $webdriver_pid"
+ps ax | grep "$webdriver_pid"
+trap -- 'echo "exiting" && kill "$webdriver_pid"' EXIT
+
+# Wait for our server to start
+sleep 3
+npm run verify-webdriver-running
+
+sleep 1
+
+exit 0
+
+
 # Collect our screenshots
 node bin/_build-demo-screenshots.js
 
