@@ -37,7 +37,7 @@ script:
   - 'npm test || ((test "$UPLOAD_RESULTS" = "TRUE" && bin/test-browser-upload-screenshots.sh) && exit 1)'
 
   # Verify demo generates and there are no changes
-  - npm run generate-demo
+  - npm run build-demo
   - git diff --exit-code
 
 notifications:
