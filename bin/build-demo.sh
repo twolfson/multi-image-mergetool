@@ -2,25 +2,8 @@
 # Exit on first error
 set -e
 
-# Start our webdriver server
-export DISPLAY=":99"
-Xvfb "$DISPLAY" &
-xvfb_pid="$!"
-./node_modules/.bin/webdriver-manager start &
-webdriver_pid="$!"
-echo "$xvfb_pid $webdriver_pid"
-jobs
-jobs -x -r
-trap -- 'kill -s SIGINT -$xvfb_pid; kill -s SIGINT -$webdriver_pid' EXIT
-
-# Wait for our server to start
-sleep 3
+# Verify our webdriver server is running
 npm run verify-webdriver-running
-
-sleep 1
-
-exit 0
-
 
 # Collect our screenshots
 node bin/_build-demo-screenshots.js
