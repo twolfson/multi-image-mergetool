@@ -1,4 +1,6 @@
 # multi-image-mergetool changelog
+1.31.0 - Added demo page
+
 1.30.0 - Added support for new images
 
 1.29.0 - Moved to Backbone with one-way flow and mutation based rendering for consolidated render functions
