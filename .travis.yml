@@ -39,7 +39,7 @@ script:
 
   # Verify demo generates and there are no changes
   - npm run build-demo
-  - git diff --exit-code
+  - git diff --exit-code -- demo
 
 notifications:
   email:

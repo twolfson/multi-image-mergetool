@@ -3,8 +3,9 @@
 set -e
 
 # Collect our screenshots
+# DEV: We use Xvfb despite windows being hidden to support Travis CI as it has no X11 otherwise
 # https://github.com/segmentio/nightmare/tree/2.9.1#debugging
-DEBUG=nightmare:actions* node bin/_build-demo-screenshots.js
+DEBUG=nightmare:actions* ./node_modules/.bin/xvfb-maybe node bin/_build-demo-screenshots.js
 
 # Generate diffs for our images
 # DEV: We ignore failure as it's expected
