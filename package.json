@@ -87,7 +87,7 @@
     "karma-phantomjs-launcher": "~1.0.2",
     "mocha": "~3.1.2",
     "ndarray-fill": "~1.0.1",
-    "nightmare": "2.9.0",
+    "nightmare": "git://github.com/twolfson/nightmare.git#716336f",
     "nodemon": "~1.11.0",
     "request": "~2.78.0",
     "rimraf": "~2.5.4",
