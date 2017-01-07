@@ -80,7 +80,7 @@ function gatherScreenshots(params, cb) {
   var saveRefImages = params.saveRefImages !== false;
 
   // Create our browser window
-  var nightmare = new Nightmare({show: true});
+  var nightmare = new Nightmare({show: false});
 
   // Perform our screenshot collection
   // Initial ref image setup
