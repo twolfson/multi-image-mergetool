@@ -120,3 +120,34 @@ describe('An application with similarly failing images', function () {
     });
   });
 });
+
+// Demo tests
+describe('On a demo page', function () {
+  describe.only('a user accepting all similarly failing images', function () {
+    // Create an overlay for one of our image sets
+    applicationUtils.init(applicationUtils.IMAGE_SETS.MULTIPLE_NOT_EQUAL);
+    domUtils.dragOverElement({
+      selector: '[data-image-set="mock-img-not-equal"] img[data-compare-type=diff]',
+      startCoords: {x: 0, y: 0},
+      endCoords: {x: 10, y: 10}
+    });
+
+    // Find similar images for said image set
+    domUtils.click('[data-image-set="mock-img-not-equal"] ' +
+      'button[data-action="find-similar-images"]');
+
+    // Trigger accept similar images button and wait for it to process
+    domUtils.click('[data-image-set="mock-img-not-equal"] ' +
+      'button[data-action="accept-similar-images"]');
+    before(function waitForXHRToComplete (done) {
+      setTimeout(done, 100);
+    });
+
+    // Take our screenshot
+    applicationUtils.screenshot('demo-accept-all-similar-images');
+
+    it('has no errors', function () {
+      // Verified by utilities
+    });
+  });
+});

@@ -136,7 +136,7 @@ describe('A user accepting failing images has an error', function () {
 
 // Demo tests
 describe('On a demo page', function () {
-  describe.only('a user accepting failing images', function () {
+  describe('a user accepting failing images', function () {
     // Create our application, set up our XHR mocks, and click our button
     applicationUtils.init();
     applicationUtils.runDemo();

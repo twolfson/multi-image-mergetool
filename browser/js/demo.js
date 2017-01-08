@@ -2,6 +2,7 @@
 // Load in our dependencies
 var $ = require('jquery');
 var assert = require('assert');
+var GlobalState = require('./global-state');
 var ImageSet = require('./image-set');
 var utils = require('./utils');
 var SimilarImageResults = require('./similar-image-results');
@@ -63,17 +64,21 @@ window.runDemo = exports.runDemo = function (options) {
     var $originalCurrentImg = $similarImageSet.find('.original-current');
     assert.strictEqual($originalCurrentImg.length, 1);
     var originalCurrentImgBase64 = utils.getBase64Content($originalCurrentImg[0]);
-    console.log('original', originalCurrentImgBase64);
+
+    // Run update function
+    var newRefBase64Data = originalCurrentImgBase64;
+    var newDiffBase64Data = originalCurrentImgBase64;
+    var imageSet = GlobalState.fetchImageSetById(similarImageSetId);
+    imageSet.acceptChanges(newDiffBase64Data, newRefBase64Data);
   });
 
   // Mock over cachebustImg to always swap images to `current` variant
   // TODO: Update `ImageSet.accept`/`update` callers to send both `diff`/`ref`
   // TODO: Update `ImageSet.accept/update` to update images promptly
-  // TODO: Silence `ImageSet.cachebustImg`
   // TODO: Update Sinon mock to perform `pixelmatch` on `ImageSet` content for accuracy
   // TODO: Test demo exclusively via screenshots to reduce maintenane weight
   //   (e.g. we could be using base64, canvas, or images but why worry about details)
-  // Silence cache busting in favor of
+  // Silence cache busting in favor of directly swapping URLs in accept/update stubs
   sinonUtils.contextFreeStub(ImageSet, 'cachebustImg');
 };
 
