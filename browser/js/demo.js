@@ -1,6 +1,5 @@
 // Script for making our demo work
 // Load in our dependencies
-var $ = require('jquery');
 var assert = require('assert');
 var GlobalState = require('./global-state');
 var ImageSet = require('./image-set');
@@ -48,14 +47,8 @@ window.runDemo = exports.runDemo = function (options) {
     }
   }]);
 
-  // Mock over ImageSet hooks to send additional `diff` base64
-  // DEV: We don't send both data sets normally as it's computationally expensive
-  sinonUtils.contextFreeStub(ImageSet, 'acceptImageSet', function acceptImageSetStub (imageSet) {
-    // Extract and accept base64 content for image
-    var refBase64Data = utils.getBase64Content(imageSet.currentImg);
-    var diffBase64Data = refBase64Data;
-    imageSet.acceptChanges(diffBase64Data, refBase64Data);
-  });
+  // Mock over ImageSet accept/update to receieve additional `diff` base64
+  // DEV: We don't handle both data sets normally as it's computationally expensive
   var _acceptChanges = ImageSet.prototype.acceptChanges;
   var _updateReferenceImage = ImageSet.prototype.updateReferenceImage;
   function updateImageSetURLs(imageSet, diffBase64Data, refBase64Data) {
@@ -81,8 +74,15 @@ window.runDemo = exports.runDemo = function (options) {
     updateImageSetURLs(this, diffBase64Data, refBase64Data);
     return _updateReferenceImage.call(this, refBase64Data);
   });
+  // Silence cache busting in favor of directly swapping URLs in accept/update stubs
+  sinonUtils.contextFreeStub(ImageSet, 'cachebustImg');
 
-  // Mock over SimilarImageResults hooks to send additional `diff` base64
+  // Mock over ImageSet/SimilarImageResults to send additional `diff` base64
+  sinonUtils.contextFreeStub(ImageSet, '_getAcceptChangesArgs', function _getAcceptChangesArgsStub (imageSet) {
+    // Return current base64 content as both `[diff, ref]`
+    var currentBase64Data = utils.getBase64Content(imageSet.currentImg);
+    return [currentBase64Data, currentBase64Data];
+  });
   sinonUtils.contextFreeStub(SimilarImageResults, '_getAcceptChangesArgs',
       function _getAcceptChangesArgsStub ($similarImageSet) {
     // Find and return our original base64 data as both `[diff, ref]`
@@ -91,29 +91,17 @@ window.runDemo = exports.runDemo = function (options) {
     var originalCurrentImgBase64 = utils.getBase64Content($originalCurrentImg[0]);
     return [originalCurrentImgBase64, originalCurrentImgBase64];
   });
-  sinonUtils.contextFreeStub(SimilarImageResults, 'updateSimilarImageSet',
-      function updateSimilarImageSetStub (similarImageSetEl) {
-    // Move back to jQuery collection
-    var $similarImageSet = $(similarImageSetEl);
-    var similarImageSetId = $similarImageSet.data('similar-image-set');
-
-    // Extract updated base64 content
+  sinonUtils.contextFreeStub(SimilarImageResults, '_getUpdateReferenceImageArgs',
+      function _getUpdateReferenceImageArgsStub ($similarImageSet) {
+    // Find and return updated base64 content
     var $updatedDiffCanvas = $similarImageSet.find('.updated-diff');
     assert.strictEqual($updatedDiffCanvas.length, 1);
     var updatedDiffBase64Data = $updatedDiffCanvas[0].toDataURL('image/png');
     var $updatedRefCanvas = $similarImageSet.find('.updated-ref');
     assert.strictEqual($updatedRefCanvas.length, 1);
     var updatedRefBase64Data = $updatedRefCanvas[0].toDataURL('image/png');
-
-    // Run update function
-    // TODO: Remove results when all loaded
-    var imageSet = GlobalState.fetchImageSetById(similarImageSetId);
-    imageSet.updateReferenceImage(updatedDiffBase64Data, updatedRefBase64Data);
+    return [updatedDiffBase64Data, updatedRefBase64Data];
   });
-
-  // Mock over cachebustImg to always swap images to `current` variant
-  // Silence cache busting in favor of directly swapping URLs in accept/update stubs
-  sinonUtils.contextFreeStub(ImageSet, 'cachebustImg');
 };
 
 // Load in normal script

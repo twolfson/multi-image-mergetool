@@ -35,6 +35,13 @@ SimilarImageResults._getAcceptChangesArgs = function ($similarImageSet) {
   var originalCurrentImgBase64 = utils.getBase64Content($originalCurrentImg[0]);
   return [originalCurrentImgBase64];
 };
+SimilarImageResults._getUpdateReferenceImageArgs = function ($similarImageSet) {
+  // Extract updated base64 content
+  var $updatedRefCanvas = $similarImageSet.find('.updated-ref');
+  assert.strictEqual($updatedRefCanvas.length, 1);
+  var base64Data = $updatedRefCanvas[0].toDataURL('image/png');
+  return [base64Data];
+};
 SimilarImageResults.bindOnce = function () {
   function findSelectedSimilarImageSets(evt) {
     // Find our image set container
@@ -79,15 +86,11 @@ SimilarImageResults.bindOnce = function () {
       var $similarImageSet = $(similarImageSetEl);
       var similarImageSetId = $similarImageSet.data('similar-image-set');
 
-      // Extract updated base64 content
-      var $updatedRefCanvas = $similarImageSet.find('.updated-ref');
-      assert.strictEqual($updatedRefCanvas.length, 1);
-      var base64Data = $updatedRefCanvas[0].toDataURL('image/png');
-
       // Run update function
       // TODO: Remove results when all loaded
+      var updateReferenceImageArgs = SimilarImageResults._getUpdateReferenceImageArgs($similarImageSet);
       var imageSet = GlobalState.fetchImageSetById(similarImageSetId);
-      imageSet.acceptChanges(base64Data);
+      imageSet.updateReferenceImage.apply(imageSet, updateReferenceImageArgs);
     });
   });
 };
