@@ -13,14 +13,20 @@ window.runDemo = exports.runDemo = function (options) {
   }
 
   // Start a Sinon server that approves all images
-  sinonUtils.mockXHR([xhrResponses.UPDATE_IMAGE_SET_APPROVE]);
+  sinonUtils.mockXHR([{
+    method: xhrResponses.UPDATE_IMAGE_SET_APPROVE.method,
+    url: xhrResponses.UPDATE_IMAGE_SET_APPROVE.url,
+    fn: function (request) {
+      // http://sinonjs.org/docs/#respond
+      request.respond.apply(request, sinonUtils.getMockXHRResponse(xhrResponses.UPDATE_IMAGE_SET_APPROVE));
+    }
+  }]);
 
   // Mock over cachebustImg to always swap images to `current` variant
   // TODO: Update `ImageSet.accept`/`update` callers to send both `diff`/`ref`
   // TODO: Update `ImageSet.accept/update` to update images promptly
   // TODO: Silence `ImageSet.cachebustImg`
   // TODO: Update Sinon mock to perform `pixelmatch` on `ImageSet` content for accuracy
-  //   Test this first as we don't know about support
   // TODO: Test demo exclusively via screenshots to reduce maintenane weight
   //   (e.g. we could be using base64, canvas, or images but why worry about details)
   sinonUtils.stub(ImageSet, 'cachebustImg', function cachebustImgstub (imgEl) {

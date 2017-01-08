@@ -4,6 +4,11 @@ var _ = require('underscore');
 var sinon = require('sinon');
 
 // Define our utilities
+exports.getMockXHRResponse = function (response) {
+  return [
+    response.statusCode, response.headers || {}, response.body
+  ];
+};
 exports.mockXHR = function (responses) {
   before(function callMockXHR () {
     // Create our server
@@ -16,9 +21,8 @@ exports.mockXHR = function (responses) {
 
     // Bind our responses
     responses.forEach(function bindResponse (response) {
-      sinonServer.respondWith(response.method, response.url, [
-        response.statusCode, response.headers || {}, response.body
-      ]);
+      sinonServer.respondWith(response.method, response.url,
+        response.fn || exports.getMockXHRResponse(response));
     });
   });
   after(function cleanup () {
