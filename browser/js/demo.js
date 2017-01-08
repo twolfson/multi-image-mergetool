@@ -61,8 +61,8 @@ window.runDemo = exports.runDemo = function (options) {
   function updateImageSetURLs(imageSet, diffBase64Data, refBase64Data) {
     // Overwrite image URLs for new images
     assert(diffBase64Data && refBase64Data, 'Expected both diffBase64Data and refBase64Data but didn\'t receive both');
-    imageSet.imageSetInfo.diffImageURL = diffBase64Data;
-    imageSet.imageSetInfo.refBase64Data = refBase64Data;
+    imageSet.imageSetInfo.diffImageUrl = diffBase64Data;
+    imageSet.imageSetInfo.refImageUrl = refBase64Data;
 
     // If we have images, then update their src
     if (imageSet.diffImg) { imageSet.diffImg.setAttribute('src', diffBase64Data); }

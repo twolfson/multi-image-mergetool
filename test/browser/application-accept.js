@@ -137,7 +137,7 @@ describe('A user accepting failing images has an error', function () {
 // Demo tests
 describe('On a demo page', function () {
   describe('a user accepting failing images', function () {
-    // Create our application, set up our XHR mocks, and click our button
+    // Create our application, set up our demo, and click our button
     applicationUtils.init();
     applicationUtils.runDemo();
     domUtils.click('[data-image-set="mock-img-not-equal"] ' +
@@ -147,6 +147,26 @@ describe('On a demo page', function () {
       setTimeout(done, 100);
     });
     applicationUtils.screenshot('demo-accept');
+
+    it('has no errors', function () {
+      // Verified by utilities
+    });
+  });
+
+  describe('a user accepting new images', function () {
+    // Create our application, set up our demo, and click our button
+    applicationUtils.init(applicationUtils.IMAGE_SETS.MULTIPLE_WITH_NEW);
+    applicationUtils.runDemo();
+    before(function assertBadStatus () {
+      var imageSetTitleEl = this.containerEl.querySelector('[data-image-set="mock-img-new"] .image-set__title');
+      expect(imageSetTitleEl.getAttribute('data-images-equal')).to.equal('false');
+    });
+    domUtils.click('[data-image-set="mock-img-new"] ' +
+      'button[data-action=accept-changes]');
+    before(function waitForXHRToComplete (done) {
+      setTimeout(done, 100);
+    });
+    applicationUtils.screenshot('demo-accept-new');
 
     it('has no errors', function () {
       // Verified by utilities
