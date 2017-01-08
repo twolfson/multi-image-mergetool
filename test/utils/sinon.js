@@ -9,17 +9,14 @@ exports.getMockXHRResponse = function (response) {
     response.statusCode, response.headers || {}, response.body
   ];
 };
-exports.mockXHR = function (responses, options) {
+exports.mockXHR = function (responses) {
   before(function callMockXHR () {
     // Create our server
     // http://sinonjs.org/docs/#fakeServer
     var sinonServer = this.sinonServer = sinon.fakeServer.create();
 
     // Set up auto-responses
-    if (options && options.autoRespond !== false) {
-      this.sinonServer.autoRespond = true;
-      this.sinonServer.autoRespondAfter = 100;
-    }
+    this.sinonServer.respondImmediately = true;
 
     // Bind our responses
     responses.forEach(function bindResponse (response) {

@@ -2,6 +2,7 @@
 // Load in our dependencies
 var $ = require('jquery');
 var assert = require('assert');
+var pixelmatch = require('pixelmatch');
 var GlobalState = require('./global-state');
 var ImageSet = require('./image-set');
 var utils = require('./utils');
@@ -32,6 +33,7 @@ window.runDemo = exports.runDemo = function (options) {
       assert(imageSet, 'Unable to find image set by id "' + imageSetMatch[1] + '"');
 
       // Load our images
+      // TODO: Capture base64 reference to original image/canvas so we can reuse it here...
       var currentImg = imageSet.currentImg; assert(currentImg);
       var newRefImg = new Image();
       var base64Data = decodeURIComponent(request.requestBody.replace('ref=', ''));
@@ -42,12 +44,16 @@ window.runDemo = exports.runDemo = function (options) {
       };
       newRefImg.onload = function () {
         // When our image loads, compare them
-
-        // http://sinonjs.org/docs/#respond
-        request.respond.apply(request, sinonUtils.getMockXHRResponse(xhrResponses.UPDATE_IMAGE_SET_APPROVE));
+        // https://github.com/mapbox/pixelmatch/tree/v4.0.2
+        console.log('hi', currentImg, newRefImg);
+        var numDiffPixels = pixelmatch(currentImg, newRefImg);
+        console.log('wat', numDiffPixels);
       };
+
+      // http://sinonjs.org/docs/#respond
+      request.respond.apply(request, sinonUtils.getMockXHRResponse(xhrResponses.UPDATE_IMAGE_SET_APPROVE));
     }
-  }], {autoRespond: false});
+  }]);
 
   // Mock over ImageSet hooks to send additional `diff` base64
   // DEV: We don't send both data sets normally as it's computationally expensive
