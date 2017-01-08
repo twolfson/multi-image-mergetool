@@ -19633,11 +19633,15 @@ var sinon = (function () { // eslint-disable-line no-unused-vars
             }
 
             if (types) {
+                // A new descriptor is needed here because we can only wrap functions
+                // By passing the original descriptor we would end up trying to spy non-function properties
+                var descriptor = {};
                 var methodDesc = sinon.getPropertyDescriptor(object, property);
+
                 for (var i = 0; i < types.length; i++) {
-                    methodDesc[types[i]] = spy.create(methodDesc[types[i]]);
+                    descriptor[types[i]] = spy.create(methodDesc[types[i]]);
                 }
-                return sinon.wrapMethod(object, property, methodDesc);
+                return sinon.wrapMethod(object, property, descriptor);
             }
 
             return sinon.wrapMethod(object, property, spy.create(object[property]));
@@ -20686,7 +20690,8 @@ var sinon = (function () { // eslint-disable-line no-unused-vars
 
             // IE 8 does not support hasOwnProperty on the window object and Firefox has a problem
             // when using hasOwn.call on objects from other frames.
-            var owned = object.hasOwnProperty ? object.hasOwnProperty(property) : hasOwn.call(object, property);
+            var owned = (object.hasOwnProperty && object.hasOwnProperty === hasOwn) ?
+                object.hasOwnProperty(property) : hasOwn.call(object, property);
 
             if (hasES5Support) {
                 var methodDesc = (typeof method === "function") ? {value: method} : method;
@@ -20750,9 +20755,17 @@ var sinon = (function () { // eslint-disable-line no-unused-vars
                     Object.defineProperty(object, property, wrappedMethodDesc);
                 }
 
+                // this only supports ES5 getter/setter, for ES3.1 and lower
+                // __lookupSetter__ / __lookupGetter__ should be integrated
+                if (hasES5Support) {
+                    var checkDesc = sinon.getPropertyDescriptor(object, property);
+                    if (checkDesc.value === method) {
+                        object[property] = wrappedMethod;
+                    }
+
                 // Use strict equality comparison to check failures then force a reset
                 // via direct assignment.
-                if (object[property] === method) {
+                } else if (object[property] === method) {
                     object[property] = wrappedMethod;
                 }
             };
@@ -22546,7 +22559,7 @@ if (typeof sinon === "undefined") {
             }
 
             Object.getOwnPropertyNames(obj).forEach(function (k) {
-                if (!seen[k]) {
+                if (seen[k] !== true) {
                     seen[k] = true;
                     var target = typeof Object.getOwnPropertyDescriptor(obj, k).get === "function" ?
                         originalObj : obj;
@@ -26075,33 +26088,35 @@ function bindFunc(func) {
     }
   }
 }
-exports.contextFreeSpy = function (obj, method, func) {
-  var spy;
-  before(function setupSpy () {
-    spy = sinon.spy(obj, method, func);
-  });
-  after(function cleanup () {
-    spy.restore();
-  });
+exports._spy = function (bindFunction) {
+  return function _spyFn (obj, method, func) {
+    var spy;
+    before(function setupSpy () {
+      if (bindFunction) { func = bindFunc.call(this, func); }
+      spy = sinon.spy(obj, method, func);
+    });
+    after(function cleanup () {
+      spy.restore();
+    });
+  };
 };
-exports.spy = function (obj, method, func) {
-  var boundFunc = bindFunc.call(this, func);
-  exports.contextFreeSpy(obj, method, boundFunc);
-};
+exports.contextFreeSpy = exports._spy(false);
+exports.spy = exports._spy(true);
 
 // http://sinonjs.org/docs/#stubs-api
-exports.contextFreeStub = function (obj, method, func) {
-  var stub;
-  before(function setupStub () {
-    stub = sinon.stub(obj, method, func);
-  });
-  after(function cleanup () {
-    stub.restore();
-  });
+exports._stub = function (bindFunction) {
+  return function _stubFn (obj, method, func) {
+    var stub;
+    before(function setupStub () {
+      if (bindFunction) { func = bindFunc.call(this, func); }
+      stub = sinon.stub(obj, method, func);
+    });
+    after(function cleanup () {
+      stub.restore();
+    });
+  };
 };
-exports.stub = function (obj, method, func) {
-  var boundFunc = bindFunc.call(this, func);
-  exports.contextFreeStub(obj, method, boundFunc);
-};
+exports.contextFreeStub = exports._stub(false);
+exports.stub = exports._stub(true);
 
 },{"sinon":25,"underscore":53}]},{},[3]);
