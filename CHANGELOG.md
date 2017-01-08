@@ -1,4 +1,6 @@
 # multi-image-mergetool changelog
+1.32.0 - Improved demo accuracy. Fixes #8
+
 1.31.0 - Added demo page
 
 1.30.0 - Added support for new images
