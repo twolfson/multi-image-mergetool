@@ -44,18 +44,20 @@ var ImageSet = BaseComponent.extend({
 });
 
 // Define class level helpers
-// DEV: We have `acceptImageSet` broken out for easy mocking for demos
-ImageSet.acceptImageSet = function (imageSet) {
-  // Extract and accept base64 content for image
+// DEV: We expose argument retriever for easier demo mocking
+ImageSet._getAcceptChangesArgs = function (imageSet) {
   var base64Data = utils.getBase64Content(imageSet.currentImg);
-  imageSet.acceptChanges(base64Data);
+  return [base64Data];
 };
 ImageSet.bindOnce = function () {
   // Set up image acceptance binding
   $('body').on('click', 'button[data-action="accept-changes"]', function handleClick (evt) {
-    // Resolve and accept our image set changes
+    // Resolve our image set
     var imageSet = ImageSet.fetchByEvent(evt);
-    ImageSet.acceptImageSet(imageSet);
+
+    // Accept base64 content for image
+    var acceptChangesArgs = ImageSet._getAcceptChangesArgs(imageSet);
+    imageSet.acceptChanges.apply(imageSet, acceptChangesArgs);
   });
 
   $('body').on('click', 'button[data-action="find-similar-images"]', function handleClick (evt) {
