@@ -71,7 +71,6 @@ window.runDemo = exports.runDemo = function (options) {
   sinonUtils.contextFreeStub(ImageSet.prototype, 'acceptChanges',
       function acceptChangesStub (diffBase64Data, refBase64Data) {
     // Call custom hook to update image URLs
-    assert(diffBase64Data && refBase64Data, 'Expected both diffBase64Data and refBase64Data but didn\'t receive both');
     updateImageSetURLs(this, diffBase64Data, refBase64Data);
 
     // Run normal method
@@ -79,7 +78,6 @@ window.runDemo = exports.runDemo = function (options) {
   });
   sinonUtils.contextFreeStub(ImageSet.prototype, 'updateReferenceImage',
       function updateReferenceImageStub (diffBase64Data, refBase64Data) {
-    // Call custom hook to update image URLs
     updateImageSetURLs(this, diffBase64Data, refBase64Data);
     return _updateReferenceImage.call(this, refBase64Data);
   });

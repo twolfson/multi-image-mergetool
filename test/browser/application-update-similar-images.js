@@ -132,7 +132,7 @@ describe('An application with similarly failing images', function () {
 
 // Demo tests
 describe('On a demo page', function () {
-  describe.only('a user updating all similarly failing images partially', function () {
+  describe('a user updating all similarly failing images partially', function () {
     applicationUtils.init(applicationUtils.IMAGE_SETS.MULTIPLE_NOT_EQUAL);
     applicationUtils.runDemo();
     domUtils.dragOverElement({
