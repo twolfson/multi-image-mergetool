@@ -1,4 +1,6 @@
 # multi-image-mergetool changelog
+1.32.1 - Fixed Sinon context binding in tests
+
 1.32.0 - Improved demo accuracy. Fixes #8
 
 1.31.0 - Added demo page

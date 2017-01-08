@@ -1,7 +1,7 @@
 {
   "name": "multi-image-mergetool",
   "description": "Resolve multiple image conflicts at the same time",
-  "version": "1.32.0",
+  "version": "1.32.1",
   "homepage": "https://github.com/twolfson/multi-image-mergetool",
   "author": {
     "name": "Todd Wolfson",
