@@ -1,11 +1,14 @@
 extends index.jade
 
+block title
+  title multi-image-mergetool demo
+
 block before-content
   .container-fluid
     h1 multi-image-mergetool demo
     p This page is fully interactive but not wired to anything so feel free to poke around. Any approved changes will be reset on page refresh.
     hr
 
-block before-scripts
-  //- Inject our demo script
+block main-script
+  //- Use our demo script as the main script
   script(src="/demo.js")

@@ -1,7 +1,8 @@
 doctype html
 html
   head
-    title multi-image-mergetool
+    block title
+      title multi-image-mergetool
     link(rel="stylesheet", href="/browser-dist/css/bootstrap.css", text="text/css")
     link(rel="stylesheet", href="/browser-dist/css/index.css", text="text/css")
   body
@@ -11,16 +12,14 @@ html
     //- Define our main container
     #container.container-fluid
 
-    //- Define script hook for demo page
-    block before-scripts
-
     //- Expose our data directly to `window`
     script
       //- TODO: Make sure there are no XSS holes like `</script><script>alert(1)`
       | window.imageSets = !{JSON.stringify(image_sets)};
 
     //- Load our script and initialize it
-    script(src="/browser-dist/js/index.js")
+    block main-script
+      script(src="/browser-dist/js/index.js")
     script.
       document.addEventListener('DOMContentLoaded', function handleDOMContentLoaded () {
         window.application = new Application({

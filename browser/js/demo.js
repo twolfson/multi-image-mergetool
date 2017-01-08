@@ -9,3 +9,6 @@ global.after = function (fn) { /* Don't run after functions */ };
 
 // Start a Sinon server that approves all images
 sinonUtils.mockXHR([xhrResponses.UPDATE_IMAGE_SET_APPROVE]);
+
+// Load in normal script
+void require('./index.js');
