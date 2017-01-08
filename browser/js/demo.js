@@ -42,11 +42,30 @@ window.runDemo = exports.runDemo = function (options) {
       newRefImg.onerror = function (err) {
         throw err;
       };
+      // When our image loads, load their data and compare them
       newRefImg.onload = function () {
-        // When our image loads, compare them
+        // Define image data helper
+        function getImageData(imgEl) {
+          // Create our canvas (we don't reuse canvas for less lines)
+          var base64CanvasEl = document.createElement('canvas');
+          var base64Context = base64CanvasEl.getContext('2d');
+
+          // Resize our canvas to target size
+          var width = base64CanvasEl.width = imgEl.naturalWidth;
+          var height = base64CanvasEl.height = imgEl.naturalHeight;
+
+          // Draw our image and return its image data
+          // https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/drawImage
+          // https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/getImageData
+          base64Context.drawImage(imgEl, 0, 0);
+          return base64Context.getImageData(0, 0, width, height);
+        }
+
+        // Resolve the difference
         // https://github.com/mapbox/pixelmatch/tree/v4.0.2
-        console.log('hi', currentImg, newRefImg);
-        var numDiffPixels = pixelmatch(currentImg, newRefImg);
+        var numDiffPixels = pixelmatch(
+          getImageData(currentImg), getImageData(newRefImg), null,
+          currentImg.naturalWidth, currentImg.naturalHeight, {threshold: 0});
         console.log('wat', numDiffPixels);
       };
 
