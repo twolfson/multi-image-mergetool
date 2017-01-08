@@ -12,3 +12,5 @@ block before-content
 block main-script
   //- Use our demo script as the main script
   script(src="/demo.js")
+  script.
+    window.runDemo({overwriteMocha: true});
