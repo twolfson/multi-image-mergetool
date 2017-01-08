@@ -71,7 +71,7 @@ SimilarImageResults.updateSimilarImageSet = function (similarImageSetEl) {
   // Run update function
   // TODO: Remove results when all loaded
   var imageSet = GlobalState.fetchImageSetById(similarImageSetId);
-  imageSet.acceptChanges(base64Data);
+  imageSet.updateReferenceImage(base64Data);
 };
 
 // Define our bindings

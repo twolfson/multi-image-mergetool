@@ -36,8 +36,10 @@ window.runDemo = exports.runDemo = function (options) {
     imageSet.acceptChanges(diffBase64Data, refBase64Data);
   });
   var _acceptChanges = ImageSet.prototype.acceptChanges;
+  var _updateReferenceImage = ImageSet.prototype.updateReferenceImage;
   function updateImageSetURLs(imageSet, diffBase64Data, refBase64Data) {
     // Overwrite image URLs for new images
+    assert(diffBase64Data && refBase64Data, 'Expected both diffBase64Data and refBase64Data but didn\'t receive both');
     imageSet.imageSetInfo.diffImageURL = diffBase64Data;
     imageSet.imageSetInfo.refBase64Data = refBase64Data;
 
@@ -54,6 +56,14 @@ window.runDemo = exports.runDemo = function (options) {
     // Run normal method
     return _acceptChanges.call(this, refBase64Data);
   });
+  sinonUtils.contextFreeStub(ImageSet.prototype, 'acceptChanges',
+      function acceptChangesStub (diffBase64Data, refBase64Data) {
+    // Call custom hook to update image URLs
+    updateImageSetURLs(this, diffBase64Data, refBase64Data);
+    return _updateReferenceImage.call(this, refBase64Data);
+  });
+
+  // Mock over SimilarImageResults hooks to send additional `diff` base64
   sinonUtils.contextFreeStub(SimilarImageResults, 'acceptSimilarImageSet',
       function acceptSimilarImageSetStub (similarImageSetEl) {
     // Move back to jQuery collection
@@ -70,6 +80,25 @@ window.runDemo = exports.runDemo = function (options) {
     var newDiffBase64Data = originalCurrentImgBase64;
     var imageSet = GlobalState.fetchImageSetById(similarImageSetId);
     imageSet.acceptChanges(newDiffBase64Data, newRefBase64Data);
+  });
+  sinonUtils.contextFreeStub(SimilarImageResults, 'updateSimilarImageSet',
+      function updateSimilarImageSetStub (similarImageSetEl) {
+    // Move back to jQuery collection
+    var $similarImageSet = $(similarImageSetEl);
+    var similarImageSetId = $similarImageSet.data('similar-image-set');
+
+    // Extract updated base64 content
+    var $updatedDiffCanvas = $similarImageSet.find('.updated-diff');
+    assert.strictEqual($updatedDiffCanvas.length, 1);
+    var updatedDiffBase64Data = $updatedDiffCanvas[0].toDataURL('image/png');
+    var $updatedRefCanvas = $similarImageSet.find('.updated-ref');
+    assert.strictEqual($updatedRefCanvas.length, 1);
+    var updatedRefBase64Data = $updatedRefCanvas[0].toDataURL('image/png');
+
+    // Run update function
+    // TODO: Remove results when all loaded
+    var imageSet = GlobalState.fetchImageSetById(similarImageSetId);
+    imageSet.updateReferenceImage(updatedDiffBase64Data, updatedRefBase64Data);
   });
 
   // Mock over cachebustImg to always swap images to `current` variant
