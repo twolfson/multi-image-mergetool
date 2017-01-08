@@ -43,31 +43,33 @@ function bindFunc(func) {
     }
   }
 }
-exports.contextFreeSpy = function (obj, method, func) {
-  var spy;
-  before(function setupSpy () {
-    spy = sinon.spy(obj, method, func);
-  });
-  after(function cleanup () {
-    spy.restore();
-  });
+exports._spy = function (bindFunction) {
+  return function _spyFn (obj, method, func) {
+    var spy;
+    before(function setupSpy () {
+      if (bindFunction) { func = bindFunc.call(this, func); }
+      spy = sinon.spy(obj, method, func);
+    });
+    after(function cleanup () {
+      spy.restore();
+    });
+  };
 };
-exports.spy = function (obj, method, func) {
-  var boundFunc = bindFunc.call(this, func);
-  exports.contextFreeSpy(obj, method, boundFunc);
-};
+exports.contextFreeSpy = exports._spy(false);
+exports.spy = exports._spy(true);
 
 // http://sinonjs.org/docs/#stubs-api
-exports.contextFreeStub = function (obj, method, func) {
-  var stub;
-  before(function setupStub () {
-    stub = sinon.stub(obj, method, func);
-  });
-  after(function cleanup () {
-    stub.restore();
-  });
+exports._stub = function (bindFunction) {
+  return function _stubFn (obj, method, func) {
+    var stub;
+    before(function setupStub () {
+      if (bindFunction) { func = bindFunc.call(this, func); }
+      stub = sinon.stub(obj, method, func);
+    });
+    after(function cleanup () {
+      stub.restore();
+    });
+  };
 };
-exports.stub = function (obj, method, func) {
-  var boundFunc = bindFunc.call(this, func);
-  exports.contextFreeStub(obj, method, boundFunc);
-};
+exports.contextFreeStub = exports._stub(false);
+exports.stub = exports._stub(true);
