@@ -83,22 +83,13 @@ window.runDemo = exports.runDemo = function (options) {
   });
 
   // Mock over SimilarImageResults hooks to send additional `diff` base64
-  sinonUtils.contextFreeStub(SimilarImageResults, 'acceptSimilarImageSet',
-      function acceptSimilarImageSetStub (similarImageSetEl) {
-    // Move back to jQuery collection
-    var $similarImageSet = $(similarImageSetEl);
-    var similarImageSetId = $similarImageSet.data('similar-image-set');
-
-    // Find our original current image
+  sinonUtils.contextFreeStub(SimilarImageResults, '_getAcceptChangesArgs',
+      function _getAcceptChangesArgsStub ($similarImageSet) {
+    // Find and return our original base64 data as both `[diff, ref]`
     var $originalCurrentImg = $similarImageSet.find('.original-current');
     assert.strictEqual($originalCurrentImg.length, 1);
     var originalCurrentImgBase64 = utils.getBase64Content($originalCurrentImg[0]);
-
-    // Run update function
-    var newRefBase64Data = originalCurrentImgBase64;
-    var newDiffBase64Data = originalCurrentImgBase64;
-    var imageSet = GlobalState.fetchImageSetById(similarImageSetId);
-    imageSet.acceptChanges(newDiffBase64Data, newRefBase64Data);
+    return [originalCurrentImgBase64, originalCurrentImgBase64];
   });
   sinonUtils.contextFreeStub(SimilarImageResults, 'updateSimilarImageSet',
       function updateSimilarImageSetStub (similarImageSetEl) {
