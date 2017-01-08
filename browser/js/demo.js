@@ -9,8 +9,6 @@ var SimilarImageResults = require('./similar-image-results');
 var sinonUtils = require('../../test/utils/sinon');
 var xhrResponses = require('../../test/test-files/http-responses/xhr');
 
-// TODO: Move to simpler mock stubs (e.g. `getUpdateChangesArgs`)
-
 // Define our demo bindings
 window.runDemo = exports.runDemo = function (options) {
   // If we are running live, overwrite Mocha's contents
