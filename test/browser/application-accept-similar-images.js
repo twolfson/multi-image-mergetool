@@ -123,7 +123,7 @@ describe('An application with similarly failing images', function () {
 
 // Demo tests
 describe('On a demo page', function () {
-  describe.only('a user accepting all similarly failing images', function () {
+  describe('a user accepting all similarly failing images', function () {
     // Create an overlay for one of our image sets
     applicationUtils.init(applicationUtils.IMAGE_SETS.MULTIPLE_NOT_EQUAL);
     applicationUtils.runDemo();

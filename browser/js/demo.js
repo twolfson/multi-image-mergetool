@@ -18,6 +18,7 @@ window.runDemo = exports.runDemo = function (options) {
   }
 
   // Start a Sinon server that approves all images
+  // TODO: Update Sinon mock to perform `pixelmatch` on `ImageSet` content for accuracy
   sinonUtils.mockXHR([{
     method: xhrResponses.UPDATE_IMAGE_SET_APPROVE.method,
     url: xhrResponses.UPDATE_IMAGE_SET_APPROVE.url,
@@ -56,8 +57,8 @@ window.runDemo = exports.runDemo = function (options) {
     // Run normal method
     return _acceptChanges.call(this, refBase64Data);
   });
-  sinonUtils.contextFreeStub(ImageSet.prototype, 'acceptChanges',
-      function acceptChangesStub (diffBase64Data, refBase64Data) {
+  sinonUtils.contextFreeStub(ImageSet.prototype, 'updateReferenceImage',
+      function updateReferenceImageStub (diffBase64Data, refBase64Data) {
     // Call custom hook to update image URLs
     updateImageSetURLs(this, diffBase64Data, refBase64Data);
     return _updateReferenceImage.call(this, refBase64Data);
@@ -102,11 +103,6 @@ window.runDemo = exports.runDemo = function (options) {
   });
 
   // Mock over cachebustImg to always swap images to `current` variant
-  // TODO: Update `ImageSet.accept`/`update` callers to send both `diff`/`ref`
-  // TODO: Update `ImageSet.accept/update` to update images promptly
-  // TODO: Update Sinon mock to perform `pixelmatch` on `ImageSet` content for accuracy
-  // TODO: Test demo exclusively via screenshots to reduce maintenane weight
-  //   (e.g. we could be using base64, canvas, or images but why worry about details)
   // Silence cache busting in favor of directly swapping URLs in accept/update stubs
   sinonUtils.contextFreeStub(ImageSet, 'cachebustImg');
 };

@@ -129,3 +129,28 @@ describe('An application with similarly failing images', function () {
     });
   });
 });
+
+// Demo tests
+describe('On a demo page', function () {
+  describe.only('a user updating all similarly failing images partially', function () {
+    applicationUtils.init(applicationUtils.IMAGE_SETS.MULTIPLE_NOT_EQUAL);
+    applicationUtils.runDemo();
+    domUtils.dragOverElement({
+      selector: '[data-image-set="mock-img-not-equal"] img[data-compare-type=diff]',
+      startCoords: {x: 0, y: 0},
+      endCoords: {x: 10, y: 10}
+    });
+    domUtils.click('[data-image-set="mock-img-not-equal"] ' +
+      'button[data-action="find-similar-images"]');
+    domUtils.click('[data-image-set="mock-img-not-equal"] ' +
+      'button[data-action="update-similar-images"]');
+    before(function waitForXHRToComplete (done) {
+      setTimeout(done, 100);
+    });
+    applicationUtils.screenshot('demo-update-all-similar-images');
+
+    it('has no errors', function () {
+      // Verified by utilities
+    });
+  });
+});
