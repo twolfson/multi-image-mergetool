@@ -1,6 +1,7 @@
 // Script for making our demo work
 // Load in our dependencies
 var assert = require('assert');
+var _ = require('underscore');
 var GlobalState = require('./global-state');
 var ImageSet = require('./image-set');
 var utils = require('./utils');
@@ -54,8 +55,10 @@ window.runDemo = exports.runDemo = function (options) {
   function updateImageSetURLs(imageSet, diffBase64Data, refBase64Data) {
     // Overwrite image URLs for new images
     assert(diffBase64Data && refBase64Data, 'Expected both diffBase64Data and refBase64Data but didn\'t receive both');
-    imageSet.imageSetInfo.diffImageUrl = diffBase64Data;
-    imageSet.imageSetInfo.refImageUrl = refBase64Data;
+    imageSet.imageSetInfo = _.defaults({
+      diffImageUrl: diffBase64Data,
+      refImageUrl: refBase64Data
+    }, imageSet.imageSetInfo);
 
     // If we have images, then update their src
     if (imageSet.diffImg) { imageSet.diffImg.setAttribute('src', diffBase64Data); }
