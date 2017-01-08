@@ -27,7 +27,7 @@ window.runDemo = exports.runDemo = function (options) {
       // Resolve our image set
       var imageSetMatch = request.url.match(/\/update-image-set\/([^\/]+)/);
       assert(imageSetMatch, 'Unable to extract ImageSet if from "' + request.url);
-      var imageSet = GlobalState.getImageSetById(imageSetMatch[1]);
+      var imageSet = GlobalState.getImageSetById(decodeURIComponent(imageSetMatch[1]));
       assert(imageSet, 'Unable to find image set by id "' + imageSetMatch[1] + '"');
 
       // Convert our image into its base64 equivalent and compare them
