@@ -9,6 +9,8 @@ var SimilarImageResults = require('./similar-image-results');
 var sinonUtils = require('../../test/utils/sinon');
 var xhrResponses = require('../../test/test-files/http-responses/xhr');
 
+// TODO: Move to simpler mock stubs (e.g. `getUpdateChangesArgs`)
+
 // Define our demo bindings
 window.runDemo = exports.runDemo = function (options) {
   // If we are running live, overwrite Mocha's contents
@@ -23,10 +25,29 @@ window.runDemo = exports.runDemo = function (options) {
     method: xhrResponses.UPDATE_IMAGE_SET_APPROVE.method,
     url: xhrResponses.UPDATE_IMAGE_SET_APPROVE.url,
     fn: function (request) {
-      // http://sinonjs.org/docs/#respond
-      request.respond.apply(request, sinonUtils.getMockXHRResponse(xhrResponses.UPDATE_IMAGE_SET_APPROVE));
+      // Resolve our image set
+      var imageSetMatch = request.url.match(/\/update-image-set\/([^\/]+)/);
+      assert(imageSetMatch, 'Unable to extract ImageSet if from "' + request.url);
+      var imageSet = GlobalState.getImageSetById(imageSetMatch[1]);
+      assert(imageSet, 'Unable to find image set by id "' + imageSetMatch[1] + '"');
+
+      // Load our images
+      var currentImg = imageSet.currentImg; assert(currentImg);
+      var newRefImg = new Image();
+      var base64Data = decodeURIComponent(request.requestBody.replace('ref=', ''));
+      assert(base64Data.indexOf('data:image/png;base64,') === 0);
+      newRefImg.src = base64Data;
+      newRefImg.onerror = function (err) {
+        throw err;
+      };
+      newRefImg.onload = function () {
+        // When our image loads, compare them
+
+        // http://sinonjs.org/docs/#respond
+        request.respond.apply(request, sinonUtils.getMockXHRResponse(xhrResponses.UPDATE_IMAGE_SET_APPROVE));
+      };
     }
-  }]);
+  }], {autoRespond: false});
 
   // Mock over ImageSet hooks to send additional `diff` base64
   // DEV: We don't send both data sets normally as it's computationally expensive
