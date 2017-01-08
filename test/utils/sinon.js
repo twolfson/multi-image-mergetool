@@ -44,25 +44,31 @@ function bindFunc(func) {
     }
   }
 }
-exports.spy = function (obj, method, func) {
+exports.contextFreeSpy = function (obj, method, func) {
   var spy;
   before(function setupSpy () {
-    func = bindFunc.call(this, func);
-    spy = sinon.spy.call(sinon, obj, method, func);
+    spy = sinon.spy(obj, method, func);
   });
   after(function cleanup () {
     spy.restore();
   });
 };
+exports.spy = function (obj, method, func) {
+  var boundFunc = bindFunc.call(this, func);
+  exports.contextFreeSpy(obj, method, boundFunc);
+};
 
 // http://sinonjs.org/docs/#stubs-api
-exports.stub = function (obj, method, func) {
+exports.contextFreeStub = function (obj, method, func) {
   var stub;
   before(function setupStub () {
-    func = bindFunc.call(this, func);
-    stub = sinon.stub.call(sinon, obj, method, func);
+    stub = sinon.stub(obj, method, func);
   });
   after(function cleanup () {
     stub.restore();
   });
+};
+exports.stub = function (obj, method, func) {
+  var boundFunc = bindFunc.call(this, func);
+  exports.contextFreeStub(obj, method, boundFunc);
 };

@@ -26,9 +26,34 @@ window.runDemo = exports.runDemo = function (options) {
     }
   }]);
 
-  // Mock over SimilarImageResults hooks to send more `diff` base64 as well as original
+  // Mock over ImageSet hooks to send additional `diff` base64
   // DEV: We don't send both data sets normally as it's computationally expensive
-  sinonUtils.stub(SimilarImageResults, 'acceptSimilarImageSet',
+  sinonUtils.contextFreeStub(ImageSet, 'acceptImageSet', function acceptImageSetStub (imageSet) {
+    // Extract and accept base64 content for image
+    var refBase64Data = utils.getBase64Content(imageSet.currentImg);
+    var diffBase64Data = refBase64Data;
+    imageSet.acceptChanges(diffBase64Data, refBase64Data);
+  });
+  var _acceptChanges = ImageSet.prototype.acceptChanges;
+  function updateImageSetURLs(imageSet, diffBase64Data, refBase64Data) {
+    // Overwrite image URLs for new images
+    imageSet.imageSetInfo.diffImageURL = diffBase64Data;
+    imageSet.imageSetInfo.refBase64Data = refBase64Data;
+
+    // If we have images, then update their src
+    if (imageSet.diffImg) { imageSet.diffImg.setAttribute('src', diffBase64Data); }
+    if (imageSet.refImg) { imageSet.refImg.setAttribute('src', refBase64Data); }
+  }
+  sinonUtils.contextFreeStub(ImageSet.prototype, 'acceptChanges',
+      function acceptChangesStub (diffBase64Data, refBase64Data) {
+    // Call custom hook to update image URLs
+    assert(diffBase64Data && refBase64Data, 'Expected both diffBase64Data and refBase64Data but didn\'t receive both');
+    updateImageSetURLs(this, diffBase64Data, refBase64Data);
+
+    // Run normal method
+    return _acceptChanges.call(this, refBase64Data);
+  });
+  sinonUtils.contextFreeStub(SimilarImageResults, 'acceptSimilarImageSet',
       function acceptSimilarImageSetStub (similarImageSetEl) {
     // Move back to jQuery collection
     var $similarImageSet = $(similarImageSetEl);
@@ -48,12 +73,8 @@ window.runDemo = exports.runDemo = function (options) {
   // TODO: Update Sinon mock to perform `pixelmatch` on `ImageSet` content for accuracy
   // TODO: Test demo exclusively via screenshots to reduce maintenane weight
   //   (e.g. we could be using base64, canvas, or images but why worry about details)
-  sinonUtils.stub(ImageSet, 'cachebustImg', function cachebustImgstub (imgEl) {
-    // images/ref%2Froot.large.png -> images/current%2Froot.large.png
-    var originalSrc = imgEl.getAttribute('src');
-    var newSrc = originalSrc.replace(/images\/(ref|diff)/, 'images/current');
-    imgEl.setAttribute('src', newSrc);
-  });
+  // Silence cache busting in favor of
+  sinonUtils.contextFreeStub(ImageSet, 'cachebustImg');
 };
 
 // Load in normal script
