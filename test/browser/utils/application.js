@@ -4,6 +4,7 @@ var $ = require('jquery');
 var _ = require('underscore');
 var async = require('async');
 var Application = require('../../../browser/js/application');
+var demo = require('../../../browser/js/demo');
 var GlobalState = require('../../../browser/js/global-state');
 var diagonalBase64 = fs.readFileSync(__dirname + '/../../test-files/diagonal.png', 'base64');
 var diagonalDotDiffBase64 = fs.readFileSync(__dirname + '/../../test-files/diagonal-dot-diff.png', 'base64');
@@ -149,6 +150,8 @@ exports.init = function (imageSetInfoArr) {
     delete this.containerEl;
   });
 };
+
+exports.runDemo = demo.runDemo;
 
 exports._screenshot = function (filename) {
   // Call our to `onCallback` handler

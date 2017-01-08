@@ -19,6 +19,7 @@ describe('A user accepting failing images is successful', function () {
   before(function waitForXHRToComplete (done) {
     setTimeout(done, 100);
   });
+  applicationUtils.screenshot('accept');
 
   it('updates image set status', function () {
     var imageSetTitleEl = this.containerEl.querySelector('[data-image-set="mock-img-not-equal"] .image-set__title');
@@ -130,5 +131,25 @@ describe('A user accepting failing images has an error', function () {
     // DEV: We don't exclusively compare to the original mock data as they could both be null or similar
     expect(diffImgEl.src).to.match(/\?1/);
     expect(refImgEl.src).to.match(/\?1/);
+  });
+});
+
+// Demo tests
+describe('On a demo page', function () {
+  describe.only('a user accepting failing images', function () {
+    // Create our application, set up our XHR mocks, and click our button
+    applicationUtils.init();
+    applicationUtils.runDemo();
+    domUtils.click('[data-image-set="mock-img-not-equal"] ' +
+      'button[data-action=accept-changes]');
+    // DEV: We test exclusively via screenshots to avoid double maintenance for implementation details
+    before(function waitForXHRToComplete (done) {
+      setTimeout(done, 100);
+    });
+    applicationUtils.screenshot('demo-accept');
+
+    it('has no errors', function () {
+      // Verified by utilities
+    });
   });
 });
